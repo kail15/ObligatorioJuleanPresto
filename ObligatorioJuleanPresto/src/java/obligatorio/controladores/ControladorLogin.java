@@ -18,11 +18,12 @@ public class ControladorLogin {
     }  
     
     public void login(String username, String password){     
-        Usuario usuario;
+        // Usuario usuario;
         try {
             
-            usuario = this.fachada.login(username, password);                        
-            vista.ingresarUsuario(usuario);
+           Usuario usuario = this.fachada.login(username, password);                        
+            // vista.ingresarUsuario(usuario);
+            int test = 0;
             
         } catch (CredencialesInvalidasException | UsuarioInactivoException ex) {   
             vista.mostrarError(ex.getMessage());

@@ -27,6 +27,9 @@ public class Mozo extends Usuario{
         this.mesas = mesas;
     }
     
-    
+    @Override
+    public void agregarMesa(Mesa mesa){
+       this.mesas.add(mesa);
+    }   
     
 }

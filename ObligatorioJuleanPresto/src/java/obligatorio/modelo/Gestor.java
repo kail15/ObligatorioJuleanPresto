@@ -23,6 +23,11 @@ public class Gestor extends Usuario{
     public void setUnidadProcesadora(UnidadProcesadora unidadProcesadora) {
         this.unidadProcesadora = unidadProcesadora;
     }
+
+    @Override
+    public void agregarMesa(Mesa mesa) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
     

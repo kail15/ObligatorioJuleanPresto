@@ -16,20 +16,21 @@ public class SistemaUsuarios {
         public Usuario login(String n,String p) throws CredencialesInvalidasException, UsuarioInactivoException{
         Usuario usuarioLogueado = null;
         for(Usuario user:usuarios ){
-            /*if(user.validarLogin(n,p)){
+            if(user.validarLogin(n,p)){
                   usuarioLogueado = user;
-            }*/
+                  break;
+            }
         }
         if(usuarioLogueado == null){
             throw new CredencialesInvalidasException("Credenciales invalidas");
-        }else{
-            // Esto es para forzar una exception 
-           /* if(usuarioLogueado.getUsername().equals("a")){
-                throw new UsuarioInactivoException("El usuario se encuentra inactivo, contacte al admin");
-            }*/
+        }else{            
             return usuarioLogueado;
-        }
-        
+        }        
     }
+        
+        
+     public void agregarUsuario(Usuario u){
+        usuarios.add(u);
+    }   
 
 }

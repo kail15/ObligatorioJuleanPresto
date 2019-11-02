@@ -10,6 +10,7 @@ import obligatorio.controladores.ControladorLogin;
 import obligatorio.controladores.VistaLogin;
 import obligatorio.modelo.Usuario;
 import obligatorio.vista.web.dto.DatosLoginDTO;
+import obligatorio.vista.web.dto.WsMessageDTO;
 
 //OJP
 @ServerEndpoint("/wslogin")
@@ -25,7 +26,7 @@ public class wslogin implements VistaLogin {
         System.out.println(session.getId());
         this.session = session;
         this.gson = new Gson();
-       // controlador = new ControladorLogin(this);
+        controlador = new ControladorLogin(this);
     }
 
     @OnMessage
@@ -33,7 +34,7 @@ public class wslogin implements VistaLogin {
         System.out.println("Mensaje recibido: " + message);
 
         DatosLoginDTO datos = gson.fromJson(message, DatosLoginDTO.class);
-        // this.controlador.login(datos.getUsername(), datos.getPassword());
+        this.controlador.login(datos.getUsername(), datos.getPassword());
     }
 
     @OnError
@@ -43,7 +44,10 @@ public class wslogin implements VistaLogin {
 
     @Override
     public void ingresarUsuario(Usuario usuario) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        WsMessageDTO msgLogin = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_IR_MENU_MOZO, usuario.getUserId());
+        String mensaje = MessageConverter.toMessage(msgLogin); 
+        WsSessionHandler.setItem("usuario", usuario); 
+        WsUtils.enviarMensajePorSocket(session, mensaje);
     }
 
     @Override

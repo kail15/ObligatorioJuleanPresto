@@ -27,12 +27,13 @@ OJP
                 var jsonObject = JSON.parse(message.data);
                 var tipo = jsonObject.tipo;
                 var valor = jsonObject.valor;
+                ingresarUsuario(valor);
                 
-                if (tipo === "TIPO_IR_MENU") {
+              /*  if (tipo === "TIPO_IR_MENU") {
                     ingresarUsuario(valor);
                 } else if (tipo === "TIPO_ERROR") {
                     mostrarMensajeError(valor);
-                }
+                }*/
             }; 
             
             webSocket.onerror = function (message) {
@@ -68,8 +69,8 @@ OJP
             
         </script>
         <h1>Ingresar</h1>
-        Username: <input type="text" id="username" name="username">
-        Password: <input type="password" id="password" name="password">
+        Username: <input type="text" value="user1" id="username" name="username">
+        Password: <input type="password" value="pass1" id="password" name="password">
         <br/><br/>
         <input type="button" value="Login" onclick="enviarLogin()">
         

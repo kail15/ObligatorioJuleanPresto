@@ -1,18 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package obligatorio.modelo;
 
-/**
- *
- * @author Usuario
- */
-public class Usuario {
+
+public abstract class Usuario {
     private String nombreUsuario;
     private String password;
     private String nombreCompleto;
+    private String userId;
+
 
     public Usuario(String nombreUsuario, String password, String nombreCompleto) {
         this.nombreUsuario = nombreUsuario;
@@ -44,11 +39,17 @@ public class Usuario {
         this.nombreCompleto = nombreCompleto;
     }
     
+    public String getUserId() {
+        return userId;
+    }
+    
     ////
     
     public boolean validarLogin(String n, String p) {
         return n.equals(nombreUsuario) && p.equals(password);
     }
+    
+    public abstract void agregarMesa(Mesa mesa);
     
     
 }
