@@ -4,11 +4,12 @@
  * and open the template in the editor.
  */
 package obligatorio.fachada;
+import java.util.Observable;
 
 /**
  *
  * @author Usuario
  */
-public class Fachada {
+public class Fachada extends Observable {
     
 }

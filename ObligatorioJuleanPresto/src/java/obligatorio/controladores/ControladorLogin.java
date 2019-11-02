@@ -1,14 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package obligatorio.controladores;
 
-/**
- *
- * @author Usuario
- */
+//OJP
+import obligatorio.fachada.Fachada;
+
 public class ControladorLogin {
+    
+    private Fachada fachada;
+    private VistaLogin vista;
+    
+    public ControladorLogin(VistaLogin vista){
+        this.vista = vista;
+       // this.fachada = Fachada.getInstancia();               
+    }  
     
 }
