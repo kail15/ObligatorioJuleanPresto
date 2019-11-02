@@ -9,6 +9,7 @@ import javax.websocket.server.ServerEndpoint;
 import obligatorio.controladores.ControladorLogin;
 import obligatorio.controladores.VistaLogin;
 import obligatorio.modelo.Usuario;
+import obligatorio.vista.web.dto.DatosLoginDTO;
 
 //OJP
 @ServerEndpoint("/wslogin")
@@ -31,8 +32,8 @@ public class wslogin implements VistaLogin {
     public void onMessage(String message) {
         System.out.println("Mensaje recibido: " + message);
 
-       // DatosLoginDTO datos = gson.fromJson(message, DatosLoginDTO.class);
-      //  this.controlador.login(datos.getUsername(), datos.getPassword());
+        DatosLoginDTO datos = gson.fromJson(message, DatosLoginDTO.class);
+        // this.controlador.login(datos.getUsername(), datos.getPassword());
     }
 
     @OnError

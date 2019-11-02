@@ -1,24 +1,77 @@
-<!DOCTYPE html>
 <!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
+OJP
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Obligatorio Restaurante</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script>
-            var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wslogin");
+             var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wslogin");
             
+            //Capturo Evento onBeforeUnload
+            window.onbeforeunload = function() {
+                //Cierro la conexion manualmente
+                 webSocket.close();
+            };
+            
+            webSocket.onopen = function (message) {
+                
+                
+            };
+            
+            webSocket.onmessage = function (message) {
+                var jsonObject = JSON.parse(message.data);
+                var tipo = jsonObject.tipo;
+                var valor = jsonObject.valor;
+                
+                if (tipo === "TIPO_IR_MENU") {
+                    ingresarUsuario(valor);
+                } else if (tipo === "TIPO_ERROR") {
+                    mostrarMensajeError(valor);
+                }
+            }; 
+            
+            webSocket.onerror = function (message) {
+                mostrarMensajeError("Error de conexion");
+            };
+            
+            
+            function ingresarUsuario(valor){
+                //Redirect hacia menu
+                sessionStorage.setItem("userId", valor);
+                window.location.href= "mozoUI.html"                
+            }
+            
+            function enviarLogin(){                
+                //Obtenemos los valores a traves de JQuery
+                var username = $("#username").val();
+                var password = $("#password").val();
+                
+                //Asignamos los valores al objeto
+                var jsonObject = {
+                    "username": username,                    
+                    "password": password
+                };                           
+               
+                //Transformamos a string
+                var loginJson = JSON.stringify( jsonObject ); //  <-----------
+
+                //enviamos a traves del socket
+                webSocket.send(loginJson);
+            }
             
             
             
         </script>
+        <h1>Ingresar</h1>
+        Username: <input type="text" id="username" name="username">
+        Password: <input type="password" id="password" name="password">
+        <br/><br/>
+        <input type="button" value="Login" onclick="enviarLogin()">
         
     </body>
 </html>

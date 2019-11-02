@@ -44,5 +44,11 @@ public class Usuario {
         this.nombreCompleto = nombreCompleto;
     }
     
+    ////
+    
+    public boolean validarLogin(String n, String p) {
+        return n.equals(nombreUsuario) && p.equals(password);
+    }
+    
     
 }
