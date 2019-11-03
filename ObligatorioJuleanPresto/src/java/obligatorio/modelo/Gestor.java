@@ -12,8 +12,8 @@ package obligatorio.modelo;
 public class Gestor extends Usuario{
     private UnidadProcesadora unidadProcesadora;
     
-    public Gestor(String nombreUsuario, String password, String nombreCompleto) {
-        super(nombreUsuario, password, nombreCompleto);
+    public Gestor(String userId, String nombreUsuario, String password, String nombreCompleto) {
+        super(userId, nombreUsuario, password, nombreCompleto);
     }
 
     public UnidadProcesadora getUnidadProcesadora() {

@@ -27,7 +27,8 @@ OJP
                 var jsonObject = JSON.parse(message.data);
                 var tipo = jsonObject.tipo;
                 var valor = jsonObject.valor;
-                ingresarUsuario(valor);
+                console.log(jsonObject);
+                ingresarUsuario(valor, tipo);
                 
               /*  if (tipo === "TIPO_IR_MENU") {
                     ingresarUsuario(valor);
@@ -41,17 +42,33 @@ OJP
             };
             
             
-            function ingresarUsuario(valor){
+            function ingresarUsuario(valor, tipo){
                 //Redirect hacia menu
+                console.log(valor);
                 sessionStorage.setItem("userId", valor);
-                window.location.href= "mozoUI.html"                
+                
+                //aca busca si ya esta logueado
+                if(true){
+                    //moostrar que ya esta logueado
+                    
+                }else{
+                    
+                   if(tipo === "TIPO_IR_MENU_MOZO"){
+                    window.location.href= "mozoUI.html" 
+                }
+                else{
+                    window.location.href= "gestorUI.html"
+                } 
+                }
+                
+                
+                               
             }
             
             function enviarLogin(){                
                 //Obtenemos los valores a traves de JQuery
                 var username = $("#username").val();
                 var password = $("#password").val();
-                
                 //Asignamos los valores al objeto
                 var jsonObject = {
                     "username": username,                    

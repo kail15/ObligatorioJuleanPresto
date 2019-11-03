@@ -22,7 +22,7 @@ public class ControladorLogin {
         try {
             
            Usuario usuario = this.fachada.login(username, password);                        
-            // vista.ingresarUsuario(usuario);
+             vista.ingresarUsuario(usuario);
             int test = 0;
             
         } catch (CredencialesInvalidasException | UsuarioInactivoException ex) {   

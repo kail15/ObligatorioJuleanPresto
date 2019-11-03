@@ -9,10 +9,11 @@ public abstract class Usuario {
     private String userId;
 
 
-    public Usuario(String nombreUsuario, String password, String nombreCompleto) {
+    public Usuario(String userId, String nombreUsuario, String password, String nombreCompleto) {
         this.nombreUsuario = nombreUsuario;
         this.password = password;
         this.nombreCompleto = nombreCompleto;
+        this.userId = userId;
     }
 
     public String getNombreUsuario() {

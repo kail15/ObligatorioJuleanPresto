@@ -8,9 +8,14 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import obligatorio.controladores.ControladorLogin;
 import obligatorio.controladores.VistaLogin;
+import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Usuario;
 import obligatorio.vista.web.dto.DatosLoginDTO;
 import obligatorio.vista.web.dto.WsMessageDTO;
+import obligatorio.vista.web.dto.WsMessageDTO.TipoMensaje;
+import obligatorio.vista.web.utils.MessageConverter;
+import obligatorio.vista.web.utils.WsSessionHandler;
+import obligatorio.vista.web.utils.WsUtils;
 
 //OJP
 @ServerEndpoint("/wslogin")
@@ -19,8 +24,7 @@ public class wslogin implements VistaLogin {
     private ControladorLogin controlador;
     private Session session;
     private Gson gson;
-    
-    
+
     @OnOpen
     public void onOpen(Session session) {
         System.out.println(session.getId());
@@ -44,22 +48,25 @@ public class wslogin implements VistaLogin {
 
     @Override
     public void ingresarUsuario(Usuario usuario) {
-        WsMessageDTO msgLogin = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_IR_MENU_MOZO, usuario.getUserId());
-        String mensaje = MessageConverter.toMessage(msgLogin); 
-        WsSessionHandler.setItem("usuario", usuario); 
+        TipoMensaje tipo = null;
+
+        if (usuario instanceof Mozo) {
+            tipo = TipoMensaje.TIPO_IR_MENU_MOZO;
+        } else {
+            tipo = TipoMensaje.TIPO_IR_MENU_GESTOR;
+        }
+
+        WsMessageDTO msgLogin = new WsMessageDTO(tipo, usuario.getUserId());
+        String mensaje = MessageConverter.toMessage(msgLogin);
+        WsSessionHandler.setItem("usuario", usuario);
         WsUtils.enviarMensajePorSocket(session, mensaje);
     }
 
     @Override
     public void mostrarError(String error) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        WsMessageDTO msgLogin = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_ERROR, error);
+        String mensaje = MessageConverter.toMessage(msgLogin);
+        WsUtils.enviarMensajePorSocket(session, mensaje);
     }
-    
-    
-    
-    
-    
-    
-    
 
 }

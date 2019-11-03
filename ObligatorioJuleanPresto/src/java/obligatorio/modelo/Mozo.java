@@ -15,8 +15,8 @@ import java.util.List;
 public class Mozo extends Usuario{
     private List<Mesa> mesas = new ArrayList<>();
     
-    public Mozo(String nombreUsuario, String password, String nombreCompleto) {
-        super(nombreUsuario, password, nombreCompleto);
+    public Mozo(String userId, String nombreUsuario, String password, String nombreCompleto) {
+        super(userId, nombreUsuario, password, nombreCompleto);
     }
 
     public List<Mesa> getMesas() {
