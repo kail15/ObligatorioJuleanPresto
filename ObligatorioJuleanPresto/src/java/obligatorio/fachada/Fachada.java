@@ -44,7 +44,7 @@ public class Fachada extends Observable {
 
     public void cargar() {
         
-        Usuario carlos = new Mozo("1" ,"user1", "pass1", "carlos valdez");
+        Usuario carlos = new Mozo("4" ,"user1", "pass1", "carlos valdez");
         Usuario juan = new Gestor("2" ,"user2", "pass2", "juan perez");
         Mesa mesa1 = new Mesa(1);
         

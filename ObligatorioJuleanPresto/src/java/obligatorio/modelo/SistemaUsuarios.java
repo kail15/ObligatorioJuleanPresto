@@ -8,6 +8,7 @@ import obligatorio.exceptions.UsuarioInactivoException;
 //OJP
 public class SistemaUsuarios {
         private ArrayList<Usuario> usuarios;
+        private ArrayList<Usuario> usuariosLogueados;
         
         public SistemaUsuarios(){
         usuarios = new ArrayList();    

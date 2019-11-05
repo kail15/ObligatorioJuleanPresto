@@ -10,7 +10,41 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
-    <body>
-        <div>Vista Mozos!!</div>
+    <body> 
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script>
+            var userId = sessionStorage.getItem("userId");
+            var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wsMozo/" + userId);
+
+             //Capturo Evento onBeforeUnload
+            window.onbeforeunload = function () {
+                //Cierro la conexion manualmente 
+                webSocket.close();
+            };
+            
+            webSocket.onopen = function (message) {                
+                console.log( 'id ' + userId);   
+                console.log(message);
+                
+               
+                
+                $("#divName").text(userId);
+            };
+            
+            webSocket.onmessage = function (message) {
+                var jsonObject = JSON.parse(message.data);
+                var tipo = jsonObject.tipo;
+                var valor = jsonObject.valor;
+                
+                console.log('message');
+            }; 
+            
+            
+            
+
+
+        </script>
+        <div>Vista Mozos!!</div><br/>
+        <div id="divName" ></div>
     </body>
 </html>
