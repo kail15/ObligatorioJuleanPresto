@@ -35,16 +35,7 @@ public class wsMozo implements VistaMozo {
         this.gson = new Gson();
         Usuario usuario = WsSessionHandler.getItem("usuario");
         this.mozo = usuario;
-        controlador = new ControladorMozo(this, usuario);
-        
-        ///////de test
-       // MozoDTO mozoDto = adaptarMozo(this.mozo);
-        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_MOSTRAR_MOZO, usuario);
-        String mensaje = MessageConverter.toMessage(msgTipos);
-        WsUtils.enviarMensajePorSocket(session, mensaje);
-        
-        
-        
+        controlador = new ControladorMozo(this, usuario);       
     }
 
     @OnMessage
@@ -66,21 +57,7 @@ public class wsMozo implements VistaMozo {
         String mensaje = MessageConverter.toMessage(msgTipos);
         WsUtils.enviarMensajePorSocket(session, mensaje);
     }
-
-    /*
     
-    @Override
-    public void cargarTipos(List<Tipo> listaTipos) {
-        // Guardo la lista de tipos cargada
-        this.listaTipos = listaTipos;
-        List<TipoDTO> tiposAdaptados = this.adaptarTipos(listaTipos);
-        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_TIPOS, tiposAdaptados);
-        String mensaje = MessageConverter.toMessage(msgTipos);
-        WsUtils.enviarMensajePorSocket(session, mensaje);
-    }
-    
-    
-     */
     private MozoDTO adaptarMozo(Usuario mozo) {
         MozoDTO mozoDto = new MozoDTO();
         mozoDto.setNombreCompleto(mozo.getNombreCompleto());

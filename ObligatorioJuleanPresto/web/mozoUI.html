@@ -22,13 +22,10 @@ and open the template in the editor.
                 webSocket.close();
             };
             
-            webSocket.onopen = function (message) {                
-                console.log( 'id ' + userId);   
-                console.log(message);
-                
+            webSocket.onopen = function (message) {              
                
                 
-                $("#divName").text(userId);
+                
             };
             
             webSocket.onmessage = function (message) {
@@ -36,8 +33,14 @@ and open the template in the editor.
                 var tipo = jsonObject.tipo;
                 var valor = jsonObject.valor;
                 
-                console.log('message');
+                if (tipo === "TIPO_MOSTRAR_MOZO") {
+                    mostrarMozo(valor);
+                }
             }; 
+            
+            function mostrarMozo(valor){
+               $("#divName").text(valor.nombreCompleto); 
+            }
             
             
             

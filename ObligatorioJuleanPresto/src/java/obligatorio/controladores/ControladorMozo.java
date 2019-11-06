@@ -17,6 +17,7 @@ public class ControladorMozo {
         this.fachada = Fachada.getInstancia();
         this.vista = vista;
         this.mozo = mozo;
+        this.vista.obtenerMozo(mozo.getUserId());
     }
     
     

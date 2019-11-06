@@ -1,13 +1,11 @@
-
 package obligatorio.modelo;
 
-
 public abstract class Usuario {
+
     private String nombreUsuario;
     private String password;
     private String nombreCompleto;
     private String userId;
-
 
     public Usuario(String userId, String nombreUsuario, String password, String nombreCompleto) {
         this.nombreUsuario = nombreUsuario;
@@ -39,18 +37,20 @@ public abstract class Usuario {
     public void setNombreCompleto(String nombreCompleto) {
         this.nombreCompleto = nombreCompleto;
     }
-    
+
     public String getUserId() {
         return userId;
     }
-    
+
     ////
-    
     public boolean validarLogin(String n, String p) {
         return n.equals(nombreUsuario) && p.equals(password);
     }
-    
+
+    public boolean validarUsuario(String id) {
+        return id.equals(userId);
+    }
+
     public abstract void agregarMesa(Mesa mesa);
-    
-    
+
 }
