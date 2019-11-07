@@ -56,10 +56,13 @@ OJP
                    if(tipo === "TIPO_IR_MENU_MOZO"){
                     window.location.href= "mozoUI.html" 
                 }
-                else{
+                else if (tipo === "TIPO_IR_MENU_GESTOR"){
                     window.location.href= "gestorUI.html"
                 } 
-               // }              
+                else if (tipo === "TIPO_ERROR") {
+                    mostrarMensajeError(valor);
+                }
+                   
                 
                                
             }
@@ -75,7 +78,11 @@ OJP
                 var loginJson = JSON.stringify( jsonObject ); //  <-----------
 
                 webSocket.send(loginJson);
-            }           
+            } 
+            
+            function mostrarMensaje(message){
+                $("#laberError").html(message);
+            }
             
             
         </script>
