@@ -21,7 +21,7 @@ public class WsMessageDTO {
     }
     
     public static enum TipoMensaje {
-        TIPO_IR_MENU_MOZO, TIPO_IR_MENU_GESTOR, TIPO_ERROR ;
+        TIPO_IR_MENU_MOZO, TIPO_IR_MENU_GESTOR, TIPO_ERROR, TIPO_MOSTRAR_MOZO ;
     };
  
   

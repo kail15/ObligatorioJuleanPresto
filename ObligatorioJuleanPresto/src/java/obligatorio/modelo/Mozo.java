@@ -12,9 +12,10 @@ import java.util.List;
  *
  * @author Usuario
  */
-public class Mozo extends Usuario{
+public class Mozo extends Usuario {
+
     private List<Mesa> mesas = new ArrayList<>();
-    
+
     public Mozo(String userId, String nombreUsuario, String password, String nombreCompleto) {
         super(userId, nombreUsuario, password, nombreCompleto);
     }
@@ -26,10 +27,24 @@ public class Mozo extends Usuario{
     public void setMesas(List<Mesa> mesas) {
         this.mesas = mesas;
     }
+
+    @Override
+    public void agregarMesa(Mesa mesa) {
+        this.mesas.add(mesa);
+    }
+
+    @Override
+    public List<Mesa> obtenerMesas() {
+        return this.getMesas();
+    }
     
     @Override
-    public void agregarMesa(Mesa mesa){
-       this.mesas.add(mesa);
-    }   
-    
+    public void CambiarEstadoMesa(int id, boolean estado){
+        for(Mesa mesa : this.mesas){
+            if(id == mesa.getNumero()){
+               mesa.setEstado(estado);
+               break;
+            }            
+        }        
+    }
 }

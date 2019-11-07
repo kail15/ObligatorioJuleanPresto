@@ -44,23 +44,22 @@ OJP
             
             function ingresarUsuario(valor, tipo){
                 //Redirect hacia menu
-                console.log(valor);
+                console.log(tipo);
                 sessionStorage.setItem("userId", valor);
                 
                 //aca busca si ya esta logueado
-                if(true){
+                // if(false){
                     //moostrar que ya esta logueado
                     
-                }else{
+                // }else{
                     
                    if(tipo === "TIPO_IR_MENU_MOZO"){
-                    window.location.href= "mozoUI.html" 
+                   // window.location.href= "mozoUI.html" 
                 }
                 else{
-                    window.location.href= "gestorUI.html"
+                  //  window.location.href= "gestorUI.html"
                 } 
-                }
-                
+               // }              
                 
                                
             }
@@ -80,8 +79,7 @@ OJP
 
                 //enviamos a traves del socket
                 webSocket.send(loginJson);
-            }
-            
+            }           
             
             
         </script>
@@ -89,7 +87,7 @@ OJP
         Username: <input type="text" value="user1" id="username" name="username">
         Password: <input type="password" value="pass1" id="password" name="password">
         <br/><br/>
-        <input type="button" value="Login" onclick="enviarLogin()">
+        <input type="button" value="Ingresar" onclick="enviarLogin()">
         
     </body>
 </html>
