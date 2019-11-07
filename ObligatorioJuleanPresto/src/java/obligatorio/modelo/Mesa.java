@@ -3,18 +3,11 @@ package obligatorio.modelo;
 
 public class Mesa {
     private int numero;
-    private Mozo mozo;
-    private EstadoMesa estado;
+    private boolean estado;
 
-    public Mesa(int numero, Mozo mozo, EstadoMesa estado) {
-        this.numero = numero;
-        this.mozo = mozo;
-        this.estado = estado;
-    } 
-    
     public Mesa(int numero) {
-        this.numero = numero;      
-    }  
+        this.numero = numero;
+    }    
 
     public int getNumero() {
         return numero;
@@ -22,21 +15,13 @@ public class Mesa {
 
     public void setNumero(int numero) {
         this.numero = numero;
-    }
+    }   
 
-    public Mozo getMozo() {
-        return mozo;
-    }
-
-    public void setMozo(Mozo mozo) {
-        this.mozo = mozo;
-    }
-
-    public EstadoMesa getEstado() {
+    public boolean getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoMesa estado) {
+    public void setEstado(boolean estado) {
         this.estado = estado;
     }
     

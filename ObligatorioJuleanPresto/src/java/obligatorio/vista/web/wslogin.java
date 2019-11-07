@@ -36,7 +36,6 @@ public class wslogin implements VistaLogin {
     @OnMessage
     public void onMessage(String message) {
         System.out.println("Mensaje recibido: " + message);
-
         DatosLoginDTO datos = gson.fromJson(message, DatosLoginDTO.class);
         this.controlador.login(datos.getUsername(), datos.getPassword());
     }

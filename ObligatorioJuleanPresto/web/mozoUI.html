@@ -9,6 +9,19 @@ and open the template in the editor.
         <title>Mozos</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .squareRed {
+                height: 50px;
+                width: 50px;
+                background-color: red;
+            }
+
+            .squareGreen {
+                height: 50px;
+                width: 50px;
+                background-color: greenyellow;
+            }
+        </style>
     </head>
     <body> 
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -16,38 +29,68 @@ and open the template in the editor.
             var userId = sessionStorage.getItem("userId");
             var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wsMozo/" + userId);
 
-             //Capturo Evento onBeforeUnload
+            //Capturo Evento onBeforeUnload
             window.onbeforeunload = function () {
                 //Cierro la conexion manualmente 
                 webSocket.close();
             };
-            
-            webSocket.onopen = function (message) {              
-               
-                
-                
+
+            webSocket.onopen = function (message) {
             };
-            
+
             webSocket.onmessage = function (message) {
                 var jsonObject = JSON.parse(message.data);
                 var tipo = jsonObject.tipo;
                 var valor = jsonObject.valor;
-                
+
                 if (tipo === "TIPO_MOSTRAR_MOZO") {
                     mostrarMozo(valor);
                 }
-            }; 
-            
-            function mostrarMozo(valor){
-               $("#divName").text(valor.nombreCompleto); 
-            }
-            
-            
-            
+                
+            };
 
+            function mostrarMozo(valor) {
+                $.each(valor.mesas, function (key, value) {
+                    if (value.estado) {
+                        $('#mesasMozo').append('<div class="squareGreen" id=' + value.numero + '>' + value.numero + '</div>');
+                        $('#mesasMozo').append('<br/>');
+                        var id = value.numero.toString();
+                        $("#" + id).click(function () {
+                            abrirMesa(id, value);
+                        });
+                    } else {
+                        $('#mesasMozo').append('<div class="squareRed"  id=' + value.numero + ' >' + value.numero + '</div>');
+                        $('#mesasMozo').append('<br/>');
+                        var id = value.numero.toString();
+                        $("#" + id).click(function () {
+                            abrirMesa(id, value);
+                        });
+                    }
+                });
+                $("#divName").text(valor.nombreCompleto);
+            }
+
+            function abrirMesa(id, value) {
+                if (value.estado) {
+                    $("#" + id).removeClass('squareGreen');
+                    $("#" + id).addClass('squareRed');
+                    console.log('este es el id ' + id);
+
+                    var jsonObject = {
+                        "numero": value.numero,
+                        "estado": value.estado,
+                    };
+                    console.log(jsonObject);
+                    var agregarJson = JSON.stringify(jsonObject); 
+                    webSocket.send(agregarJson);
+                } else {
+                    alert('la mesa ya esta cerrada');
+                }
+            }
 
         </script>
         <div>Vista Mozos!!</div><br/>
-        <div id="divName" ></div>
+        <div id="divName" ></div><br/>
+        <div id="mesasMozo"></div>
     </body>
 </html>

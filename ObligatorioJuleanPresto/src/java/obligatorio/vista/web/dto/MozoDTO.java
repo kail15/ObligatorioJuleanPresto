@@ -5,6 +5,9 @@
  */
 package obligatorio.vista.web.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Usuario
@@ -15,6 +18,16 @@ public class MozoDTO {
     private String password;
     private String nombreCompleto;
     private String userId;
+    private List<MesaDTO> mesas = new ArrayList<>();
+
+    public MozoDTO(String nombreUsuario, String password, String nombreCompleto, String userId) {
+        this.nombreUsuario = nombreUsuario;
+        this.password = password;
+        this.nombreCompleto = nombreCompleto;
+        this.userId = userId;
+    }
+    
+    
 
     public String getNombreUsuario() {
         return nombreUsuario;
@@ -47,7 +60,12 @@ public class MozoDTO {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-    
-    
 
+    public List<MesaDTO> getMesas() {
+        return mesas;
+    }
+
+    public void setMesas(List<MesaDTO> mesas) {
+        this.mesas = mesas;
+    }
 }

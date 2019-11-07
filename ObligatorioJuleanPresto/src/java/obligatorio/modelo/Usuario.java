@@ -1,5 +1,7 @@
 package obligatorio.modelo;
 
+import java.util.List;
+
 public abstract class Usuario {
 
     private String nombreUsuario;
@@ -53,4 +55,11 @@ public abstract class Usuario {
 
     public abstract void agregarMesa(Mesa mesa);
 
+    public List<Mesa> obtenerMesas() {
+        return null;
+    }
+    
+    public void CambiarEstadoMesa(int id, boolean estado){
+        
+    }
 }

@@ -44,7 +44,7 @@ OJP
             
             function ingresarUsuario(valor, tipo){
                 //Redirect hacia menu
-                console.log(valor);
+                console.log(tipo);
                 sessionStorage.setItem("userId", valor);
                 
                 //aca busca si ya esta logueado
@@ -54,13 +54,12 @@ OJP
                 // }else{
                     
                    if(tipo === "TIPO_IR_MENU_MOZO"){
-                    window.location.href= "mozoUI.html" 
+                   // window.location.href= "mozoUI.html" 
                 }
                 else{
-                    window.location.href= "gestorUI.html"
+                  //  window.location.href= "gestorUI.html"
                 } 
-               // }
-                
+               // }              
                 
                                
             }
@@ -80,8 +79,7 @@ OJP
 
                 //enviamos a traves del socket
                 webSocket.send(loginJson);
-            }
-            
+            }           
             
             
         </script>

@@ -4,6 +4,7 @@ package obligatorio.controladores;
 //OJP
 import obligatorio.exceptions.CredencialesInvalidasException;
 import obligatorio.exceptions.UsuarioInactivoException;
+import obligatorio.exceptions.UsuarioLogueadoException;
 import obligatorio.fachada.Fachada;
 import obligatorio.modelo.Usuario;
 
@@ -18,17 +19,18 @@ public class ControladorLogin {
     }  
     
     public void login(String username, String password){     
-        // Usuario usuario;
-        try {
-            
+        try {            
            Usuario usuario = this.fachada.login(username, password);                        
              vista.ingresarUsuario(usuario);
-            int test = 0;
             
         } catch (CredencialesInvalidasException | UsuarioInactivoException ex) {   
             vista.mostrarError(ex.getMessage());
             
-        }catch (Exception e){
+        }catch(UsuarioLogueadoException exMessage){
+           vista.mostrarError(exMessage.getMessage());
+        }
+        
+        catch (Exception e){
             vista.mostrarError("Error inesperado en el sistema");
         }
         

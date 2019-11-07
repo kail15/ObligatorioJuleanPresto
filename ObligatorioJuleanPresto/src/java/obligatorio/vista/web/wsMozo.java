@@ -1,6 +1,8 @@
 package obligatorio.vista.web;
 
 import com.google.gson.Gson;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -13,6 +15,7 @@ import java.util.List;
 import javax.websocket.server.PathParam;
 import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Usuario;
+import obligatorio.vista.web.dto.MesaDTO;
 import obligatorio.vista.web.dto.MozoDTO;
 import obligatorio.vista.web.dto.WsMessageDTO;
 import obligatorio.vista.web.utils.MessageConverter;
@@ -39,10 +42,9 @@ public class wsMozo implements VistaMozo {
     }
 
     @OnMessage
-    public void onMessage(String message) {
-
-        // DatosLoginDTO datos = gson.fromJson(message, DatosLoginDTO.class);
-        // this.controlador.login(datos.getUsername(), datos.getPassword());
+    public void onMessage(String message) {        
+         MesaDTO mesaDto = gson.fromJson(message, MesaDTO.class);         
+         this.controlador.CambiarEstadoMesa(mesaDto.getNumero(), true);
     }
 
     @OnError
@@ -59,9 +61,12 @@ public class wsMozo implements VistaMozo {
     }
     
     private MozoDTO adaptarMozo(Usuario mozo) {
-        MozoDTO mozoDto = new MozoDTO();
-        mozoDto.setNombreCompleto(mozo.getNombreCompleto());
-
+        MozoDTO mozoDto = new MozoDTO(mozo.getNombreUsuario(), mozo.getPassword(), mozo.getNombreCompleto(), mozo.getUserId());
+        List<MesaDTO> mesasDto = new ArrayList<>();
+        mozoDto.setNombreCompleto(mozo.getNombreCompleto());        
+        for (Mesa mesa : mozo.obtenerMesas()) {
+            mesasDto.add(new MesaDTO(mesa.getNumero(), mesa.getEstado()));        }        
+        mozoDto.setMesas(mesasDto);        
         return mozoDto;
     }
 
