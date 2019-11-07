@@ -54,10 +54,10 @@ OJP
                 // }else{
                     
                    if(tipo === "TIPO_IR_MENU_MOZO"){
-                   // window.location.href= "mozoUI.html" 
+                    window.location.href= "mozoUI.html" 
                 }
                 else{
-                  //  window.location.href= "gestorUI.html"
+                    window.location.href= "gestorUI.html"
                 } 
                // }              
                 
@@ -65,19 +65,15 @@ OJP
             }
             
             function enviarLogin(){                
-                //Obtenemos los valores a traves de JQuery
                 var username = $("#username").val();
                 var password = $("#password").val();
-                //Asignamos los valores al objeto
                 var jsonObject = {
                     "username": username,                    
                     "password": password
                 };                           
                
-                //Transformamos a string
                 var loginJson = JSON.stringify( jsonObject ); //  <-----------
 
-                //enviamos a traves del socket
                 webSocket.send(loginJson);
             }           
             
@@ -88,6 +84,7 @@ OJP
         Password: <input type="password" value="pass1" id="password" name="password">
         <br/><br/>
         <input type="button" value="Ingresar" onclick="enviarLogin()">
+        <label id="laberError"></label>
         
     </body>
 </html>

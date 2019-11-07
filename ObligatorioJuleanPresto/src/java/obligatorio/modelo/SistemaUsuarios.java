@@ -14,6 +14,7 @@ public class SistemaUsuarios {
 
     public SistemaUsuarios() {
         usuarios = new ArrayList();
+        usuariosLogueados = new ArrayList(); 
     }
 
     public Usuario login(String n, String p) throws CredencialesInvalidasException, UsuarioLogueadoException {
@@ -38,10 +39,10 @@ public class SistemaUsuarios {
         usuariosLogueados.add(u);
     }
 
-    public Usuario buscarUsuarios(String n, String p, List<Usuario> usuarios) {
+    public Usuario buscarUsuarios(String n, String p, ArrayList<Usuario> usuariosAux) {
 
         Usuario usuarioLogueado = null;
-        for (Usuario user : usuarios) {
+        for (Usuario user : usuariosAux) {
             if (user.validarLogin(n, p)) {
                 usuarioLogueado = user;
                 break;
