@@ -14,7 +14,6 @@ import obligatorio.controladores.VistaMozo;
 import obligatorio.modelo.Mesa;
 import java.util.List;
 import javax.websocket.server.PathParam;
-import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.UnidadProcesadora;
 import obligatorio.modelo.Usuario;
@@ -34,7 +33,6 @@ public class wsMozo implements VistaMozo {
     private Session session;
     private Gson gson;
     private Usuario mozo;
-    private List<Mesa> listaMesas; //ver que hacer con esta lista
     private List<Producto> productos;
 
     @OnOpen
@@ -48,9 +46,24 @@ public class wsMozo implements VistaMozo {
 
     @OnMessage
     public void onMessage(String message) {
-        MesaDTO mesaDto = gson.fromJson(message, MesaDTO.class);
-        CambiarEstadoMesa(mesaDto.getNumero(), mesaDto.getEstado());
-        // this.controlador.CambiarEstadoMesa(mesaDto.getNumero(), true);
+
+        WsMessageDTO messageDto = gson.fromJson(message, WsMessageDTO.class);
+        if (null != messageDto.getTipo()) switch (messageDto.getTipo()) {
+            case TIPO_CAMBIAR_ESTADO_MESA:
+                MesaDTO mesaDto = gson.fromJson(message, MesaDTO.class);
+                CambiarEstadoMesa(mesaDto.getNumero(), mesaDto.getEstado());
+                break;
+            case TIPO_AGREGAR_PEDIDO:
+                ProductoDTO productoDto = gson.fromJson(message, ProductoDTO.class);
+                break;
+            case TIPO_TRANSFERIR_MESA:
+                MesaDTO mesaDtotransf = gson.fromJson(message, MesaDTO.class);
+                obtenerMesaTransferida(mesaDtotransf.getNumero());
+                break;
+            default:
+                break;
+        }
+
     }
 
     @OnError
@@ -76,6 +89,20 @@ public class wsMozo implements VistaMozo {
         String mensaje = MessageConverter.toMessage(msgTipos);
         WsUtils.enviarMensajePorSocket(session, mensaje);
     }
+    
+    @Override
+    public Mesa transferirMesa(int mesaNumero) {
+        // List<Mesa> mesasMozo;
+        return null;
+        
+    }   
+    
+    
+    private Mesa obtenerMesaTransferida(int mesaNumero) {
+        Mesa mesaTransf =  new Mesa();
+        mesaTransf.setNumero(mesaNumero);
+        return mesaTransf;
+    }
 
     @Override
     public void obtenerProductos(List<Producto> productos) {
@@ -84,6 +111,13 @@ public class wsMozo implements VistaMozo {
         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_OBTENER_PRODUCTOS, productosAdaptadosDto);
         String mensaje = MessageConverter.toMessage(msgTipos);
         WsUtils.enviarMensajePorSocket(session, mensaje);
+    }
+    
+    @Override
+    public void agregarPedido(Producto prod) {
+       List<Producto> productos;
+       productos = this.controlador.agregarPedido(prod);       
+       this.productos = productos;        
     }
 
     private MozoDTO adaptarMozo(Usuario mozo) {
@@ -109,7 +143,7 @@ public class wsMozo implements VistaMozo {
     }
 
     private UnidadProcesadoraDTO adaptarUP(UnidadProcesadora u) {
-        return new UnidadProcesadoraDTO(u.getNombre());
-    }
+        return new UnidadProcesadoraDTO(u.getId(), u.getNombre());
+    }    
 
 }

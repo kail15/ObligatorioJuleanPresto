@@ -17,9 +17,7 @@ public class ControladorGestor implements Observador {
         this.fachada = Fachada.getInstancia();
         this.vista = vista;
         this.gestorLogueado = gestor;
-    }
-    
-    
+    }  
     
     
     @Override

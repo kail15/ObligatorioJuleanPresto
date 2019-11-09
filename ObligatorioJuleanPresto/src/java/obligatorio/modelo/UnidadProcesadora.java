@@ -10,10 +10,12 @@ package obligatorio.modelo;
  * @author Usuario
  */
 public class UnidadProcesadora {
+    private int id;
     private String nombre;
 
-    public UnidadProcesadora(String nombre) {
+    public UnidadProcesadora(int id ,String nombre) {
         this.nombre = nombre;
+        this.id = id;
     }
 
     public String getNombre() {
@@ -23,6 +25,13 @@ public class UnidadProcesadora {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    } 
     
 }

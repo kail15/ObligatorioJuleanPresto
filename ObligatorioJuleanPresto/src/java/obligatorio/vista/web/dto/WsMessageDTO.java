@@ -1,19 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package obligatorio.vista.web.dto;
 
-/**
- *
- * @author Usuario
- */
+
 public class WsMessageDTO {
     
     private TipoMensaje tipo;
     private Object valor;
-
     
     public WsMessageDTO(TipoMensaje tipo, Object valor){
         this.tipo = tipo;
@@ -26,11 +18,13 @@ public class WsMessageDTO {
         TIPO_ERROR,
         TIPO_MOSTRAR_MOZO,
         TIPO_CAMBIAR_ESTADO_MESA,
-        TIPO_OBTENER_PRODUCTOS
+        TIPO_OBTENER_PRODUCTOS,
+        TIPO_AGREGAR_PEDIDO,
+        TIPO_TRANSFERIR_MESA,
+        TIPO_ACEPTAR_MESA,
+        TIPO_PEDIDO_LISTO
         ;
-    };
- 
-  
+    }; 
     
     public TipoMensaje getTipo() {
         return tipo;

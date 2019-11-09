@@ -7,8 +7,10 @@ import obligatorio.exceptions.UsuarioInactivoException;
 import obligatorio.exceptions.UsuarioLogueadoException;
 import obligatorio.modelo.Gestor;
 import obligatorio.modelo.Mesa;
+import obligatorio.modelo.MesaTransferida;
 import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Producto;
+import obligatorio.modelo.SistemaMesasTransferidas;
 import obligatorio.modelo.SistemaProductos;
 import obligatorio.modelo.SistemaUnidadProcesadora;
 import obligatorio.modelo.SistemaUsuarios;
@@ -21,6 +23,7 @@ public class Fachada extends Observable {
     private SistemaUsuarios sistemaUsuarios;
     private SistemaUnidadProcesadora sistemaUnidades;
     private SistemaProductos sistemaProductos;
+    private SistemaMesasTransferidas sistemaMesasTransferidas;
 
     private static Fachada instancia;
 
@@ -39,7 +42,8 @@ public class Fachada extends Observable {
     }
 
     public enum EVENTOS {
-        RECIBIR_PEDIDO;
+        RECIBIR_PEDIDO,
+        TRANSFERIR_MESA;
     };
 
     public Usuario login(String n, String p) throws CredencialesInvalidasException, UsuarioInactivoException, UsuarioLogueadoException {
@@ -70,6 +74,18 @@ public class Fachada extends Observable {
     public void agregarProducto(Producto p) {
         this.sistemaProductos.agregarProducto(p);
     }
+    
+    public List<Producto> actualizarProductos(Producto prod){
+       return this.sistemaProductos.actualizarProductos(prod);
+    }
+    
+    public void agregarMesaTransf(MesaTransferida mesa){
+       this.sistemaMesasTransferidas.agregarMesa(mesa);
+    }
+    
+    public void elimiarMesaTransf(MesaTransferida mesa){
+      this.sistemaMesasTransferidas.elimiarMesa(mesa);
+    }
 
     public void cargar() {
 
@@ -87,8 +103,8 @@ public class Fachada extends Observable {
         Mesa mesa6 = new Mesa(6);
 
         //unidad procesadora
-        UnidadProcesadora cocina = new UnidadProcesadora("Cocina");
-        UnidadProcesadora bar = new UnidadProcesadora("bar");
+        UnidadProcesadora cocina = new UnidadProcesadora(1, "Cocina");
+        UnidadProcesadora bar = new UnidadProcesadora(2, "bar");
 
         //productos
         Producto prod1 = new Producto(1, "hamburguesa", 90.0, 100, cocina);
@@ -113,7 +129,5 @@ public class Fachada extends Observable {
 
         this.agregarUnidad(bar);
         this.agregarUnidad(cocina);
-
     }
-
 }

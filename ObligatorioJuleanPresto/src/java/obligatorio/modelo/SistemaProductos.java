@@ -1,6 +1,7 @@
 package obligatorio.modelo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SistemaProductos {
     
@@ -20,6 +21,16 @@ public class SistemaProductos {
     
     public void agregarProducto(Producto p) {
         this.productos.add(p);
-    }   
+    }
+    
+    public List<Producto> actualizarProductos(Producto prod){       
+        this.productos.forEach((p) ->{
+            if(p.getCodigo() == prod.getCodigo()){
+                int stock = p.getStockDisponible() - prod.getStockDisponible();
+               p.setStockDisponible(stock);
+            }        
+        });        
+        return this.productos;    
+    };
     
 }

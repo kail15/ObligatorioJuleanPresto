@@ -8,6 +8,7 @@ public class ProductoDTO {
     private String nombre;
     private double precioUnitario;
     private int stockDisponible;
+    private int cantidad;
     private UnidadProcesadoraDTO unidadProcesadora;
 
     public ProductoDTO(int codigo, String nombre, double precioUnitario, int stockDisponible, UnidadProcesadoraDTO unidadProcesadora) {

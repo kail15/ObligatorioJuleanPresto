@@ -7,6 +7,9 @@ public class Mesa {
 
     public Mesa(int numero) {
         this.numero = numero;
+    }   
+    
+    public Mesa() {        
     }    
 
     public int getNumero() {

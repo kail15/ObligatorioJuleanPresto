@@ -38,6 +38,7 @@ and open the template in the editor.
         <script>
             var userId = sessionStorage.getItem("userId");
             var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wsMozo/" + userId);
+            var selectProductos = [];
             //Capturo Evento onBeforeUnload
             window.onbeforeunload = function () {
                 //Cierro la conexion manualmente 
@@ -57,37 +58,36 @@ and open the template in the editor.
                     mostrarMozo(valor);
                 }
                 if (tipo === "TIPO_OBTENER_PRODUCTOS") {
-
-                    console.log(valor);
+                    cargarProductos(valor);
                 }
 
             };
             function mostrarMozo(valor) {
                 $.each(valor.mesas, function (key, value) {
                     if (value.estado) {
-                        $('#mesasMozo').append('<div class="squareGreen" id=' + value.numero + '>' + value.estado + '</div>');
+                        $('#mesasMozo').append('<div class="squareGreen" id=' + value.numero + '> Mesa: ' + value.numero + '</div>');
                     } else {
-                        $('#mesasMozo').append('<div class="squareRed"  id=' + value.numero + ' >' + value.estado + '</div>');
+                        $('#mesasMozo').append('<div class="squareRed"  id=' + value.numero + ' > Mesa: ' + value.numero + '</div>');
                     }
 
                     $('#mesasMozo').append('<form id=' + "form" + value.numero + ' class="marginForm" ></form>');
                     $('#' + "form" + value.numero).append('<input type="button" id=' + "btnAbrir" + value.numero + ' value="abrir" >');
                     $('#' + "form" + value.numero).append('<input type="button" id=' + "btnCerrar" + value.numero + ' value="cerrar" >');
-                    $('#' + "form" + value.numero).append('<input type="button" id=' + "btnPedido" + value.numero + ' value="agregar" >');
+                    $('#' + "form" + value.numero).append('<input type="button" id=' + "btnPedido" + value.numero + ' value="pedido" >');
+                    $('#' + "form" + value.numero).append('<input type="button" id=' + "btnTransfer" + value.numero + ' value="transferir" >');
+
                     if (value.estado) {
                         $('#' + "btnAbrir" + value.numero).attr('disabled', 'disabled');
                     } else {
                         $('#' + "btnCerrar" + value.numero).attr('disabled', 'disabled');
                         $('#' + "btnPedido" + value.numero).attr('disabled', 'disabled');
                     }
-
-
+                    
                     $('#' + "form" + value.numero).attr("style", "display:none");
                     $('#mesasMozo').append('<br/>');
                     //click de la mesa
                     var idMesa = value.numero.toString();
                     $("#" + idMesa).click(function () {
-                        //  abrirMesa(idMesa, value);
                         abrirCuadro('#' + "form" + value.numero);
                     });
                     //click abrir
@@ -100,9 +100,64 @@ and open the template in the editor.
                     $("#" + idCerrar).click(function () {
                         abrirMesa(idMesa, value);
                     });
+                    
+                    //click agregar producto
+                    var idAgregar = "btnPedido" + value.numero;
+                    $("#" + idAgregar).click(function () {
+                        abrirCuadroProd(idAgregar);
+                    });
+                    
+                    //click transferir mesa
+                    var idTransf = "btnTransfer" + value.numero;
+                    $("#" + idAgregar).click(function () {
+                        // abrirCuadroProd(idAgregar);
+                    });
 
                 });
                 $("#divName").text(valor.nombreCompleto);
+            }
+
+            function cargarProductos(valor) {
+                $.each(valor, function (key, value) {
+                    // $("#selectProductos").append('<option> Seleccione un producto </option>');
+                    $("#selectProductos").append('<option value=' + value.codigo + '>' + value.nombre + '</option>');
+
+                    var prod = {
+                        codigo: value.codigo,
+                        nombre: value.nombre,
+                        precio: value.precioUnitario,
+                        stock: value.stockDisponible,
+                        unidadId: value.unidadProcesadora.id,
+                        unidadNombre: value.unidadProcesadora.nombre
+                    };
+                    selectProductos.push(prod);
+                });
+            }
+
+            function cargarInfoProd() {
+                var infoProd = obtenerInfoProd($("#selectProductos").val());
+                $("#infoProd").empty()
+                $("#infoProd").append("<li>" + infoProd.nombre + "</li>");
+                $("#infoProd").append("<li>"+ "$ " + infoProd.precio + "</li>");
+                $("#infoProd").append("<li>" + infoProd.stock  + "</li>");
+                $("#infoProd").append("<li>" + infoProd.unidadNombre + "</li>");
+            }
+
+            function obtenerInfoProd(valor) {
+                var prod;
+                $.each(selectProductos, function (key, value) {
+                    if (parseInt(valor) === value.codigo) {
+                        prod = {
+                            codigo: value.codigo,
+                            nombre: value.nombre,
+                            precio: value.precio,
+                            stock: value.stock,
+                            unidadId: value.unidadId,
+                            unidadNombre: value.unidadNombre
+                        };
+                    }
+                });
+                return prod;
             }
 
             function abrirCuadro(idForm) {
@@ -113,7 +168,20 @@ and open the template in the editor.
                     $(idForm).css("display", "block");
                 }
             }
-
+            
+            function abrirCuadroProd(id){
+               
+                var esVisible = $("#formProductos").is(":visible");
+                
+                 
+                
+                if (esVisible) {
+                    $("#formProductos").css("display", "none");
+                } else {
+                    $("#formProductos").css("display", "block");
+                }
+            }
+            
             function abrirMesa(id, value) {
                 var estadoMesa = false;
 
@@ -130,19 +198,57 @@ and open the template in the editor.
                 $("#" + id).addClass('squareRed');
                 var jsonObject = {
                     "numero": value.numero,
-                    "estado": estadoMesa
+                    "estado": estadoMesa,
+                    "tipo": "TIPO_CAMBIAR_ESTADO_MESA"
                 };
 
                 var agregarJson = JSON.stringify(jsonObject);
                 webSocket.send(agregarJson);
             }
-
+            
+            function agregarPedido(){
+                // console.log($("#selectProductos").val());
+                var idProd = $("#selectProductos").val();
+                var cantidad = parseInt($("#cantidadProd").val());
+                
+                var jsonObject = {
+                    "codigo": idProd,
+                    "cantidad": cantidad,
+                    "tipo": "TIPO_AGREGAR_PEDIDO"
+                };
+                
+                var agregarJson = JSON.stringify(jsonObject);
+                webSocket.send(agregarJson);
+            }
+            
+            function transferirMesa(id){
+                var jsonObject = { 
+                    "numero" : id,
+                    "tipo": "TIPO_TRANSFERIR_MESA"
+                };
+                var agregarJson = JSON.stringify(jsonObject);
+                webSocket.send(agregarJson);     
+            }           
+            
 
         </script>
-        <div>Vista Mozos!!!</div><br/>
+        <div><h2>Vista Mozos!!!</h2></div><br/>
         <div id="divName" ></div><br/>
         <div id="mesasMozo"></div>
         <form id="formMesa" ></form>
-        <form id="formProductos" ></form>
+        <form id="formProductos" style="display:none">
+            <select id="selectProductos" onchange="cargarInfoProd()"></select>
+            <div id="divInfoProd" >              
+                <section> 
+                    <h3>Datos del producto</h3>
+                    <ul id="infoProd" ></ul>
+                    <div id="divCantProd" >
+                    <label>Ingresar cantidad del producto</label><br/>
+                    <input type="number" id="cantidadProd" placeholder="ingresar cantidad"/>
+                    </div>
+                </section>
+                <input type="button" value="agregar" onclick="agregarPedido()">
+            </div>
+        </form>
     </body>
 </html>
