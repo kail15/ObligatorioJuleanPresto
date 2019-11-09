@@ -21,11 +21,13 @@ public class Fachada extends Observable {
     private SistemaUsuarios sistemaUsuarios;
     private SistemaUnidadProcesadora sistemaUnidades;
     private SistemaProductos sistemaProductos;
-    
+
     private static Fachada instancia;
 
     private Fachada() {
         sistemaUsuarios = new SistemaUsuarios();
+        sistemaProductos = new SistemaProductos();
+        sistemaUnidades = new SistemaUnidadProcesadora();
         cargar();
     }
 
@@ -35,7 +37,7 @@ public class Fachada extends Observable {
         }
         return instancia;
     }
-    
+
     public enum EVENTOS {
         RECIBIR_PEDIDO;
     };
@@ -48,9 +50,9 @@ public class Fachada extends Observable {
         }
         return usuario;
     }
-    
-    public List<Producto> obtenerProductos(){
-      return this.sistemaProductos.getProductos();
+
+    public List<Producto> obtenerProductos() {
+        return this.sistemaProductos.getProductos();
     }
 
     public void agregarUsuario(Usuario u) {
@@ -60,16 +62,15 @@ public class Fachada extends Observable {
     public void agregarUsuarioLogueado(Usuario u) {
         sistemaUsuarios.agregarUsuarioLogueados(u);
     }
-    
-    public void agregarUnidad(UnidadProcesadora u){
-       this.sistemaUnidades.agregarUnidad(u);
+
+    public void agregarUnidad(UnidadProcesadora u) {
+        this.sistemaUnidades.agregarUnidad(u);
     }
-    
-    public void agregarProducto(Producto p){
-      this.sistemaProductos.agregarProducto(p);
-    }   
-    
-    
+
+    public void agregarProducto(Producto p) {
+        this.sistemaProductos.agregarProducto(p);
+    }
+
     public void cargar() {
 
         Usuario carlos = new Mozo("4", "user1", "pass1", "carlos valdez");
@@ -84,22 +85,15 @@ public class Fachada extends Observable {
 
         Mesa mesa5 = new Mesa(5);
         Mesa mesa6 = new Mesa(6);
-        
+
         //unidad procesadora
         UnidadProcesadora cocina = new UnidadProcesadora("Cocina");
-        UnidadProcesadora bar = new UnidadProcesadora("bar");    
-        
+        UnidadProcesadora bar = new UnidadProcesadora("bar");
+
         //productos
-        Producto prod1 = new Producto(1,"hamburguesa", 90.0,100, cocina); 
-        Producto prod3 = new Producto(3,"papas", 80.0,100, cocina);
-        Producto prod2 = new Producto(2,"cerveza", 120.0,100, bar); 
-        
-        this.agregarProducto(prod1);
-        this.agregarProducto(prod2);
-        this.agregarProducto(prod3);
-        
-        this.agregarUnidad(bar);
-        this.agregarUnidad(bar);
+        Producto prod1 = new Producto(1, "hamburguesa", 90.0, 100, cocina);
+        Producto prod3 = new Producto(3, "papas", 80.0, 100, cocina);
+        Producto prod2 = new Producto(2, "cerveza", 120.0, 100, bar);
 
         carlos.agregarMesa(mesa1);
         carlos.agregarMesa(mesa2);
@@ -112,9 +106,14 @@ public class Fachada extends Observable {
         this.agregarUsuario(carlos);
         this.agregarUsuario(pedro);
         this.agregarUsuario(juan);
-        
-        
-        
+
+        this.agregarProducto(prod1);
+        this.agregarProducto(prod2);
+        this.agregarProducto(prod3);
+
+        this.agregarUnidad(bar);
+        this.agregarUnidad(cocina);
+
     }
 
 }

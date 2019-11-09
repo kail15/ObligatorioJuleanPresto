@@ -62,9 +62,6 @@ public class Producto {
 
     public void setUnidadProcesadora(UnidadProcesadora unidadProcesadora) {
         this.unidadProcesadora = unidadProcesadora;
-    }
-    
-    
-    
+    }   
     
 }
