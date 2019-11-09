@@ -19,7 +19,6 @@ OJP
             };
 
             webSocket.onopen = function (message) {
-
             };
 
             webSocket.onmessage = function (message) {
@@ -27,7 +26,7 @@ OJP
                 var tipo = jsonObject.tipo;
                 var valor = jsonObject.valor;
                 console.log(jsonObject);
-                ingresarUsuario(valor, tipo);              
+                ingresarUsuario(valor, tipo);
             };
 
             webSocket.onerror = function (message) {
@@ -59,7 +58,7 @@ OJP
                 };
 
                 var loginJson = JSON.stringify(jsonObject); //  <-----------
-
+                
                 webSocket.send(loginJson);
             }
 
