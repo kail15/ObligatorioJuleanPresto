@@ -11,15 +11,25 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
             .squareRed {
+                margin-left: 30px;
+                margin-bottom: 10px;
+                padding: 8px;
                 height: 50px;
                 width: 50px;
                 background-color: red;
             }
 
             .squareGreen {
+                margin-left: 30px;
+                margin-bottom: 10px;
+                padding: 8px;
                 height: 50px;
                 width: 50px;
                 background-color: greenyellow;
+            }
+
+            .marginForm{
+                margin-left: 30px;
             }
         </style>
     </head>
@@ -28,69 +38,111 @@ and open the template in the editor.
         <script>
             var userId = sessionStorage.getItem("userId");
             var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wsMozo/" + userId);
-
             //Capturo Evento onBeforeUnload
             window.onbeforeunload = function () {
                 //Cierro la conexion manualmente 
                 webSocket.close();
             };
-
             webSocket.onopen = function (message) {
             };
-
             webSocket.onmessage = function (message) {
                 var jsonObject = JSON.parse(message.data);
                 var tipo = jsonObject.tipo;
                 var valor = jsonObject.valor;
-
                 if (tipo === "TIPO_MOSTRAR_MOZO") {
                     mostrarMozo(valor);
                 }
-                
-            };
+                if (tipo === "TIPO_CAMBIAR_ESTADO_MESA") {
+                    $('#mesasMozo').empty();
+                    mostrarMozo(valor);
+                }
+                if (tipo === "TIPO_OBTENER_PRODUCTOS") {
 
+                    console.log(valor);
+                }
+
+            };
             function mostrarMozo(valor) {
                 $.each(valor.mesas, function (key, value) {
                     if (value.estado) {
-                        $('#mesasMozo').append('<div class="squareGreen" id=' + value.numero + '>' + value.numero + '</div>');
-                        $('#mesasMozo').append('<br/>');
-                        var id = value.numero.toString();
-                        $("#" + id).click(function () {
-                            abrirMesa(id, value);
-                        });
+                        $('#mesasMozo').append('<div class="squareGreen" id=' + value.numero + '>' + value.estado + '</div>');
                     } else {
-                        $('#mesasMozo').append('<div class="squareRed"  id=' + value.numero + ' >' + value.numero + '</div>');
-                        $('#mesasMozo').append('<br/>');
-                        var id = value.numero.toString();
-                        $("#" + id).click(function () {
-                            abrirMesa(id, value);
-                        });
+                        $('#mesasMozo').append('<div class="squareRed"  id=' + value.numero + ' >' + value.estado + '</div>');
                     }
+
+                    $('#mesasMozo').append('<form id=' + "form" + value.numero + ' class="marginForm" ></form>');
+                    $('#' + "form" + value.numero).append('<input type="button" id=' + "btnAbrir" + value.numero + ' value="abrir" >');
+                    $('#' + "form" + value.numero).append('<input type="button" id=' + "btnCerrar" + value.numero + ' value="cerrar" >');
+                    $('#' + "form" + value.numero).append('<input type="button" id=' + "btnPedido" + value.numero + ' value="agregar" >');
+                    if (value.estado) {
+                        $('#' + "btnAbrir" + value.numero).attr('disabled', 'disabled');
+                    } else {
+                        $('#' + "btnCerrar" + value.numero).attr('disabled', 'disabled');
+                        $('#' + "btnPedido" + value.numero).attr('disabled', 'disabled');
+                    }
+
+
+                    $('#' + "form" + value.numero).attr("style", "display:none");
+                    $('#mesasMozo').append('<br/>');
+                    //click de la mesa
+                    var idMesa = value.numero.toString();
+                    $("#" + idMesa).click(function () {
+                        //  abrirMesa(idMesa, value);
+                        abrirCuadro('#' + "form" + value.numero);
+                    });
+                    //click abrir
+                    var idAbrir = "btnAbrir" + value.numero.toString();
+                    $("#" + idAbrir).click(function () {
+                        abrirMesa(idMesa, value);
+                    });
+                    //click cerrar
+                    var idCerrar = "btnCerrar" + value.numero.toString();
+                    $("#" + idCerrar).click(function () {
+                        abrirMesa(idMesa, value);
+                    });
+
                 });
                 $("#divName").text(valor.nombreCompleto);
             }
 
-            function abrirMesa(id, value) {
-                if (value.estado) {
-                    $("#" + id).removeClass('squareGreen');
-                    $("#" + id).addClass('squareRed');
-                    console.log('este es el id ' + id);
-
-                    var jsonObject = {
-                        "numero": value.numero,
-                        "estado": value.estado,
-                    };
-                    console.log(jsonObject);
-                    var agregarJson = JSON.stringify(jsonObject); 
-                    webSocket.send(agregarJson);
+            function abrirCuadro(idForm) {
+                var esVisible = $(idForm).is(":visible");
+                if (esVisible) {
+                    $(idForm).css("display", "none");
                 } else {
-                    alert('la mesa ya esta cerrada');
+                    $(idForm).css("display", "block");
                 }
             }
 
+            function abrirMesa(id, value) {
+                var estadoMesa = false;
+
+                if (value.estado) {
+                    $("#" + id).removeClass('squareGreen');
+                    $("#" + id).addClass('squareRed');
+                } else {
+                    $("#" + id).removeClass('squareRed');
+                    $("#" + id).addClass('squareGreen');
+                    estadoMesa = true;
+                }
+
+                $("#" + id).removeClass('squareGreen');
+                $("#" + id).addClass('squareRed');
+                var jsonObject = {
+                    "numero": value.numero,
+                    "estado": estadoMesa
+                };
+
+                var agregarJson = JSON.stringify(jsonObject);
+                webSocket.send(agregarJson);
+            }
+
+
         </script>
-        <div>Vista Mozos!!</div><br/>
+        <div>Vista Mozos!!!</div><br/>
         <div id="divName" ></div><br/>
         <div id="mesasMozo"></div>
+        <form id="formMesa" ></form>
+        <form id="formProductos" ></form>
     </body>
 </html>

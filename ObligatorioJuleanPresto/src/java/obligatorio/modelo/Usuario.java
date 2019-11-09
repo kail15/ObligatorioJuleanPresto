@@ -59,7 +59,11 @@ public abstract class Usuario {
         return null;
     }
     
-    public void CambiarEstadoMesa(int id, boolean estado){
+    public List<Mesa> CambiarEstadoMesa(int id, boolean estado){
+        return null;
+    }
+    
+    public void setMesas(List<Mesa> mesas) {
         
     }
 }

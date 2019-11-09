@@ -1,7 +1,10 @@
 
 package obligatorio.controladores;
 
+import java.util.ArrayList;
+import java.util.List;
 import obligatorio.fachada.Fachada;
+import obligatorio.modelo.Mesa;
 import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Usuario;
 
@@ -10,7 +13,6 @@ public class ControladorMozo {
     
     private Fachada fachada;
     private VistaMozo vista;
-    // private Mozo mozo; 
     private Usuario mozoLogueado; 
 
     public ControladorMozo(VistaMozo vista, Usuario mozo) {
@@ -18,6 +20,7 @@ public class ControladorMozo {
         this.vista = vista;
         this.mozoLogueado = mozo;
         this.vista.obtenerMozo(mozo.getUserId());
+        this.vista.obtenerProductos(this.fachada.obtenerProductos());
     }
 
     public Usuario getMozoLogueado() {
@@ -29,13 +32,10 @@ public class ControladorMozo {
     }
     
     
-    
-    public void CambiarEstadoMesa(int id, boolean estado)
-    {
-        this.mozoLogueado.CambiarEstadoMesa(id, estado);    
+    public List<Mesa> CambiarEstadoMesa(int id, boolean estado)
+    {   List<Mesa> mesasMozo;
+        mesasMozo =  this.mozoLogueado.CambiarEstadoMesa(id, estado);  
+        return mesasMozo;
     }
-    
-    
-    
     
 }

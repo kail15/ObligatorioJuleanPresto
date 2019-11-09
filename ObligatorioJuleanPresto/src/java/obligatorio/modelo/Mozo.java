@@ -24,6 +24,7 @@ public class Mozo extends Usuario {
         return mesas;
     }
 
+    @Override
     public void setMesas(List<Mesa> mesas) {
         this.mesas = mesas;
     }
@@ -37,14 +38,15 @@ public class Mozo extends Usuario {
     public List<Mesa> obtenerMesas() {
         return this.getMesas();
     }
-    
+
     @Override
-    public void CambiarEstadoMesa(int id, boolean estado){
-        for(Mesa mesa : this.mesas){
-            if(id == mesa.getNumero()){
-               mesa.setEstado(estado);
-               break;
-            }            
-        }        
+    public List<Mesa> CambiarEstadoMesa(int id, boolean estado) {
+        for (Mesa mesa : this.mesas) {
+            if (id == mesa.getNumero()) {
+                mesa.setEstado(estado);
+                break;
+            }
+        }
+        return this.getMesas();
     }
 }

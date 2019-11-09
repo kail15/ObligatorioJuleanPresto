@@ -27,7 +27,7 @@ public class MesaDTO {
         this.numero = numero;
     }
 
-    public boolean isEstado() {
+    public boolean getEstado() {
         return estado;
     }
 

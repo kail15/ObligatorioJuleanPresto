@@ -10,81 +10,65 @@ OJP
     <body>
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script>
-             var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wslogin");
-            
+            var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wslogin");
+
             //Capturo Evento onBeforeUnload
-            window.onbeforeunload = function() {
+            window.onbeforeunload = function () {
                 //Cierro la conexion manualmente
-                 webSocket.close();
+                webSocket.close();
             };
-            
+
             webSocket.onopen = function (message) {
-                
-                
+
             };
-            
+
             webSocket.onmessage = function (message) {
                 var jsonObject = JSON.parse(message.data);
                 var tipo = jsonObject.tipo;
                 var valor = jsonObject.valor;
                 console.log(jsonObject);
-                ingresarUsuario(valor, tipo);
-                
-              /*  if (tipo === "TIPO_IR_MENU") {
-                    ingresarUsuario(valor);
-                } else if (tipo === "TIPO_ERROR") {
-                    mostrarMensajeError(valor);
-                }*/
-            }; 
-            
+                ingresarUsuario(valor, tipo);              
+            };
+
             webSocket.onerror = function (message) {
                 mostrarMensajeError("Error de conexion");
             };
-            
-            
-            function ingresarUsuario(valor, tipo){
-                //Redirect hacia menu
-                console.log(tipo);
+
+
+            function ingresarUsuario(valor, tipo) {
                 sessionStorage.setItem("userId", valor);
-                
-                //aca busca si ya esta logueado
-                // if(false){
-                    //moostrar que ya esta logueado
-                    
-                // }else{
-                    
-                   if(tipo === "TIPO_IR_MENU_MOZO"){
-                    window.location.href= "mozoUI.html" 
+
+                if (tipo === "TIPO_IR_MENU_MOZO") {
+                    window.location.href = "mozoUI.html"
+                } else if (tipo === "TIPO_IR_MENU_GESTOR") {
+                    window.location.href = "gestorUI.html"
+                } else if (tipo === "TIPO_ERROR") {
+                    mostrarMensaje(valor);
                 }
-                else if (tipo === "TIPO_IR_MENU_GESTOR"){
-                    window.location.href= "gestorUI.html"
-                } 
-                else if (tipo === "TIPO_ERROR") {
-                    mostrarMensajeError(valor);
-                }
-                   
-                
-                               
+
+
+
             }
-            
-            function enviarLogin(){                
+
+            function enviarLogin() {
                 var username = $("#username").val();
                 var password = $("#password").val();
                 var jsonObject = {
-                    "username": username,                    
+                    "username": username,
                     "password": password
-                };                           
-               
-                var loginJson = JSON.stringify( jsonObject ); //  <-----------
+                };
+
+                var loginJson = JSON.stringify(jsonObject); //  <-----------
 
                 webSocket.send(loginJson);
-            } 
-            
-            function mostrarMensaje(message){
+            }
+
+            function mostrarMensaje(message) {
+                $("#laberError").html("");
                 $("#laberError").html(message);
             }
-            
-            
+
+
         </script>
         <h1>Ingresar</h1>
         Username: <input type="text" value="user1" id="username" name="username">
@@ -92,6 +76,6 @@ OJP
         <br/><br/>
         <input type="button" value="Ingresar" onclick="enviarLogin()">
         <label id="laberError"></label>
-        
+
     </body>
 </html>
