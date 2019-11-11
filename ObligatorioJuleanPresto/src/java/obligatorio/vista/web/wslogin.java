@@ -27,7 +27,7 @@ public class wslogin implements VistaLogin {
 
     @OnOpen
     public void onOpen(Session session) {
-        System.out.println(session.getId());
+        System.out.println(session.getId()); 
         this.session = session;
         this.gson = new Gson();
         controlador = new ControladorLogin(this);
@@ -57,6 +57,13 @@ public class wslogin implements VistaLogin {
 
         WsMessageDTO msgLogin = new WsMessageDTO(tipo, usuario.getUserId());
         String mensaje = MessageConverter.toMessage(msgLogin);
+        
+        //de test
+        String userSession = "usuario" + usuario.getUserId();
+        WsSessionHandler.setItem(userSession, usuario);
+        
+        ////
+        
         WsSessionHandler.setItem("usuario", usuario);
         WsUtils.enviarMensajePorSocket(session, mensaje);
     }

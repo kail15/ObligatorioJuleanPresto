@@ -1,10 +1,10 @@
 package obligatorio.modelo;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Consumer;
 import obligatorio.exceptions.CredencialesInvalidasException;
-import obligatorio.exceptions.UsuarioInactivoException;
 import obligatorio.exceptions.UsuarioLogueadoException;
+import obligatorio.fachada.Fachada;
 
 //OJP
 public class SistemaUsuarios {
@@ -14,7 +14,11 @@ public class SistemaUsuarios {
 
     public SistemaUsuarios() {
         usuarios = new ArrayList();
-        usuariosLogueados = new ArrayList(); 
+        usuariosLogueados = new ArrayList();
+    }
+
+    public ArrayList<Usuario> getUsuariosLogueados() {
+        return usuariosLogueados;
     }
 
     public Usuario login(String n, String p) throws CredencialesInvalidasException, UsuarioLogueadoException {
@@ -51,6 +55,41 @@ public class SistemaUsuarios {
         return usuarioLogueado;
     }
 
+    public void transferirMesa(MesaTransferida mesa) {
+        Fachada.getInstancia().agregarMesaTransf(mesa);
+        Fachada.getInstancia().notificar(Fachada.EVENTOS.TRANSFERIR_MESA);
+    }
+
+    public void elimiarMesa(MesaTransferida mesa) {
+        this.usuariosLogueados.forEach((u) -> {
+                Mesa m = new Mesa(mesa.getNumero());
+                u.elimiarMesa(m);
+        });
+
+        // CORREGIR
+        /*this.usuarios.forEach((u) -> {            
+           Mesa m = new Mesa(mesa.getNumero());
+           u.elimiarMesa(m);
+        });*/
+    }
+
+    public void agregarMesa(MesaTransferida mesa) {
+        this.usuariosLogueados.forEach((Usuario u) -> {            
+            if (u.getUserId() == null ? mesa.getMozoDestino() == null : u.getUserId().equals(mesa.getMozoDestino())) {
+                Mesa m = new Mesa(mesa.getNumero());
+                u.agregarMesa(m);
+            }
+            
+        });
+
+        this.usuarios.forEach((u) -> {
+           if (u.getUserId() == mesa.getMozoDestino()) {
+                Mesa m = new Mesa(mesa.getNumero());
+                u.agregarMesa(m);
+            }
+        });
+    }
+
     public Usuario UsuarioById(String id) {
         Usuario usu = null;
         for (Usuario user : usuarios) {
@@ -61,5 +100,4 @@ public class SistemaUsuarios {
         }
         return usu;
     }
-
 }

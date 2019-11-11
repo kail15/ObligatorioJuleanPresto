@@ -27,6 +27,9 @@ public class MozoDTO {
         this.userId = userId;
     }
     
+    public MozoDTO() {
+       
+    }
     
 
     public String getNombreUsuario() {

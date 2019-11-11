@@ -20,6 +20,10 @@ public class Mozo extends Usuario {
         super(userId, nombreUsuario, password, nombreCompleto);
     }
 
+    public Mozo() {
+        super();
+    }
+
     public List<Mesa> getMesas() {
         return mesas;
     }
@@ -48,5 +52,10 @@ public class Mozo extends Usuario {
             }
         }
         return this.getMesas();
+    }
+
+    @Override
+    public void elimiarMesa(Mesa mesa) {
+        this.mesas.removeIf(m -> (m.getNumero() == mesa.getNumero()));
     }
 }

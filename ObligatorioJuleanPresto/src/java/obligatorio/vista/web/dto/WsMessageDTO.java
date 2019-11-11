@@ -21,8 +21,11 @@ public class WsMessageDTO {
         TIPO_OBTENER_PRODUCTOS,
         TIPO_AGREGAR_PEDIDO,
         TIPO_TRANSFERIR_MESA,
+        TIPO_TRANSFERIR_MESA_ENVIAR,
         TIPO_ACEPTAR_MESA,
-        TIPO_PEDIDO_LISTO
+        TIPO_PEDIDO_LISTO,
+        TIPO_MOZOS_LOGUEADOS,
+        TIPO_NUEVO_USUARIO_LOGUEADO
         ;
     }; 
     

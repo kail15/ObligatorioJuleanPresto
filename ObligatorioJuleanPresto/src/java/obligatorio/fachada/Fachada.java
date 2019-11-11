@@ -1,7 +1,7 @@
 package obligatorio.fachada;
 
 import java.util.List;
-import java.util.Observable;
+import observer.Observable;
 import obligatorio.exceptions.CredencialesInvalidasException;
 import obligatorio.exceptions.UsuarioInactivoException;
 import obligatorio.exceptions.UsuarioLogueadoException;
@@ -31,6 +31,7 @@ public class Fachada extends Observable {
         sistemaUsuarios = new SistemaUsuarios();
         sistemaProductos = new SistemaProductos();
         sistemaUnidades = new SistemaUnidadProcesadora();
+        sistemaMesasTransferidas = new SistemaMesasTransferidas();
         cargar();
     }
 
@@ -43,7 +44,10 @@ public class Fachada extends Observable {
 
     public enum EVENTOS {
         RECIBIR_PEDIDO,
-        TRANSFERIR_MESA;
+        TRANSFERIR_MESA,
+        NUEVO_USUARIO_LOGUEADO,
+        ACEPTAR_MESA
+        ;
     };
 
     public Usuario login(String n, String p) throws CredencialesInvalidasException, UsuarioInactivoException, UsuarioLogueadoException {
@@ -51,8 +55,25 @@ public class Fachada extends Observable {
         Usuario usuario = sistemaUsuarios.login(n, p);
         if (usuario != null) {
             agregarUsuarioLogueado(usuario);
+            Fachada.getInstancia().notificar(Fachada.EVENTOS.NUEVO_USUARIO_LOGUEADO);
         }
         return usuario;
+    }
+
+    public MesaTransferida transferirMesa(MesaTransferida mesa) {
+        agregarMesaTransf(mesa);
+        Fachada.getInstancia().notificar(Fachada.EVENTOS.TRANSFERIR_MESA);
+        return mesa;
+    }
+    
+    public void aceptarMesaTransf(MesaTransferida mesa){
+        if(mesa.isAceptaMesa()){
+        this.sistemaMesasTransferidas.elimiarMesa(mesa);        
+        this.sistemaUsuarios.elimiarMesa(mesa);
+        this.sistemaUsuarios.agregarMesa(mesa);
+        }   
+        
+       Fachada.getInstancia().notificar(Fachada.EVENTOS.ACEPTAR_MESA);        
     }
 
     public List<Producto> obtenerProductos() {
@@ -74,24 +95,36 @@ public class Fachada extends Observable {
     public void agregarProducto(Producto p) {
         this.sistemaProductos.agregarProducto(p);
     }
-    
-    public List<Producto> actualizarProductos(Producto prod){
-       return this.sistemaProductos.actualizarProductos(prod);
+
+    public List<Producto> actualizarProductos(Producto prod) {
+        return this.sistemaProductos.actualizarProductos(prod);
     }
-    
-    public void agregarMesaTransf(MesaTransferida mesa){
-       this.sistemaMesasTransferidas.agregarMesa(mesa);
+
+    public void agregarMesaTransf(MesaTransferida mesa) {
+        this.sistemaMesasTransferidas.agregarMesa(mesa);
     }
-    
-    public void elimiarMesaTransf(MesaTransferida mesa){
-      this.sistemaMesasTransferidas.elimiarMesa(mesa);
+
+    public void elimiarMesaTransf(MesaTransferida mesa) {
+        this.sistemaMesasTransferidas.elimiarMesa(mesa);
+    }
+
+    public List<MesaTransferida> obtenerMesasTransf() {
+        return this.sistemaMesasTransferidas.getMesas();
+    }
+
+    public List<Usuario> obtenerUsuariosLogueados() {
+        return this.sistemaUsuarios.getUsuariosLogueados();
+    }
+
+    public Usuario usuarioById(String usuarioId) {
+        return this.sistemaUsuarios.UsuarioById(usuarioId);
     }
 
     public void cargar() {
 
-        Usuario carlos = new Mozo("4", "user1", "pass1", "carlos valdez");
-        Usuario pedro = new Mozo("5", "user3", "pass3", "pedro mendez");
-        Usuario juan = new Gestor("2", "user2", "pass2", "juan perez");
+        Usuario carlos = new Mozo("4", "user1", "pass", "carlos valdez");
+        Usuario pedro = new Mozo("5", "user3", "pass", "pedro mendez");
+        Usuario juan = new Gestor("2", "user2", "pass", "juan perez");
         Mesa mesa1 = new Mesa(1);
         Mesa mesa2 = new Mesa(2);
         Mesa mesa3 = new Mesa(3);
@@ -101,6 +134,7 @@ public class Fachada extends Observable {
 
         Mesa mesa5 = new Mesa(5);
         Mesa mesa6 = new Mesa(6);
+        Mesa mesa7 = new Mesa(6);
 
         //unidad procesadora
         UnidadProcesadora cocina = new UnidadProcesadora(1, "Cocina");
@@ -118,6 +152,7 @@ public class Fachada extends Observable {
 
         carlos.agregarMesa(mesa5);
         carlos.agregarMesa(mesa6);
+        pedro.agregarMesa(mesa7);
 
         this.agregarUsuario(carlos);
         this.agregarUsuario(pedro);

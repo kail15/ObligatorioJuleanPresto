@@ -31,6 +31,7 @@ and open the template in the editor.
             .marginForm{
                 margin-left: 30px;
             }
+
         </style>
     </head>
     <body> 
@@ -39,13 +40,17 @@ and open the template in the editor.
             var userId = sessionStorage.getItem("userId");
             var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wsMozo/" + userId);
             var selectProductos = [];
+            var currentMesa;
+            var nombreMozo;
             //Capturo Evento onBeforeUnload
             window.onbeforeunload = function () {
                 //Cierro la conexion manualmente 
                 webSocket.close();
             };
             webSocket.onopen = function (message) {
+
             };
+
             webSocket.onmessage = function (message) {
                 var jsonObject = JSON.parse(message.data);
                 var tipo = jsonObject.tipo;
@@ -55,14 +60,63 @@ and open the template in the editor.
                 }
                 if (tipo === "TIPO_CAMBIAR_ESTADO_MESA") {
                     $('#mesasMozo').empty();
+                    console.log("mostrar!")
                     mostrarMozo(valor);
                 }
                 if (tipo === "TIPO_OBTENER_PRODUCTOS") {
                     cargarProductos(valor);
                 }
+                if (tipo === "TIPO_MOZOS_LOGUEADOS") {
+                    cargarMozosLogueados(valor);
+                }
+                if (tipo === "TIPO_TRANSFERIR_MESA_ENVIAR") {
 
+                    //console.log(valor);
+                    $.each(valor, function (key, val) {
+
+                        if (val.mozoOrigen !== userId) {
+
+                            solicitudMesa(val);
+                            
+                        }
+                    });
+                }
+                if(tipo === "TIPO_ACEPTAR_MESA"){
+                    console.log(valor); 
+                    console.log("llega");                    
+                }
             };
+
+            function solicitudMesa(valor) {
+                 setTimeout(function () {
+                 var acepta = window.confirm(valor.mozoOrigenNombre + ' Desea transferir una mesa.');
+                 
+                 var jsonObjectMesaTransf = {
+                 "numero": valor.numero,
+                 "mozoOrigen": valor.mozoOrigen,
+                 "mozoDestino": valor.mozoDestino,
+                 "mozoOrigenNombre": valor.mozoOrigenNombre,
+                 "mozoDestinoNombre": valor.mozoDestinoNombre,
+                 "aceptaMesa": false,
+                 "estadoMesa": valor.estado,
+                 "tipo": "TIPO_ACEPTAR_MESA"
+                 };
+                 
+                 if (acepta) {
+                 jsonObjectMesaTransf.aceptaMesa = true;
+                 }                 
+                 var agregarJson = JSON.stringify(jsonObjectMesaTransf);
+                 webSocket.send(agregarJson);
+                 
+                 }, 2000); 
+
+            }
+
+
+
             function mostrarMozo(valor) {
+                nombreMozo = valor.nombreCompleto;
+                $('#mesasMozo').text("");
                 $.each(valor.mesas, function (key, value) {
                     if (value.estado) {
                         $('#mesasMozo').append('<div class="squareGreen" id=' + value.numero + '> Mesa: ' + value.numero + '</div>');
@@ -82,13 +136,13 @@ and open the template in the editor.
                         $('#' + "btnCerrar" + value.numero).attr('disabled', 'disabled');
                         $('#' + "btnPedido" + value.numero).attr('disabled', 'disabled');
                     }
-                    
+
                     $('#' + "form" + value.numero).attr("style", "display:none");
                     $('#mesasMozo').append('<br/>');
                     //click de la mesa
                     var idMesa = value.numero.toString();
                     $("#" + idMesa).click(function () {
-                        abrirCuadro('#' + "form" + value.numero);
+                        abrirCuadro("form" + value.numero);
                     });
                     //click abrir
                     var idAbrir = "btnAbrir" + value.numero.toString();
@@ -100,21 +154,41 @@ and open the template in the editor.
                     $("#" + idCerrar).click(function () {
                         abrirMesa(idMesa, value);
                     });
-                    
+
                     //click agregar producto
                     var idAgregar = "btnPedido" + value.numero;
                     $("#" + idAgregar).click(function () {
                         abrirCuadroProd(idAgregar);
                     });
-                    
+
                     //click transferir mesa
                     var idTransf = "btnTransfer" + value.numero;
-                    $("#" + idAgregar).click(function () {
-                        // abrirCuadroProd(idAgregar);
+                    $("#" + idTransf).click(function () {
+                        abrirCuadroMozosLog(value.numero);
                     });
 
                 });
-                $("#divName").text(valor.nombreCompleto);
+                $("#titleName").text('Mozo: ' + valor.nombreCompleto);
+            }
+
+            function abrirCuadroMozosLog(value) {
+                currentMesa = value;
+
+                $("#formProductos").css("display", "none");
+                var esVisible = $("#formMozosLog").is(":visible");
+                if (esVisible) {
+                    $("#formMozosLog").css("display", "none");
+                } else {
+                    $("#formMozosLog").css("display", "block");
+                }
+            }
+
+            function cargarMozosLogueados(valor) {
+                $.each(valor, function (key, value) {
+                    if (value.userId !== userId) {
+                        $("#selectMozosLog").append('<option value=' + value.userId + '>' + value.nombreCompleto + '</option>');
+                    }
+                });
             }
 
             function cargarProductos(valor) {
@@ -136,10 +210,10 @@ and open the template in the editor.
 
             function cargarInfoProd() {
                 var infoProd = obtenerInfoProd($("#selectProductos").val());
-                $("#infoProd").empty()
+                $("#infoProd").empty();
                 $("#infoProd").append("<li>" + infoProd.nombre + "</li>");
-                $("#infoProd").append("<li>"+ "$ " + infoProd.precio + "</li>");
-                $("#infoProd").append("<li>" + infoProd.stock  + "</li>");
+                $("#infoProd").append("<li>" + "$ " + infoProd.precio + "</li>");
+                $("#infoProd").append("<li>" + infoProd.stock + "</li>");
                 $("#infoProd").append("<li>" + infoProd.unidadNombre + "</li>");
             }
 
@@ -161,33 +235,39 @@ and open the template in the editor.
             }
 
             function abrirCuadro(idForm) {
-                var esVisible = $(idForm).is(":visible");
+                $('.marginForm').each(function (i, obj) {
+                    if (idForm !== obj.id) {
+
+                        $("#" + obj.id).css("display", "none");
+                    }
+                });
+
+                var esVisible = $("#" + idForm).is(":visible");
                 if (esVisible) {
-                    $(idForm).css("display", "none");
+                    $("#" + idForm).css("display", "none");
                 } else {
-                    $(idForm).css("display", "block");
+                    $("#" + idForm).css("display", "block");
                 }
             }
-            
-            function abrirCuadroProd(id){
-               
+
+            function abrirCuadroProd(id) {
+
                 var esVisible = $("#formProductos").is(":visible");
-                
-                 
-                
+
+                $("#formMozosLog").css("display", "none");
                 if (esVisible) {
                     $("#formProductos").css("display", "none");
                 } else {
                     $("#formProductos").css("display", "block");
                 }
             }
-            
+
             function abrirMesa(id, value) {
                 var estadoMesa = false;
-
                 if (value.estado) {
                     $("#" + id).removeClass('squareGreen');
                     $("#" + id).addClass('squareRed');
+                    $("#formProductos").css("display", "none");
                 } else {
                     $("#" + id).removeClass('squareRed');
                     $("#" + id).addClass('squareGreen');
@@ -201,39 +281,43 @@ and open the template in the editor.
                     "estado": estadoMesa,
                     "tipo": "TIPO_CAMBIAR_ESTADO_MESA"
                 };
-
                 var agregarJson = JSON.stringify(jsonObject);
                 webSocket.send(agregarJson);
             }
-            
-            function agregarPedido(){
-                // console.log($("#selectProductos").val());
+
+            function agregarPedido() {
                 var idProd = $("#selectProductos").val();
                 var cantidad = parseInt($("#cantidadProd").val());
-                
+
                 var jsonObject = {
                     "codigo": idProd,
                     "cantidad": cantidad,
                     "tipo": "TIPO_AGREGAR_PEDIDO"
                 };
-                
+
                 var agregarJson = JSON.stringify(jsonObject);
                 webSocket.send(agregarJson);
             }
-            
-            function transferirMesa(id){
-                var jsonObject = { 
-                    "numero" : id,
+
+            function transferirMesa() {
+                var mozoDestNom = $("#selectMozosLog").text();
+                var mozoDestId = $("#selectMozosLog").val();
+                $(".marginForm").css("display", "none");
+                var jsonObject = {
+                    "numero": currentMesa,
+                    "mozoOrigen": userId,
+                    "mozoDestino": mozoDestId,
+                    "mozoOrigenNombre": nombreMozo,
+                    "mozoDestinoNombre": mozoDestNom,
                     "tipo": "TIPO_TRANSFERIR_MESA"
-                };
+                };                
+                $("#formMozosLog").css("display", "none");
                 var agregarJson = JSON.stringify(jsonObject);
-                webSocket.send(agregarJson);     
-            }           
-            
+                webSocket.send(agregarJson);
+            }
 
         </script>
-        <div><h2>Vista Mozos!!!</h2></div><br/>
-        <div id="divName" ></div><br/>
+        <div><h2 id="titleName"></h2></div><br/>
         <div id="mesasMozo"></div>
         <form id="formMesa" ></form>
         <form id="formProductos" style="display:none">
@@ -243,12 +327,18 @@ and open the template in the editor.
                     <h3>Datos del producto</h3>
                     <ul id="infoProd" ></ul>
                     <div id="divCantProd" >
-                    <label>Ingresar cantidad del producto</label><br/>
-                    <input type="number" id="cantidadProd" placeholder="ingresar cantidad"/>
+                        <label>Ingresar cantidad del producto</label><br/>
+                        <input type="number" id="cantidadProd" placeholder="ingresar cantidad"/>
                     </div>
                 </section>
                 <input type="button" value="agregar" onclick="agregarPedido()">
             </div>
         </form>
+        <form id="formMozosLog" style="display:none">
+            <h3>Seleccionar mozo</h3><br/>
+            <select id="selectMozosLog"></select><br/>
+            <input type="button" value="confirmar" id="btnMozosLog" onclick="transferirMesa()"  />    
+        </form>       
+
     </body>
 </html>

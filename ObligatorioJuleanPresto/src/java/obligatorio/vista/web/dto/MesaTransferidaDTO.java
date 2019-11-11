@@ -1,16 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package obligatorio.modelo;
 
-/**
- *
- * @author Usuario
- */
-public class MesaTransferida {
+package obligatorio.vista.web.dto;
 
+
+public class MesaTransferidaDTO {
+    
     private int numero;
     private String mozoOrigen;
     private String mozoDestino;
@@ -19,14 +12,27 @@ public class MesaTransferida {
     private boolean aceptaMesa;
     private boolean estadoMesa;
 
-    public MesaTransferida(int numero, String mozoOrigen,
-            String mozoDestino, String mozoOrigenNombre, String mozoDestinoNombre, boolean estadoMesa) {
+    public MesaTransferidaDTO(int numero, String mozoOrigen, String mozoDestino, boolean estadoMesa) {
         this.numero = numero;
         this.mozoOrigen = mozoOrigen;
         this.mozoDestino = mozoDestino;
-        this.mozoOrigenNombre = mozoOrigenNombre;
-        this.mozoDestinoNombre = mozoDestinoNombre;
         this.estadoMesa = estadoMesa;
+    }
+
+    public String getMozoOrigenNombre() {
+        return mozoOrigenNombre;
+    }
+
+    public void setMozoOrigenNombre(String mozoOrigenNombre) {
+        this.mozoOrigenNombre = mozoOrigenNombre;
+    }
+
+    public String getMozoDestinoNombre() {
+        return mozoDestinoNombre;
+    }
+
+    public void setMozoDestinoNombre(String mozoDestinoNombre) {
+        this.mozoDestinoNombre = mozoDestinoNombre;
     }
 
     public int getNumero() {
@@ -51,23 +57,7 @@ public class MesaTransferida {
 
     public void setMozoDestino(String mozoDestino) {
         this.mozoDestino = mozoDestino;
-    }
-
-    public String getMozoOrigenNombre() {
-        return mozoOrigenNombre;
-    }
-
-    public void setMozoOrigenNombre(String mozoOrigenNombre) {
-        this.mozoOrigenNombre = mozoOrigenNombre;
-    }
-
-    public String getMozoDestinoNombre() {
-        return mozoDestinoNombre;
-    }
-
-    public void setMozoDestinoNombre(String mozoDestinoNombre) {
-        this.mozoDestinoNombre = mozoDestinoNombre;
-    }
+    } 
 
     public boolean isAceptaMesa() {
         return aceptaMesa;
@@ -86,5 +76,5 @@ public class MesaTransferida {
     }
     
     
-
+    
 }

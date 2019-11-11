@@ -15,6 +15,10 @@ public abstract class Usuario {
         this.nombreCompleto = nombreCompleto;
         this.userId = userId;
     }
+    
+    public Usuario() {
+        
+    }
 
     public String getNombreUsuario() {
         return nombreUsuario;
@@ -65,5 +69,9 @@ public abstract class Usuario {
     
     public void setMesas(List<Mesa> mesas) {
         
+    }
+    
+    public void elimiarMesa(Mesa mesa){
+       
     }
 }
