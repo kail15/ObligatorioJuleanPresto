@@ -17,6 +17,7 @@ public class WsMessageDTO {
         TIPO_IR_MENU_GESTOR,
         TIPO_ERROR,
         TIPO_MOSTRAR_MOZO,
+        TIPO_MOSTRAR_GESTOR,
         TIPO_CAMBIAR_ESTADO_MESA,
         TIPO_OBTENER_PRODUCTOS,
         TIPO_AGREGAR_PEDIDO,
@@ -25,7 +26,9 @@ public class WsMessageDTO {
         TIPO_ACEPTAR_MESA,
         TIPO_PEDIDO_LISTO,
         TIPO_MOZOS_LOGUEADOS,
-        TIPO_NUEVO_USUARIO_LOGUEADO
+        TIPO_NUEVO_USUARIO_LOGUEADO,
+        TIPO_RECIBIR_PEDIDO,
+        TIPO_CONFIRMAR_UNIDAD
         ;
     }; 
     

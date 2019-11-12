@@ -4,6 +4,7 @@ import java.util.List;
 import obligatorio.fachada.Fachada;
 import obligatorio.modelo.Mesa;
 import obligatorio.modelo.MesaTransferida;
+import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.Usuario;
 import observer.Observable;
@@ -47,8 +48,8 @@ public class ControladorMozo implements Observador {
        Fachada.getInstancia().aceptarMesaTransf(mesa);
     }
 
-    public List<Producto> agregarPedido(Producto prod) {
-        return null;
+    public void agregarPedido(Pedido pedido) {
+        this.fachada.agregarPedido(pedido);
     }
 
     public Usuario usuarioById(String usuarioId) {

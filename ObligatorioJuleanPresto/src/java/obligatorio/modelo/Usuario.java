@@ -15,9 +15,9 @@ public abstract class Usuario {
         this.nombreCompleto = nombreCompleto;
         this.userId = userId;
     }
-    
+
     public Usuario() {
-        
+
     }
 
     public String getNombreUsuario() {
@@ -62,16 +62,24 @@ public abstract class Usuario {
     public List<Mesa> obtenerMesas() {
         return null;
     }
-    
-    public List<Mesa> CambiarEstadoMesa(int id, boolean estado){
+
+    public List<Mesa> CambiarEstadoMesa(int id, boolean estado) {
         return null;
     }
-    
+
     public void setMesas(List<Mesa> mesas) {
-        
+
     }
-    
-    public void elimiarMesa(Mesa mesa){
-       
+
+    public void elimiarMesa(Mesa mesa) {
+
+    }
+
+    public void setUnidadProcesadora(UnidadProcesadora unidad) {
+
+    }
+
+    public UnidadProcesadora getUnidadProcesadora() {
+        return null;
     }
 }

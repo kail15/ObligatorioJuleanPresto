@@ -12,10 +12,18 @@ package obligatorio.vista.web.dto;
 public class UnidadProcesadoraDTO {
     private int id;
     private String nombre;
+    private String userId;
+    
 
-    public UnidadProcesadoraDTO(int id ,String nombre) {
-        this.nombre = nombre;
+    public UnidadProcesadoraDTO(int id ,String userId, String nombre) {
+        this.userId = userId;
         this.id = id;
+        this.nombre = nombre;
+    }
+    
+    public UnidadProcesadoraDTO(int id , String nombre) {
+        this.id = id;
+        this.nombre = nombre;
     }
 
     public String getNombre() {
@@ -33,5 +41,15 @@ public class UnidadProcesadoraDTO {
     public void setId(int id) {
         this.id = id;
     } 
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    
+    
     
 }

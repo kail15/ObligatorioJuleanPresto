@@ -14,12 +14,14 @@ import java.util.List;
 import javax.websocket.server.PathParam;
 import obligatorio.modelo.MesaTransferida;
 import obligatorio.modelo.Mozo;
+import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.UnidadProcesadora;
 import obligatorio.modelo.Usuario;
 import obligatorio.vista.web.dto.MesaDTO;
 import obligatorio.vista.web.dto.MesaTransferidaDTO;
 import obligatorio.vista.web.dto.MozoDTO;
+import obligatorio.vista.web.dto.PedidoDTO;
 import obligatorio.vista.web.dto.ProductoDTO;
 import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
 import obligatorio.vista.web.dto.WsMessageDTO;
@@ -57,7 +59,8 @@ public class wsMozo implements VistaMozo {
                     CambiarEstadoMesa(mesaDto.getNumero(), mesaDto.getEstado());
                     break;
                 case TIPO_AGREGAR_PEDIDO:
-                    ProductoDTO productoDto = gson.fromJson(message, ProductoDTO.class);
+                    PedidoDTO pedidoDto = gson.fromJson(message, PedidoDTO.class);
+                    enviarPedido(pedidoDto);
                     break;
                 case TIPO_TRANSFERIR_MESA:
                     MesaTransferidaDTO mesaDtotransf = gson.fromJson(message, MesaTransferidaDTO.class);
@@ -143,6 +146,13 @@ public class wsMozo implements VistaMozo {
         this.controlador.transferirMesa(mesaTransf);
     }
     
+    
+    private void enviarPedido(PedidoDTO pedidoDto){
+       
+          //  this.controlador.agregarPedido(prod);
+
+    }
+    
     private void aceptarMesaTransf(MesaTransferidaDTO mesa){
     MesaTransferida mesaTransf = new MesaTransferida(mesa.getNumero(), mesa.getMozoOrigen(),
                 mesa.getMozoDestino(), mesa.getMozoOrigenNombre(), mesa.getMozoDestinoNombre(), mesa.isEstadoMesa());
@@ -150,14 +160,7 @@ public class wsMozo implements VistaMozo {
     
         this.controlador.aceptarMesaTransf(mesaTransf);   
     }
-
-    @Override
-    public void agregarPedido(Producto prod) {
-        List<Producto> productos;
-        productos = this.controlador.agregarPedido(prod);
-        this.productos = productos;
-    }
-
+   
     @Override
     public void obtenerProductos(List<Producto> productos) {
         this.productos = productos;
@@ -212,4 +215,13 @@ public class wsMozo implements VistaMozo {
         mesaDto.setMozoDestinoNombre(mesa.getMozoDestinoNombre());
         return mesaDto;
     }
+    
+    private Pedido adaptarPedido(PedidoDTO pedidoDto){
+    // Producto producto, int cantidad, String descripcion, Mesa mesa, Mozo mozo, EstadoPedido estado
+    // int codigo, String nombre, double precioUnitario, int stockDisponible, UnidadProcesadora unidadProcesadora
+    /*Producto prod =  new Producto
+        return new Pedido();*/
+        return null;
+    }
+    
 }

@@ -14,7 +14,7 @@ public interface VistaMozo {
 
     public void obtenerProductos(List<Producto> productos);
 
-    public void agregarPedido(Producto prod);
+   // public void agregarPedido(Producto prod);
 
     public void transferirMesa(List<MesaTransferida> mesa);
 

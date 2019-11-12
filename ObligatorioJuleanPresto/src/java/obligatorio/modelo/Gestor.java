@@ -9,17 +9,20 @@ package obligatorio.modelo;
  *
  * @author Usuario
  */
-public class Gestor extends Usuario{
+public class Gestor extends Usuario {
+
     private UnidadProcesadora unidadProcesadora;
-    
+
     public Gestor(String userId, String nombreUsuario, String password, String nombreCompleto) {
         super(userId, nombreUsuario, password, nombreCompleto);
     }
 
+    @Override
     public UnidadProcesadora getUnidadProcesadora() {
         return unidadProcesadora;
     }
 
+    @Override
     public void setUnidadProcesadora(UnidadProcesadora unidadProcesadora) {
         this.unidadProcesadora = unidadProcesadora;
     }
@@ -28,7 +31,5 @@ public class Gestor extends Usuario{
     public void agregarMesa(Mesa mesa) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
-    
+
 }

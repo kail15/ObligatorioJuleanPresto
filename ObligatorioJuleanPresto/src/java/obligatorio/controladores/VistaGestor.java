@@ -5,10 +5,16 @@
  */
 package obligatorio.controladores;
 
+import java.util.List;
+import obligatorio.modelo.Pedido;
+
 /**
  *
  * @author Usuario
  */
-public class vistaGestor {
+public interface VistaGestor {
     
+    public void cargarUnidad();
+    
+    public void obtenerPedidos(List<Pedido> pedidos);
 }

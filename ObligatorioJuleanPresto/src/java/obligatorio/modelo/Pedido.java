@@ -16,6 +16,7 @@ public class Pedido {
     private Mesa mesa;
     private Mozo mozo;
     private EstadoPedido estado;
+    private Usuario gestor;
 
     public Pedido(Producto producto, int cantidad, String descripcion, Mesa mesa, Mozo mozo, EstadoPedido estado) {
         this.producto = producto;
@@ -72,6 +73,10 @@ public class Pedido {
 
     public void setEstado(EstadoPedido estado) {
         this.estado = estado;
+    }
+
+    public void setGestor(Usuario gestor) {
+        this.gestor = gestor;
     }
     
     

@@ -10,5 +10,5 @@ package obligatorio.modelo;
  * @author Usuario
  */
 public enum EstadoPedido {
-    PROCESADO,FINALIZADO
+    EN_ESPERA,PROCESADO,FINALIZADO
 }

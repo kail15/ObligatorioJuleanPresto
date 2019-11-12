@@ -11,6 +11,78 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>Gestores</div>
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script>
+            var userId = sessionStorage.getItem("userId");
+            var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wsGestor/" + userId);
+
+            window.onbeforeunload = function () {
+                //Cierro la conexion manualmente 
+                webSocket.close();
+            };
+            webSocket.onopen = function (message) {
+
+            };
+
+            webSocket.onmessage = function (message) {
+                var jsonObject = JSON.parse(message.data);
+                var tipo = jsonObject.tipo;
+                var valor = jsonObject.valor;
+                if (tipo === "TIPO_CARGAR_UNIDADES") {
+
+                    cargarUnidades(valor);
+                }
+                if (tipo === "TIPO_MOSTRAR_GESTOR") {
+
+
+                }
+                if (tipo == "TIPO_RECIBIR_PEDIDO") {
+                    console.log(valor);
+
+                }
+
+
+
+            };
+            function cargarUnidades(valor) {
+                $("#selectUnidades").text("");
+                $("#selectUnidades").append('<option value=' + valor.id + '>' + valor.nombre + '</option>');
+            }
+
+
+            function confirmarUnidad() {
+                var idUnidad = parseInt($("#selectUnidades").val());
+                var nombreUnidad = $("#selectUnidades").text()
+
+                var jsonObject = {
+                    "id": idUnidad,
+                    "userId": userId,
+                    "nombre": nombreUnidad,
+                    "tipo": "TIPO_CONFIRMAR_UNIDAD"
+                };
+
+                var agregarJson = JSON.stringify(jsonObject);
+                webSocket.send(agregarJson);
+
+            }
+
+            function cargarPedidos(valor) {
+
+                //$("#divPedidos").append("<>")
+            }
+
+
+
+
+        </script>
+        <h1 id="nombreUnidad" ></h1>
+        <div id="divUnidades" >
+            <select id="selectUnidades" ></select><br/>
+            <input type="button" id="btnAceptarUnidad" value="aceptar" onclick="confirmarUnidad()" >            
+        </div>
+        <div id="divPedidos" ></div>
+
+
+
     </body>
 </html>

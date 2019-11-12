@@ -9,8 +9,10 @@ import obligatorio.modelo.Gestor;
 import obligatorio.modelo.Mesa;
 import obligatorio.modelo.MesaTransferida;
 import obligatorio.modelo.Mozo;
+import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.SistemaMesasTransferidas;
+import obligatorio.modelo.SistemaPedidos;
 import obligatorio.modelo.SistemaProductos;
 import obligatorio.modelo.SistemaUnidadProcesadora;
 import obligatorio.modelo.SistemaUsuarios;
@@ -24,6 +26,7 @@ public class Fachada extends Observable {
     private SistemaUnidadProcesadora sistemaUnidades;
     private SistemaProductos sistemaProductos;
     private SistemaMesasTransferidas sistemaMesasTransferidas;
+    private SistemaPedidos sistemaPedidos;
 
     private static Fachada instancia;
 
@@ -32,6 +35,7 @@ public class Fachada extends Observable {
         sistemaProductos = new SistemaProductos();
         sistemaUnidades = new SistemaUnidadProcesadora();
         sistemaMesasTransferidas = new SistemaMesasTransferidas();
+        sistemaPedidos = new SistemaPedidos();
         cargar();
     }
 
@@ -42,12 +46,23 @@ public class Fachada extends Observable {
         return instancia;
     }
 
+    public void confirmarUnidad(UnidadProcesadora unidad, String userId) {
+        this.sistemaUsuarios.confirmarUnidad(unidad, userId);
+
+    }
+
+    public void agregarPedido(Pedido pedido) {
+        this.sistemaPedidos.agregarPedido(pedido);
+        Fachada.getInstancia().notificar(Fachada.EVENTOS.PEDIDOS_EN_ESPERA);
+
+    }
+
     public enum EVENTOS {
         RECIBIR_PEDIDO,
         TRANSFERIR_MESA,
         NUEVO_USUARIO_LOGUEADO,
-        ACEPTAR_MESA
-        ;
+        ACEPTAR_MESA,
+        PEDIDOS_EN_ESPERA;
     };
 
     public Usuario login(String n, String p) throws CredencialesInvalidasException, UsuarioInactivoException, UsuarioLogueadoException {
@@ -62,18 +77,18 @@ public class Fachada extends Observable {
 
     public MesaTransferida transferirMesa(MesaTransferida mesa) {
         agregarMesaTransf(mesa);
-        Fachada.getInstancia().notificar(Fachada.EVENTOS.TRANSFERIR_MESA);
+        notificar(Fachada.EVENTOS.TRANSFERIR_MESA);
         return mesa;
     }
-    
-    public void aceptarMesaTransf(MesaTransferida mesa){
-        if(mesa.isAceptaMesa()){
-        this.sistemaMesasTransferidas.elimiarMesa(mesa);        
-        this.sistemaUsuarios.elimiarMesa(mesa);
-        this.sistemaUsuarios.agregarMesa(mesa);
-        }   
-        
-       Fachada.getInstancia().notificar(Fachada.EVENTOS.ACEPTAR_MESA);        
+
+    public void aceptarMesaTransf(MesaTransferida mesa) {
+        if (mesa.isAceptaMesa()) {
+            this.sistemaMesasTransferidas.elimiarMesa(mesa);
+            this.sistemaUsuarios.elimiarMesa(mesa);
+            this.sistemaUsuarios.agregarMesa(mesa);
+        }
+
+        Fachada.getInstancia().notificar(Fachada.EVENTOS.ACEPTAR_MESA);
     }
 
     public List<Producto> obtenerProductos() {
@@ -118,6 +133,10 @@ public class Fachada extends Observable {
 
     public Usuario usuarioById(String usuarioId) {
         return this.sistemaUsuarios.UsuarioById(usuarioId);
+    }
+
+    public List<Pedido> getPedidosEnEspera() {
+        return this.sistemaPedidos.getPedidosEnEspera();
     }
 
     public void cargar() {
