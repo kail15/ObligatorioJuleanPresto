@@ -68,7 +68,7 @@ public class wsMozo implements VistaMozo {
                     break;
                 case TIPO_ACEPTAR_MESA:
                     MesaTransferidaDTO mesaDtoAcept = gson.fromJson(message, MesaTransferidaDTO.class);
-                    aceptarMesaTransf(mesaDtoAcept);
+                    confirmarMesaTransf(mesaDtoAcept);
                 default:
                     break;
             }
@@ -99,43 +99,25 @@ public class wsMozo implements VistaMozo {
         WsUtils.enviarMensajePorSocket(session, mensaje);
     }
 
+   
     @Override
-    public void transferirMesa(List<MesaTransferida> mesas) {
-        List<MesaTransferidaDTO> mesasTransfDto = new ArrayList();
+    public void transferirMesa(MesaTransferida mesa) {
 
-        if (mesas != null) {
-            mesas.forEach((m) -> {
-                MesaTransferidaDTO mesaDto = adatparMesaTrasf(m);
-                mesasTransfDto.add(mesaDto);
-            });
-        }
+        MesaTransferidaDTO mesaDto = adatparMesaTrasf(mesa);
 
-        WsMessageDTO msg = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_TRANSFERIR_MESA_ENVIAR, mesasTransfDto);
+        WsMessageDTO msg = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_TRANSFERIR_MESA_ENVIAR, mesaDto);
         String mensaje = MessageConverter.toMessage(msg);
         WsUtils.enviarMensajePorSocket(session, mensaje);
     }
 
     @Override
-    public void aceptarMesaTransf(List<Usuario> usuarios) {
-       
-        boolean acepta = false;
-        List<Mesa> mesasMozo = new ArrayList<>();
+    public void aceptarMesaTransf(MesaTransferida mesa) {
 
-        usuarios.forEach((u) -> {
-            if (this.mozo.getUserId().equals(u.getUserId())) {
-                u.obtenerMesas().forEach((m) -> {
-                    mesasMozo.add(m);
-                });
-            }
-        });
-        
-        if(this.mozo.obtenerMesas().size() != mesasMozo.size()){
-          acepta = true;
-         
-        }   
-         obtenerMozo(this.mozo.getUserId());
+        obtenerMozo(this.mozo.getUserId());
 
-        WsMessageDTO msg = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_ACEPTAR_MESA, acepta);
+        MesaTransferidaDTO mesaDto = adatparMesaTrasf(mesa);
+
+        WsMessageDTO msg = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_ACEPTAR_MESA, mesaDto);
         String mensaje = MessageConverter.toMessage(msg);
         WsUtils.enviarMensajePorSocket(session, mensaje);
     }
@@ -145,22 +127,20 @@ public class wsMozo implements VistaMozo {
                 mesa.getMozoDestino(), mesa.getMozoOrigenNombre(), mesa.getMozoDestinoNombre(), mesa.isEstadoMesa());
         this.controlador.transferirMesa(mesaTransf);
     }
-    
-    
-    private void enviarPedido(PedidoDTO pedidoDto){
-       
-          //  this.controlador.agregarPedido(prod);
 
+    private void enviarPedido(PedidoDTO pedidoDto) {
+
+        //  this.controlador.agregarPedido(prod);
     }
-    
-    private void aceptarMesaTransf(MesaTransferidaDTO mesa){
-    MesaTransferida mesaTransf = new MesaTransferida(mesa.getNumero(), mesa.getMozoOrigen(),
+
+    private void confirmarMesaTransf(MesaTransferidaDTO mesa) {
+        MesaTransferida mesaTransf = new MesaTransferida(mesa.getNumero(), mesa.getMozoOrigen(),
                 mesa.getMozoDestino(), mesa.getMozoOrigenNombre(), mesa.getMozoDestinoNombre(), mesa.isEstadoMesa());
-         mesaTransf.setAceptaMesa(mesa.isAceptaMesa());
-    
-        this.controlador.aceptarMesaTransf(mesaTransf);   
+        mesaTransf.setAceptaMesa(mesa.isAceptaMesa());
+
+        this.controlador.aceptarMesaTransf(mesaTransf);
     }
-   
+
     @Override
     public void obtenerProductos(List<Producto> productos) {
         this.productos = productos;
@@ -213,15 +193,16 @@ public class wsMozo implements VistaMozo {
         MesaTransferidaDTO mesaDto = new MesaTransferidaDTO(mesa.getNumero(), mesa.getMozoOrigen(), mesa.getMozoDestino(), mesa.isEstadoMesa());
         mesaDto.setMozoOrigenNombre(mesa.getMozoOrigenNombre());
         mesaDto.setMozoDestinoNombre(mesa.getMozoDestinoNombre());
+        mesaDto.setAceptaMesa(mesa.isAceptaMesa());
         return mesaDto;
     }
-    
-    private Pedido adaptarPedido(PedidoDTO pedidoDto){
-    // Producto producto, int cantidad, String descripcion, Mesa mesa, Mozo mozo, EstadoPedido estado
-    // int codigo, String nombre, double precioUnitario, int stockDisponible, UnidadProcesadora unidadProcesadora
-    /*Producto prod =  new Producto
+
+    private Pedido adaptarPedido(PedidoDTO pedidoDto) {
+        // Producto producto, int cantidad, String descripcion, Mesa mesa, Mozo mozo, EstadoPedido estado
+        // int codigo, String nombre, double precioUnitario, int stockDisponible, UnidadProcesadora unidadProcesadora
+        /*Producto prod =  new Producto
         return new Pedido();*/
         return null;
     }
-    
+
 }

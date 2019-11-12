@@ -71,31 +71,34 @@ and open the template in the editor.
                 if (tipo === "TIPO_MOZOS_LOGUEADOS") {
                     cargarMozosLogueados(valor);
                 }
+
                 if (tipo === "TIPO_TRANSFERIR_MESA_ENVIAR") {
+                    if (valor.mozoDestino === userId) {
 
-                    //console.log(valor);
-                    $.each(valor, function (key, val) {
-
-                        if (val.mozoOrigen !== userId) {
-
-                            solicitudMesa(val);
-
-                        }
-                    });
+                        solicitudMesa(valor);
+                    }
                 }
-                if (tipo === "TIPO_ACEPTAR_MESA") {
-                    //console.log(valor);
-                   // console.log("llega");
+
+                if (tipo === "TIPO_ACEPTAR_MESA") {   
+                    console.log(valor.aceptaMesa);
+                    
+                    if (valor.mozoOrigen === userId) {
+                        var acepta = " a aceptado la mesa.";
+                        if (!valor.aceptaMesa) {
+                            acepta = " no a acepatado la mesa.";
+                        }
+                        var mensajeMesa = valor.mozoDestinoNombre + acepta;
+                        alert(mensajeMesa);
+                    }
                 }
             };
 
             function solicitudMesa(valor) {
                 setTimeout(function () {
                     var estado = "cerrada";
-                    if (valor.estado) {
+                    if (valor.estadoMesa) {
                         estado = "abierta";
                     }
-
 
                     var acepta = window.confirm(valor.mozoOrigenNombre + ' Desea transferir la mesa: ' + valor.numero + ' ' + estado + '.');
 
@@ -106,7 +109,7 @@ and open the template in the editor.
                         "mozoOrigenNombre": valor.mozoOrigenNombre,
                         "mozoDestinoNombre": valor.mozoDestinoNombre,
                         "aceptaMesa": false,
-                        "estadoMesa": valor.estado,
+                        "estadoMesa": valor.estadoMesa,
                         "tipo": "TIPO_ACEPTAR_MESA"
                     };
 
@@ -182,7 +185,7 @@ and open the template in the editor.
             function abrirCuadroMozosLog(numero, estado) {
                 currentMesa.numero = numero;
                 currentMesa.estadoMesa = estado;
-                
+
                 $("#formProductos").css("display", "none");
                 var esVisible = $("#formMozosLog").is(":visible");
                 if (esVisible) {
@@ -243,11 +246,11 @@ and open the template in the editor.
                 return prod;
             }
 
-            function abrirCuadro(idForm , value ) {
+            function abrirCuadro(idForm, value) {
                 currentMesa.numero = value.numero;
                 currentMesa.estadoMesa = value.estado;
-                
-                
+
+
                 $('.marginForm').each(function (i, obj) {
                     if (idForm !== obj.id) {
 
@@ -276,7 +279,7 @@ and open the template in the editor.
             }
 
             function abrirMesa(id, value) {
-                
+
                 var estadoMesa = false;
                 if (value.estado) {
                     $("#" + id).removeClass('squareGreen');
@@ -303,7 +306,7 @@ and open the template in the editor.
                 var idProd = $("#selectProductos").val();
                 var cantidad = parseInt($("#cantidadProd").val());
                 var descripcion = $("#descProd").val();
-                var mesa =  parseInt(currentMesa.numero);
+                var mesa = parseInt(currentMesa.numero);
 
                 var jsonObject = {
                     "producto": idProd,
@@ -313,7 +316,7 @@ and open the template in the editor.
                     "mozoId": userId,
                     "tipo": "TIPO_AGREGAR_PEDIDO"
                 };
-                
+
 
                 var agregarJson = JSON.stringify(jsonObject);
                 webSocket.send(agregarJson);

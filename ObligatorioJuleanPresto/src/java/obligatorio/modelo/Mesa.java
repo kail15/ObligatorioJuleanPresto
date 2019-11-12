@@ -7,7 +7,12 @@ public class Mesa {
 
     public Mesa(int numero) {
         this.numero = numero;
-    }   
+    }  
+    
+    public Mesa(int numero, boolean estado) {
+        this.numero = numero;
+        this.estado = estado;
+    } 
     
     public Mesa() {        
     }    

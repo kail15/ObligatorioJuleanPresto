@@ -14,13 +14,14 @@ public interface VistaMozo {
 
     public void obtenerProductos(List<Producto> productos);
 
-   // public void agregarPedido(Producto prod);
+    // public void agregarPedido(Producto prod);
+    // public void transferirMesa(List<MesaTransferida> mesa);
+    
+    public void transferirMesa(MesaTransferida mesa);
 
-    public void transferirMesa(List<MesaTransferida> mesa);
-
-    public void aceptarMesaTransf(List<Usuario> usuarios);
+    public void aceptarMesaTransf(MesaTransferida mesa);
 
     public void obtenerMozosLogueados(List<Usuario> usuarios);
-    
-   // public void cargarUsuariosLogueados();
+
+    // public void cargarUsuariosLogueados();
 }

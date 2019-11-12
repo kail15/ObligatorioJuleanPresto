@@ -56,7 +56,6 @@ public class SistemaUsuarios {
     }
     
     public void transferirMesa(MesaTransferida mesa) {
-        Fachada.getInstancia().agregarMesaTransf(mesa);
         Fachada.getInstancia().notificar(Fachada.EVENTOS.TRANSFERIR_MESA);
     }
     
@@ -76,7 +75,7 @@ public class SistemaUsuarios {
     public void agregarMesa(MesaTransferida mesa) {
         this.usuariosLogueados.forEach((Usuario u) -> {            
             if (u.getUserId() == null ? mesa.getMozoDestino() == null : u.getUserId().equals(mesa.getMozoDestino())) {
-                Mesa m = new Mesa(mesa.getNumero());
+                Mesa m = new Mesa(mesa.getNumero(), mesa.isEstadoMesa());
                 u.agregarMesa(m);
             }
             

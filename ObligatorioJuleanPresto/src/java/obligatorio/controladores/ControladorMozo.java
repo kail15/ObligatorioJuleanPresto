@@ -2,11 +2,13 @@ package obligatorio.controladores;
 
 import java.util.List;
 import obligatorio.fachada.Fachada;
+import obligatorio.modelo.EventoMensaje;
 import obligatorio.modelo.Mesa;
 import obligatorio.modelo.MesaTransferida;
 import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.Usuario;
+import obligatorio.vista.web.dto.WsMessageDTO.TipoMensaje;
 import observer.Observable;
 import observer.Observador;
 
@@ -43,9 +45,9 @@ public class ControladorMozo implements Observador {
     public void transferirMesa(MesaTransferida mesa) {
         Fachada.getInstancia().transferirMesa(mesa);
     }
-    
-    public void aceptarMesaTransf(MesaTransferida mesa){
-       Fachada.getInstancia().aceptarMesaTransf(mesa);
+
+    public void aceptarMesaTransf(MesaTransferida mesa) {
+        Fachada.getInstancia().aceptarMesaTransf(mesa);
     }
 
     public void agregarPedido(Pedido pedido) {
@@ -58,19 +60,21 @@ public class ControladorMozo implements Observador {
 
     @Override
     public void actualizar(Object evento, Observable origen) {
-        if (evento.equals(Fachada.EVENTOS.TRANSFERIR_MESA)) {
-            List<MesaTransferida> mesas = this.fachada.getInstancia().obtenerMesasTransf();
-            vista.transferirMesa(mesas);
-        }
-        if(evento.equals(Fachada.EVENTOS.NUEVO_USUARIO_LOGUEADO)){
+
+        if (evento instanceof MesaTransferida) {
+            MesaTransferida mesaT = (MesaTransferida) evento;
+            if (mesaT.getTipoMensaje().equals(EventoMensaje.TRANSFERIR_MESA)) {
+                vista.transferirMesa(mesaT);
+            } else if (mesaT.getTipoMensaje().equals(EventoMensaje.ACEPTAR_MESA)) {
+                vista.aceptarMesaTransf(mesaT);
+            }
+
+        }       
+        if (evento.equals(Fachada.EVENTOS.NUEVO_USUARIO_LOGUEADO)) {
             List<Usuario> usuarios = this.fachada.getInstancia().obtenerUsuariosLogueados();
             vista.obtenerMozosLogueados(usuarios);
-        }
-       if(evento.equals(Fachada.EVENTOS.ACEPTAR_MESA)){
-        List<Usuario> usuarios = this.fachada.getInstancia().obtenerUsuariosLogueados();
-        vista.aceptarMesaTransf(usuarios);
-        }
-        
+        }       
+
     }
 
 }
