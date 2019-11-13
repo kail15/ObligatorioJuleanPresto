@@ -14,17 +14,26 @@ public class Pedido {
     private int cantidad;
     private String descripcion;
     private Mesa mesa;
-    private Mozo mozo;
+    private Usuario mozo;
     private EstadoPedido estado;
     private Usuario gestor;
 
-    public Pedido(Producto producto, int cantidad, String descripcion, Mesa mesa, Mozo mozo, EstadoPedido estado) {
+    public Pedido(Producto producto, int cantidad, String descripcion, Mesa mesa, Usuario mozo, EstadoPedido estado) {
         this.producto = producto;
         this.cantidad = cantidad;
         this.descripcion = descripcion;
         this.mesa = mesa;
         this.mozo = mozo;
         this.estado = estado;
+    }
+    
+    public Pedido(Producto producto, int cantidad, String descripcion, Mesa mesa, Usuario mozo) {
+        this.producto = producto;
+        this.cantidad = cantidad;
+        this.descripcion = descripcion;
+        this.mesa = mesa;
+        this.mozo = mozo;
+        this.estado = EstadoPedido.EN_ESPERA;
     }
 
     public Producto getProducto() {
@@ -59,7 +68,7 @@ public class Pedido {
         this.mesa = mesa;
     }
 
-    public Mozo getMozo() {
+    public Usuario getMozo() {
         return mozo;
     }
 

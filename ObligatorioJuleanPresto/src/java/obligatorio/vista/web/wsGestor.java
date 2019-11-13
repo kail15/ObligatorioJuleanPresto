@@ -6,6 +6,7 @@
 package obligatorio.vista.web;
 
 import com.google.gson.Gson;
+import java.util.ArrayList;
 import java.util.List;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -18,6 +19,7 @@ import obligatorio.modelo.Pedido;
 import obligatorio.modelo.UnidadProcesadora;
 import obligatorio.modelo.Usuario;
 import obligatorio.vista.web.dto.GestorDTO;
+import obligatorio.vista.web.dto.PedidoDTO;
 import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
 import obligatorio.vista.web.dto.WsMessageDTO;
 import obligatorio.vista.web.utils.MessageConverter;
@@ -53,43 +55,77 @@ public class wsGestor implements VistaGestor {
                     confirmarUnidad(unidadDto);
 
                     break;
+                case TIPO_CARGAR_PEDIDOS:
+                    UnidadProcesadoraDTO unidadPedido = gson.fromJson(message, UnidadProcesadoraDTO.class);
+                    cargarPedidos(unidadPedido);
+                    break;
 
                 default:
                     break;
             }
         }
     }
-    
+
     @Override
     public void obtenerPedidos(List<Pedido> pedidos) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<PedidoDTO> pedidosDto = new ArrayList<>();
+        
+        pedidos.forEach((p) -> {
+        pedidosDto.add(new PedidoDTO(p.getProducto().getCodigo(),p.getProducto().getNombre() ,
+                p.getCantidad(), p.getDescripcion(), p.getMesa().getNumero(),
+                p.getMozo().getUserId(), p.getMozo().getNombreCompleto()));
+                });
+        
+        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_PEDIDOS, pedidosDto);
+        String mensaje = MessageConverter.toMessage(msgTipos);
+        WsUtils.enviarMensajePorSocket(session, mensaje);
     }
-    
+
     @Override
     public void cargarUnidad() {
         UnidadProcesadora unidad = this.gestor.getUnidadProcesadora();
-        UnidadProcesadoraDTO unidadDTO = new UnidadProcesadoraDTO( unidad.getId() , unidad.getNombre());
-        GestorDTO gestorDto = new GestorDTO(this.gestor.getNombreCompleto() , this.gestor.getUserId(),unidadDTO );
-        
-         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_MOSTRAR_GESTOR, gestorDto);
+        UnidadProcesadoraDTO unidadDTO = new UnidadProcesadoraDTO(unidad.getId(), unidad.getNombre());
+        GestorDTO gestorDto = new GestorDTO(this.gestor.getNombreCompleto(), this.gestor.getUserId(), unidadDTO);
+
+        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_MOSTRAR_GESTOR, gestorDto);
         String mensaje = MessageConverter.toMessage(msgTipos);
         WsUtils.enviarMensajePorSocket(session, mensaje);
-        
+    }
+
+    @Override
+    public void mostrarUnidades(List<UnidadProcesadora> unidades) {
+        List<UnidadProcesadoraDTO> unidadesDto = new ArrayList<>();
+
+        unidades.forEach((u) -> {
+            unidadesDto.add(new UnidadProcesadoraDTO(u.getId(), u.getNombre()));
+        });
+
+        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_UNIDADES, unidadesDto);
+        String mensaje = MessageConverter.toMessage(msgTipos);
+        WsUtils.enviarMensajePorSocket(session, mensaje);
+
     }
 
     private void confirmarUnidad(UnidadProcesadoraDTO unidadDto) {
-       this.controlador.confirmarUnidad(adatparUP(unidadDto), this.gestor.getUserId());
-    }
-    
-    
-
-    private UnidadProcesadora adatparUP(UnidadProcesadoraDTO unidadDto) {
         UnidadProcesadora unidad = new UnidadProcesadora(unidadDto.getId(), unidadDto.getNombre());
-        return unidad;
+        this.controlador.confirmarUnidad(unidad, this.gestor.getUserId());
     }
 
-    
+    private Object adatparUP(Object unidad) {
+        if (unidad instanceof UnidadProcesadoraDTO) {
+            UnidadProcesadoraDTO unidadDto = (UnidadProcesadoraDTO) unidad;
+            UnidadProcesadora unidadRet = new UnidadProcesadora(unidadDto.getId(), unidadDto.getNombre());
+            return unidadRet;
+        } else {
+            UnidadProcesadora unidadModel = (UnidadProcesadora) unidad;
+            UnidadProcesadora unidadModelRet = new UnidadProcesadora(unidadModel.getId(), unidadModel.getNombre());
+            return unidadModelRet;
+        }
+    }
 
-    
+    private void cargarPedidos(UnidadProcesadoraDTO unidadPedido) {
+       // UnidadProcesadora unidad = new UnidadProcesadora(unidadPedido.getId(), unidadPedido.getNombre());
+        this.controlador.cargarPedidos(unidadPedido);
+    }
 
 }

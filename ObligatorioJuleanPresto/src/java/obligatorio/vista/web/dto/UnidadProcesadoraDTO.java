@@ -5,6 +5,8 @@
  */
 package obligatorio.vista.web.dto;
 
+import obligatorio.vista.web.utils.EventoMensaje;
+
 /**
  *
  * @author Usuario
@@ -13,6 +15,7 @@ public class UnidadProcesadoraDTO {
     private int id;
     private String nombre;
     private String userId;
+    private EventoMensaje evento;
     
 
     public UnidadProcesadoraDTO(int id ,String userId, String nombre) {
@@ -49,7 +52,14 @@ public class UnidadProcesadoraDTO {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-    
+
+    public EventoMensaje getEvento() {
+        return evento;
+    }
+
+    public void setEvento(EventoMensaje evento) {
+        this.evento = evento;
+    }   
     
     
 }

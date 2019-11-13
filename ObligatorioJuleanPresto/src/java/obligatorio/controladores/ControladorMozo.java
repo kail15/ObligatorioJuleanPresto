@@ -2,7 +2,7 @@ package obligatorio.controladores;
 
 import java.util.List;
 import obligatorio.fachada.Fachada;
-import obligatorio.modelo.EventoMensaje;
+import obligatorio.vista.web.utils.EventoMensaje;
 import obligatorio.modelo.Mesa;
 import obligatorio.modelo.MesaTransferida;
 import obligatorio.modelo.Pedido;

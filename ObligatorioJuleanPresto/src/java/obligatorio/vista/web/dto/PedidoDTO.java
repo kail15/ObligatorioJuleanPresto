@@ -11,14 +11,16 @@ package obligatorio.vista.web.dto;
  */
 public class PedidoDTO {
     private int producto;
+    private String nombreProducto;
     private int cantidad;
     private String descripcion;
     private int mesa;
     private String mozoId;
     private String mozoNombre;      
 
-    public PedidoDTO(int producto, int cantidad, String descripcion, int mesa, String mozoId, String mozoNombre) {
+    public PedidoDTO(int producto, String nombreProducto, int cantidad, String descripcion, int mesa, String mozoId, String mozoNombre) {
         this.producto = producto;
+        this.nombreProducto = nombreProducto;
         this.cantidad = cantidad;
         this.descripcion = descripcion;
         this.mesa = mesa;
@@ -72,6 +74,14 @@ public class PedidoDTO {
 
     public void setMozoNombre(String mozoNombre) {
         this.mozoNombre = mozoNombre;
+    }
+
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
     }
     
     

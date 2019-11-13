@@ -5,6 +5,8 @@
  */
 package obligatorio.modelo;
 
+import obligatorio.vista.web.utils.EventoMensaje;
+
 /**
  *
  * @author Usuario

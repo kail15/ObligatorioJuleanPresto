@@ -5,6 +5,7 @@ import obligatorio.fachada.Fachada;
 import obligatorio.modelo.Pedido;
 import obligatorio.modelo.UnidadProcesadora;
 import obligatorio.modelo.Usuario;
+import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
 import observer.Observable;
 import observer.Observador;
 
@@ -19,6 +20,7 @@ public class ControladorGestor implements Observador {
         this.fachada.agregar(this);
         this.vista = vista;
         this.gestorLogueado = gestor;
+        this.vista.mostrarUnidades(this.fachada.obtenerUnidades());
     }
 
     public void confirmarUnidad(UnidadProcesadora unidad, String userId) {
@@ -28,11 +30,18 @@ public class ControladorGestor implements Observador {
 
     @Override
     public void actualizar(Object evento, Observable origen) {
-        if (evento.equals(Fachada.EVENTOS.PEDIDOS_EN_ESPERA)) {
-            List<Pedido> pedidos = this.fachada.getPedidosEnEspera();
-             vista.obtenerPedidos(pedidos);
+
+        if (evento instanceof UnidadProcesadoraDTO) {
+            UnidadProcesadoraDTO unidad = (UnidadProcesadoraDTO) evento;
+            UnidadProcesadora unidadModel = new UnidadProcesadora(unidad.getId(), unidad.getNombre());
+            List<Pedido> pedidos = this.fachada.obtenerPedidosEnEspera(unidadModel);
+            vista.obtenerPedidos(pedidos);
         }
 
+    }
+
+    public void cargarPedidos(UnidadProcesadoraDTO unidadPedido) {
+        this.fachada.devolverPedidosEnEspera(unidadPedido);
     }
 
 }

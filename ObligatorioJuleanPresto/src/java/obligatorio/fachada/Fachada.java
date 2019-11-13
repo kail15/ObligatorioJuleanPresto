@@ -5,7 +5,8 @@ import observer.Observable;
 import obligatorio.exceptions.CredencialesInvalidasException;
 import obligatorio.exceptions.UsuarioInactivoException;
 import obligatorio.exceptions.UsuarioLogueadoException;
-import obligatorio.modelo.EventoMensaje;
+import obligatorio.modelo.EstadoPedido;
+import obligatorio.vista.web.utils.EventoMensaje;
 import obligatorio.modelo.Gestor;
 import obligatorio.modelo.Mesa;
 import obligatorio.modelo.MesaTransferida;
@@ -18,6 +19,7 @@ import obligatorio.modelo.SistemaUnidadProcesadora;
 import obligatorio.modelo.SistemaUsuarios;
 import obligatorio.modelo.UnidadProcesadora;
 import obligatorio.modelo.Usuario;
+import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
 
 //OJP
 public class Fachada extends Observable {
@@ -51,8 +53,21 @@ public class Fachada extends Observable {
 
     public void agregarPedido(Pedido pedido) {
         this.sistemaPedidos.agregarPedido(pedido);
-        Fachada.getInstancia().notificar(Fachada.EVENTOS.PEDIDOS_EN_ESPERA);
+        Fachada.getInstancia().notificar(EVENTOS.PEDIDOS_EN_ESPERA);
 
+    }
+
+    public void devolverPedidosEnEspera(UnidadProcesadoraDTO unidadPedido) {        
+        unidadPedido.setEvento(EventoMensaje.OBTENER_PEDIDOS);
+        notificar(unidadPedido);
+    }
+
+    public List<Pedido> obtenerPedidosEnEspera(UnidadProcesadora unidad) {
+        return this.sistemaPedidos.getPedidosEnEspera(unidad);
+    }
+
+    private void agregarPedidoSistema(Pedido pedido) {
+         this.sistemaPedidos.agregarPedido(pedido);
     }
 
     public enum EVENTOS {
@@ -109,7 +124,7 @@ public class Fachada extends Observable {
 
     public List<Producto> actualizarProductos(Producto prod) {
         return this.sistemaProductos.actualizarProductos(prod);
-    }    
+    }
 
     public List<Usuario> obtenerUsuariosLogueados() {
         return this.sistemaUsuarios.getUsuariosLogueados();
@@ -119,8 +134,8 @@ public class Fachada extends Observable {
         return this.sistemaUsuarios.UsuarioById(usuarioId);
     }
 
-    public List<Pedido> getPedidosEnEspera() {
-        return this.sistemaPedidos.getPedidosEnEspera();
+    public List<UnidadProcesadora> obtenerUnidades() {
+        return this.sistemaUnidades.getUnidades();
     }
 
     public void cargar() {
@@ -147,6 +162,11 @@ public class Fachada extends Observable {
         Producto prod1 = new Producto(1, "hamburguesa", 90.0, 100, cocina);
         Producto prod3 = new Producto(3, "papas", 80.0, 100, cocina);
         Producto prod2 = new Producto(2, "cerveza", 120.0, 100, bar);
+        
+        //pedidos
+        Pedido ped1 = new Pedido(prod1, 2, "MCDONALd", mesa7, carlos, EstadoPedido.EN_ESPERA);
+        Pedido ped2 = new Pedido(prod2, 5, "MCDONALd", mesa7, carlos, EstadoPedido.EN_ESPERA);
+        Pedido ped3 = new Pedido(prod3, 2, "MCDONALd", mesa7, carlos, EstadoPedido.PROCESADO);
 
         carlos.agregarMesa(mesa1);
         carlos.agregarMesa(mesa2);
@@ -167,5 +187,9 @@ public class Fachada extends Observable {
 
         this.agregarUnidad(bar);
         this.agregarUnidad(cocina);
+        
+        this.agregarPedidoSistema(ped1);
+        this.agregarPedidoSistema(ped2);
+        this.agregarPedidoSistema(ped3);
     }
 }

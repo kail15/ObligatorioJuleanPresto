@@ -64,7 +64,7 @@ public class wslogin implements VistaLogin {
         
         ////
         
-        WsSessionHandler.setItem("usuario", usuario);
+       // WsSessionHandler.setItem("usuario", usuario);
         WsUtils.enviarMensajePorSocket(session, mensaje);
     }
 

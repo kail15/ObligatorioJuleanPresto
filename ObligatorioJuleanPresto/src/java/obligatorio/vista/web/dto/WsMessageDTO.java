@@ -28,7 +28,9 @@ public class WsMessageDTO {
         TIPO_MOZOS_LOGUEADOS,
         TIPO_NUEVO_USUARIO_LOGUEADO,
         TIPO_RECIBIR_PEDIDO,
-        TIPO_CONFIRMAR_UNIDAD
+        TIPO_CONFIRMAR_UNIDAD,
+        TIPO_CARGAR_UNIDADES,
+        TIPO_CARGAR_PEDIDOS
         ;
     }; 
     

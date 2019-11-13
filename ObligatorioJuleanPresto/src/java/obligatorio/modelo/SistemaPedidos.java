@@ -29,12 +29,16 @@ public class SistemaPedidos {
     } 
     
     
-    public ArrayList<Pedido> getPedidosEnEspera() {
+    public ArrayList<Pedido> getPedidosEnEspera(UnidadProcesadora unidad) {
         
         ArrayList<Pedido> pedidosEnEspera = new ArrayList();
         
          pedidos.forEach((p) ->{
-           if(p.getEstado().equals(EstadoPedido.EN_ESPERA)){
+             Producto prod =  p.getProducto();
+             
+             
+             
+           if(p.getProducto().validarUnidadProcesadora(unidad) && p.getEstado().equals(EstadoPedido.EN_ESPERA)){
               pedidosEnEspera.add(p);
            }
          });       

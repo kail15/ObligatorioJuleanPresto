@@ -29,46 +29,94 @@ and open the template in the editor.
                 var tipo = jsonObject.tipo;
                 var valor = jsonObject.valor;
                 if (tipo === "TIPO_CARGAR_UNIDADES") {
-
                     cargarUnidades(valor);
                 }
                 if (tipo === "TIPO_MOSTRAR_GESTOR") {
-
-
+                    mostarGestor(valor);
+                    enviarUP(valor);
                 }
-                if (tipo == "TIPO_RECIBIR_PEDIDO") {
+                if (tipo === "TIPO_RECIBIR_PEDIDO") {
                     console.log(valor);
 
+                }
+                if(tipo === "TIPO_CARGAR_PEDIDOS"){
+                    cargarPedidos(valor);
                 }
 
 
 
             };
+            
+            
+            function mostarGestor(valor){
+                console.log(valor);
+                $("#divUnidades").hide();
+                $("#nombreUnidad").html("Bienvenido " + valor.nombreCompleto);
+            }
+            
+            
+            
             function cargarUnidades(valor) {
                 $("#selectUnidades").text("");
-                $("#selectUnidades").append('<option value=' + valor.id + '>' + valor.nombre + '</option>');
+                $.each(valor, function (key, value) {
+                    $("#selectUnidades").append('<option value=' + value.id + '>' + value.nombre + '</option>');
+                });
             }
 
 
             function confirmarUnidad() {
                 var idUnidad = parseInt($("#selectUnidades").val());
-                var nombreUnidad = $("#selectUnidades").text()
+                var nombreUnidad = $("#selectUnidades option:selected").text();
 
                 var jsonObject = {
                     "id": idUnidad,
                     "userId": userId,
                     "nombre": nombreUnidad,
                     "tipo": "TIPO_CONFIRMAR_UNIDAD"
-                };
+                };            
+                
 
                 var agregarJson = JSON.stringify(jsonObject);
                 webSocket.send(agregarJson);
 
             }
 
-            function cargarPedidos(valor) {
-
+            function enviarUP(valor) {
+                var unidad = valor.unidad;
+                
+                var jsonObject = {
+                    "id": unidad.id,
+                    "nombre": unidad.nombre,
+                    "tipo": "TIPO_CARGAR_PEDIDOS"
+                };
+                
+                var agregarJson = JSON.stringify(jsonObject);
+                webSocket.send(agregarJson);
                 //$("#divPedidos").append("<>")
+            }
+            
+            function cargarPedidos(valor){
+                if(valor.length > 0){
+                    $("#divEnEspera").show();
+                    $.each(valor, function(key,value){
+                        var ulPedido = '<ul>';
+                        var liProd = '<li>'+value.nombreProducto+'</li>';
+                        var liCant = '<li>'+value.cantidad+'</li>';
+                        ulPedido += liProd + liCant + '</ul>';       
+                       var btnPedido = '<input type="button" value="confirmar" id='+ value.producto+'/>'; 
+                        
+                       $("#divPedidosEnEspera").append(ulPedido); 
+                       $("#divPedidosEnEspera").append(btnPedido);
+                       $("#divPedidosEnEspera").append('<hr>');
+                       
+                       
+                    });
+                    $("#divProcesados").show();
+                }
+                else{
+                   $("#divSinPedidos").show();
+                }
+                
             }
 
 
@@ -80,9 +128,18 @@ and open the template in the editor.
             <select id="selectUnidades" ></select><br/>
             <input type="button" id="btnAceptarUnidad" value="aceptar" onclick="confirmarUnidad()" >            
         </div>
-        <div id="divPedidos" ></div>
-
-
+        <div id="divEnEspera" style="display: none">
+            <h2>Pedidos en espera</h2>
+            <div id="divPedidosEnEspera"></div>
+        </div>
+        <br/><br/><br/>
+        <div id="divProcesados" style="display: none">
+            <h2>Pedidos procesados</h2>
+            <div id="divPedidosProcesados"></div>
+        </div>
+        <div id="divSinPedidos" style="display: none">
+            <h2>No hay Pedidos</h2>
+        </div>
 
     </body>
 </html>

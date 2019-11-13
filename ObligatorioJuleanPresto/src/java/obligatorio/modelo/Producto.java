@@ -10,6 +10,7 @@ package obligatorio.modelo;
  * @author Usuario
  */
 public class Producto {
+
     private int codigo;
     private String nombre;
     private double precioUnitario;
@@ -62,6 +63,10 @@ public class Producto {
 
     public void setUnidadProcesadora(UnidadProcesadora unidadProcesadora) {
         this.unidadProcesadora = unidadProcesadora;
-    }   
-    
+    }
+
+    boolean validarUnidadProcesadora(UnidadProcesadora unidad) {
+        return unidad.getId() == this.unidadProcesadora.getId();
+    }
+
 }
