@@ -1,23 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package obligatorio.vista.web.dto;
 
-/**
- *
- * @author Usuario
- */
+import obligatorio.vista.web.utils.EstadoPedido;
+
 public class PedidoDTO {
+
+    private int pedidoId;
     private int producto;
     private String nombreProducto;
     private int cantidad;
     private String descripcion;
     private int mesa;
     private String mozoId;
-    private String mozoNombre;      
+    private String mozoNombre;
     private String gestorId;
+    private EstadoPedido estado;
 
     public PedidoDTO(int producto, String nombreProducto, int cantidad, String descripcion, int mesa, String mozoId, String mozoNombre) {
         this.producto = producto;
@@ -28,7 +24,7 @@ public class PedidoDTO {
         this.mozoId = mozoId;
         this.mozoNombre = mozoNombre;
     }
-    
+
     public PedidoDTO(int producto, String nombreProducto, int cantidad, String descripcion, int mesa, String mozoId, String mozoNombre, String gestorId) {
         this.producto = producto;
         this.nombreProducto = nombreProducto;
@@ -38,6 +34,18 @@ public class PedidoDTO {
         this.mozoId = mozoId;
         this.mozoNombre = mozoNombre;
         this.gestorId = gestorId;
+    }
+
+    public PedidoDTO(int pedidoId, int producto, String nombreProducto, int cantidad, String descripcion, int mesa, String mozoId, String mozoNombre) {
+        this.producto = producto;
+        this.nombreProducto = nombreProducto;
+        this.cantidad = cantidad;
+        this.descripcion = descripcion;
+        this.mesa = mesa;
+        this.mozoId = mozoId;
+        this.mozoNombre = mozoNombre;
+        this.gestorId = gestorId;
+        this.pedidoId = pedidoId;
     }
 
     public int getProducto() {
@@ -103,11 +111,21 @@ public class PedidoDTO {
     public void setGestorId(String gestorId) {
         this.gestorId = gestorId;
     }
-    
-    
-    
-    
-    
-    
-    
+
+    public int getPedidoId() {
+        return pedidoId;
+    }
+
+    public void setPedidoId(int pedidoId) {
+        this.pedidoId = pedidoId;
+    }
+
+    public EstadoPedido getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoPedido estado) {
+        this.estado = estado;
+    }    
+
 }

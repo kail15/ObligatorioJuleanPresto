@@ -5,6 +5,7 @@
  */
 package obligatorio.modelo;
 
+import obligatorio.vista.web.utils.EstadoPedido;
 import java.awt.List;
 import java.util.ArrayList;
 

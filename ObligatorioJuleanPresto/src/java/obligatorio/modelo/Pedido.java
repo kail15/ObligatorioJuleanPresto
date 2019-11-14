@@ -5,67 +5,48 @@
  */
 package obligatorio.modelo;
 
+import obligatorio.vista.web.utils.EstadoPedido;
+
 /**
  *
  * @author Usuario
  */
 public class Pedido {
     private int pedidoId;
-    private static int ultPedidoId; 
-    private int producto;
-    private String nombreProducto;
+    private Producto producto;
     private int cantidad;
     private String descripcion;
-    private int mesaNumero;
-    private String mozo;
-    private String nombreMozo;
+    private Mesa mesa;
+    private Usuario mozo;
     private EstadoPedido estado;
     private Usuario gestor;
 
-    public Pedido(int producto, int cantidad, String descripcion, int mesaNumero, String mozo, String nombreMozo, EstadoPedido estado) {
+    public Pedido(int pedidoId, Producto producto, int cantidad, String descripcion, Mesa mesa, Usuario mozo, EstadoPedido estado) {
         this.producto = producto;
         this.cantidad = cantidad;
         this.descripcion = descripcion;
-        this.mesaNumero = mesaNumero;
+        this.mesa = mesa;
         this.mozo = mozo;
-        this.nombreMozo = nombreMozo;
         this.estado = estado;
-        this.pedidoId = ultPedidoId;
-        ultPedidoId++;
-    }
-    
-    public Pedido(int producto, int cantidad, String descripcion, int mesaNumero, String mozo, String nombreMozo) {
-        this.producto = producto;
-        this.cantidad = cantidad;
-        this.descripcion = descripcion;
-        this.mesaNumero = mesaNumero;
-        this.mozo = mozo;
-        this.estado = EstadoPedido.EN_ESPERA;
-        this.pedidoId = ultPedidoId;
-        ultPedidoId++;
-    }
-
-    public int getPedidoId() {
-        return pedidoId;
-    }
-
-    public void setPedidoId(int pedidoId) {
         this.pedidoId = pedidoId;
     }
+    
+    public Pedido(Producto producto, int cantidad, String descripcion, Mesa mesa, Usuario mozo) {
+        this.producto = producto;
+        this.cantidad = cantidad;
+        this.descripcion = descripcion;
+        this.mesa = mesa;
+        this.mozo = mozo;
+        this.estado = EstadoPedido.EN_ESPERA;
+    }
+    
+    public Pedido(){}
 
-    public int getProducto() {
+    public Producto getProducto() {
         return producto;
     }
 
-    public String getNombreProducto() {
-        return nombreProducto;
-    }
-
-    public void setNombreProducto(String nombreProducto) {
-        this.nombreProducto = nombreProducto;
-    }
-
-    public void setProducto(int producto) {
+    public void setProducto(Producto producto) {
         this.producto = producto;
     }
 
@@ -85,19 +66,19 @@ public class Pedido {
         this.descripcion = descripcion;
     }
 
-    public int getMesa() {
-        return mesaNumero;
+    public Mesa getMesa() {
+        return mesa;
     }
 
-    public void setMesa(int mesa) {
-        this.mesaNumero = mesa;
+    public void setMesa(Mesa mesa) {
+        this.mesa = mesa;
     }
 
-    public String getMozo() {
+    public Usuario getMozo() {
         return mozo;
     }
 
-    public void setMozo(String mozo) {
+    public void setMozo(Mozo mozo) {
         this.mozo = mozo;
     }
 
@@ -113,15 +94,13 @@ public class Pedido {
         this.gestor = gestor;
     }
 
-    public String getNombreMozo() {
-        return nombreMozo;
+    public int getPedidoId() {
+        return pedidoId;
     }
 
-    public void setNombreMozo(String nombreMozo) {
-        this.nombreMozo = nombreMozo;
+    public void setPedidoId(int pedidoId) {
+        this.pedidoId = pedidoId;
     }
-    
-    
     
     
 }

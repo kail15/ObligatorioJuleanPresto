@@ -74,16 +74,12 @@ public class wsGestor implements VistaGestor {
     public void obtenerPedidos(List<Pedido> pedidos) {
         List<PedidoDTO> pedidosDto = new ArrayList<>();
 
-        /*pedidos.forEach((p) -> {
-            pedidosDto.add(new PedidoDTO(p.getProducto().getCodigo(), p.getProducto().getNombre(),
+        pedidos.forEach((p) -> {
+            pedidosDto.add(new PedidoDTO(p.getPedidoId(),p.getProducto().getCodigo(), p.getProducto().getNombre(),
                     p.getCantidad(), p.getDescripcion(), p.getMesa().getNumero(),
                     p.getMozo().getUserId(), p.getMozo().getNombreCompleto()));
-        });*/
-        pedidos.forEach((p) -> {
-            pedidosDto.add(new PedidoDTO(p.getProducto(), p.getNombreProducto(),
-                    p.getCantidad(), p.getDescripcion(), p.getMesa(), 
-                    p.getMozo(), p.getNombreMozo()));
         });
+        
 
         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_PEDIDOS, pedidosDto);
         String mensaje = MessageConverter.toMessage(msgTipos);
@@ -145,11 +141,11 @@ public class wsGestor implements VistaGestor {
     public void obtenerPedidosTotales(List<Pedido> pedidos) {
         List<PedidoDTO> pedidosDto = new ArrayList<>();
 
-        pedidos.forEach((p) -> {
+        /*pedidos.forEach((p) -> {
             pedidosDto.add(new PedidoDTO(p.getProducto(), p.getNombreProducto(),
                     p.getCantidad(), p.getDescripcion(), p.getMesa(),
                     p.getMozo(), p.getNombreMozo()));
-        });
+        });*/
 
         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_UNIDADES, pedidosDto);
         String mensaje = MessageConverter.toMessage(msgTipos);

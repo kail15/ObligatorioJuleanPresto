@@ -6,7 +6,7 @@ import obligatorio.exceptions.CredencialesInvalidasException;
 import obligatorio.exceptions.MesaAbiertaException;
 import obligatorio.exceptions.UsuarioInactivoException;
 import obligatorio.exceptions.UsuarioLogueadoException;
-import obligatorio.modelo.EstadoPedido;
+import obligatorio.vista.web.utils.EstadoPedido;
 import obligatorio.vista.web.utils.EventoMensaje;
 import obligatorio.modelo.Gestor;
 import obligatorio.modelo.Mesa;
@@ -80,13 +80,9 @@ public class Fachada extends Observable {
         notificar(noti);        
     }
 
-    public void procesarPedido(PedidoDTO pedidoDto) {
-        Pedido unPedido = new Pedido(pedidoDto.getProducto(), 
-                pedidoDto.getCantidad(), pedidoDto.getDescripcion(), 
-                pedidoDto.getMesa(), pedidoDto.getMozoId(), 
-                pedidoDto.getMozoNombre());
-        Usuario usuarioGestor = usuarioById(pedidoDto.getGestorId());
-        unPedido.setGestor(usuarioGestor);
+    public void procesarPedido(PedidoDTO p) {
+        Pedido unPedido = new Pedido();
+        unPedido.setPedidoId(p.getPedidoId());         
         
         this.sistemaPedidos.procesarPedido(unPedido);
         NotificarHelper helper = new NotificarHelper(EventoMensaje.PEDIDO_PROCESADO, null);
@@ -191,9 +187,9 @@ public class Fachada extends Observable {
         Producto prod2 = new Producto(2, "cerveza", 120.0, 100, bar);
         
         //pedidos
-        Pedido ped1 = new Pedido(prod1, 2, "MCDONALd", mesa7, carlos, EstadoPedido.EN_ESPERA);
-        Pedido ped2 = new Pedido(prod2, 5, "MCDONALd", mesa7, carlos, EstadoPedido.EN_ESPERA);
-        Pedido ped3 = new Pedido(prod3, 2, "MCDONALd", mesa7, carlos, EstadoPedido.PROCESADO);
+        Pedido ped1 = new Pedido(1, prod1, 2, "MCDONALd", mesa7, carlos, EstadoPedido.EN_ESPERA);
+        Pedido ped2 = new Pedido(2,prod2, 5, "MCDONALd", mesa7, carlos, EstadoPedido.EN_ESPERA);
+        Pedido ped3 = new Pedido(3, prod3, 2, "MCDONALd", mesa7, carlos, EstadoPedido.PROCESADO);
 
         carlos.agregarMesa(mesa1);
         carlos.agregarMesa(mesa2);

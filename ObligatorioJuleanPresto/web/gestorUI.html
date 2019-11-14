@@ -94,6 +94,7 @@ and open the template in the editor.
             }
 
             function cargarPedidos(valor) {
+                console.log(valor);
                 if (valor.length > 0) {
                     $("#divEnEspera").show();
                     $.each(valor, function (key, value) {
@@ -125,6 +126,7 @@ and open the template in the editor.
             function procesarPedido(pedido) {
                 //console.log(pedido);
                 var jsonObject = {
+                    "pedidoId": pedido.pedidoId,
                     "producto": pedido.producto,
                     "nombreProducto": pedido.nombreProducto,
                     "mozoId":pedido.mozoId,
