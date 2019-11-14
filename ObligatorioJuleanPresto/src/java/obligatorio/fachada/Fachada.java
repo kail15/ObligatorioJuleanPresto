@@ -3,6 +3,7 @@ package obligatorio.fachada;
 import java.util.List;
 import observer.Observable;
 import obligatorio.exceptions.CredencialesInvalidasException;
+import obligatorio.exceptions.MesaAbiertaException;
 import obligatorio.exceptions.UsuarioInactivoException;
 import obligatorio.exceptions.UsuarioLogueadoException;
 import obligatorio.modelo.EstadoPedido;
@@ -19,7 +20,9 @@ import obligatorio.modelo.SistemaUnidadProcesadora;
 import obligatorio.modelo.SistemaUsuarios;
 import obligatorio.modelo.UnidadProcesadora;
 import obligatorio.modelo.Usuario;
+import obligatorio.vista.web.dto.PedidoDTO;
 import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
+import obligatorio.vista.web.utils.NotificarHelper;
 
 //OJP
 public class Fachada extends Observable {
@@ -68,6 +71,30 @@ public class Fachada extends Observable {
 
     private void agregarPedidoSistema(Pedido pedido) {
          this.sistemaPedidos.agregarPedido(pedido);
+    }
+
+    public void logout(Mozo mozo) throws MesaAbiertaException {      
+        boolean ret = this.sistemaUsuarios.logout(mozo); 
+        NotificarHelper noti = new NotificarHelper(EventoMensaje.LOGOUT, mozo);
+        noti.setEstado(ret);
+        notificar(noti);        
+    }
+
+    public void procesarPedido(PedidoDTO pedidoDto) {
+        Pedido unPedido = new Pedido(pedidoDto.getProducto(), 
+                pedidoDto.getCantidad(), pedidoDto.getDescripcion(), 
+                pedidoDto.getMesa(), pedidoDto.getMozoId(), 
+                pedidoDto.getMozoNombre());
+        Usuario usuarioGestor = usuarioById(pedidoDto.getGestorId());
+        unPedido.setGestor(usuarioGestor);
+        
+        this.sistemaPedidos.procesarPedido(unPedido);
+        NotificarHelper helper = new NotificarHelper(EventoMensaje.PEDIDO_PROCESADO, null);
+        notificar(helper);
+    }
+
+    public List<Pedido> getPedidos() {
+        return this.sistemaPedidos.getPedidos();
     }
 
     public enum EVENTOS {

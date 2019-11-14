@@ -17,6 +17,7 @@ public class PedidoDTO {
     private int mesa;
     private String mozoId;
     private String mozoNombre;      
+    private String gestorId;
 
     public PedidoDTO(int producto, String nombreProducto, int cantidad, String descripcion, int mesa, String mozoId, String mozoNombre) {
         this.producto = producto;
@@ -26,6 +27,17 @@ public class PedidoDTO {
         this.mesa = mesa;
         this.mozoId = mozoId;
         this.mozoNombre = mozoNombre;
+    }
+    
+    public PedidoDTO(int producto, String nombreProducto, int cantidad, String descripcion, int mesa, String mozoId, String mozoNombre, String gestorId) {
+        this.producto = producto;
+        this.nombreProducto = nombreProducto;
+        this.cantidad = cantidad;
+        this.descripcion = descripcion;
+        this.mesa = mesa;
+        this.mozoId = mozoId;
+        this.mozoNombre = mozoNombre;
+        this.gestorId = gestorId;
     }
 
     public int getProducto() {
@@ -82,6 +94,14 @@ public class PedidoDTO {
 
     public void setNombreProducto(String nombreProducto) {
         this.nombreProducto = nombreProducto;
+    }
+
+    public String getGestorId() {
+        return gestorId;
+    }
+
+    public void setGestorId(String gestorId) {
+        this.gestorId = gestorId;
     }
     
     

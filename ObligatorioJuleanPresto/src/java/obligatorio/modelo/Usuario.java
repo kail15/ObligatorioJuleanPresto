@@ -82,4 +82,14 @@ public abstract class Usuario {
     public UnidadProcesadora getUnidadProcesadora() {
         return null;
     }
+    
+    public boolean validarMesasLogout(Mesa mesa){
+        return false;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    
+    
 }

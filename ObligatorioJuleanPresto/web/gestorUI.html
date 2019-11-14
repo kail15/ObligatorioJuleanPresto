@@ -36,26 +36,24 @@ and open the template in the editor.
                     enviarUP(valor);
                 }
                 if (tipo === "TIPO_RECIBIR_PEDIDO") {
-                    console.log(valor);
 
                 }
-                if(tipo === "TIPO_CARGAR_PEDIDOS"){
+                if (tipo === "TIPO_CARGAR_PEDIDOS") {
                     cargarPedidos(valor);
                 }
 
 
 
             };
-            
-            
-            function mostarGestor(valor){
-                console.log(valor);
+
+
+            function mostarGestor(valor) {
                 $("#divUnidades").hide();
                 $("#nombreUnidad").html("Bienvenido " + valor.nombreCompleto);
             }
-            
-            
-            
+
+
+
             function cargarUnidades(valor) {
                 $("#selectUnidades").text("");
                 $.each(valor, function (key, value) {
@@ -73,8 +71,8 @@ and open the template in the editor.
                     "userId": userId,
                     "nombre": nombreUnidad,
                     "tipo": "TIPO_CONFIRMAR_UNIDAD"
-                };            
-                
+                };
+
 
                 var agregarJson = JSON.stringify(jsonObject);
                 webSocket.send(agregarJson);
@@ -83,40 +81,63 @@ and open the template in the editor.
 
             function enviarUP(valor) {
                 var unidad = valor.unidad;
-                
+
                 var jsonObject = {
                     "id": unidad.id,
                     "nombre": unidad.nombre,
                     "tipo": "TIPO_CARGAR_PEDIDOS"
                 };
-                
+
                 var agregarJson = JSON.stringify(jsonObject);
                 webSocket.send(agregarJson);
                 //$("#divPedidos").append("<>")
             }
-            
-            function cargarPedidos(valor){
-                if(valor.length > 0){
+
+            function cargarPedidos(valor) {
+                if (valor.length > 0) {
                     $("#divEnEspera").show();
-                    $.each(valor, function(key,value){
+                    $.each(valor, function (key, value) {
                         var ulPedido = '<ul>';
-                        var liProd = '<li>'+value.nombreProducto+'</li>';
-                        var liCant = '<li>'+value.cantidad+'</li>';
-                        ulPedido += liProd + liCant + '</ul>';       
-                       var btnPedido = '<input type="button" value="confirmar" id='+ value.producto+'/>'; 
-                        
-                       $("#divPedidosEnEspera").append(ulPedido); 
-                       $("#divPedidosEnEspera").append(btnPedido);
-                       $("#divPedidosEnEspera").append('<hr>');
-                       
-                       
+                        var liProd = '<li>' + value.nombreProducto + '</li>';
+                        var liCant = '<li>' + value.cantidad + '</li>';
+                        ulPedido += liProd + liCant + '</ul>';
+                        var btnPedido = '<input type="button" value="procesar" id="btnProcesar' + value.producto + '"/>';
+                        var idbtnproc = "btnProcesar" + value.producto.toString();
+                        console.log();
+
+
+                        $("#divPedidosEnEspera").append(ulPedido);
+                        $("#divPedidosEnEspera").append(btnPedido);
+                        $("#divPedidosEnEspera").append('<hr>');
+                        $("#" + idbtnproc).click(function () {
+                            procesarPedido(value);
+                        });
+
+
                     });
                     $("#divProcesados").show();
+                } else {
+                    $("#divSinPedidos").show();
                 }
-                else{
-                   $("#divSinPedidos").show();
-                }
-                
+
+            }
+
+            function procesarPedido(pedido) {
+                //console.log(pedido);
+                var jsonObject = {
+                    "producto": pedido.producto,
+                    "nombreProducto": pedido.nombreProducto,
+                    "mozoId":pedido.mozoId,
+                    "mozoNombre":pedido.mozoNombre,
+                    "mesa":pedido.mesa,
+                    "descripcion":pedido.descripcion,
+                    "cantidad":pedido.cantidad,
+                    "gestorId":userId,
+                    "tipo": "TIPO_PROCESAR_PEDIDO"
+                };
+
+                var agregarJson = JSON.stringify(jsonObject);
+                webSocket.send(agregarJson);
             }
 
 

@@ -69,6 +69,11 @@ public class wsMozo implements VistaMozo {
                 case TIPO_ACEPTAR_MESA:
                     MesaTransferidaDTO mesaDtoAcept = gson.fromJson(message, MesaTransferidaDTO.class);
                     confirmarMesaTransf(mesaDtoAcept);
+                    break;
+                case TIPO_LOGOUT:
+                    MozoDTO mozoDto = gson.fromJson(message, MozoDTO.class);
+                    logout(mozoDto);
+                    break;
                 default:
                     break;
             }
@@ -99,7 +104,6 @@ public class wsMozo implements VistaMozo {
         WsUtils.enviarMensajePorSocket(session, mensaje);
     }
 
-   
     @Override
     public void transferirMesa(MesaTransferida mesa) {
 
@@ -155,13 +159,20 @@ public class wsMozo implements VistaMozo {
 
         List<MozoDTO> mozosLog = new ArrayList<>();
         mozos.forEach((m) -> {
-
-            mozosLog.add(adaptarMozo(m));
+            if (m instanceof Mozo) {
+                mozosLog.add(adaptarMozo(m));
+            }
         });
 
         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_MOZOS_LOGUEADOS, mozosLog);
         String mensaje = MessageConverter.toMessage(msgTipos);
         WsUtils.enviarMensajePorSocket(session, mensaje);
+    }
+    
+    private void logout(MozoDTO mozoDto){
+       Mozo mozoLogout = new Mozo();
+       mozoLogout.setUserId(mozoDto.getUserId());
+       this.controlador.logout(mozoLogout);
     }
 
     private MozoDTO adaptarMozo(Usuario mozo) {
@@ -203,6 +214,24 @@ public class wsMozo implements VistaMozo {
         /*Producto prod =  new Producto
         return new Pedido();*/
         return null;
+    }
+
+    @Override
+    public void mostrarError(String error) {
+        
+        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.ERROR_LOGOUT, error);
+        String mensaje = MessageConverter.toMessage(msgTipos);
+        WsUtils.enviarMensajePorSocket(session, mensaje); 
+    }
+
+    @Override
+    public void logoutMozo(Usuario usuario) {
+        MozoDTO mozoDto = new MozoDTO();
+        mozoDto.setUserId(usuario.getUserId());
+        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_LOGOUT, mozoDto);
+        String mensaje = MessageConverter.toMessage(msgTipos);
+        WsUtils.enviarMensajePorSocket(session, mensaje); 
+        
     }
 
 }

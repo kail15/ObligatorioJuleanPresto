@@ -7,6 +7,7 @@ package obligatorio.modelo;
 
 import java.util.ArrayList;
 import java.util.List;
+import obligatorio.exceptions.MesaAbiertaException;
 
 /**
  *
@@ -58,4 +59,9 @@ public class Mozo extends Usuario {
     public void elimiarMesa(Mesa mesa) {
         this.mesas.removeIf(m -> (m.getNumero() == mesa.getNumero()));
     }
+    
+    @Override
+    public boolean validarMesasLogout(Mesa mesa){
+        return this.mesas.stream().noneMatch((m) -> (m.getEstado() && m.getNumero() == mesa.getNumero()));        
+    }   
 }

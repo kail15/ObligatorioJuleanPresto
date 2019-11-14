@@ -51,5 +51,13 @@ public class SistemaPedidos {
             this.pedidos.add(pedido);            
         }
     }
+
+    public void procesarPedido(Pedido unPedido) {
+        pedidos.forEach((p) -> {
+            if(p.getPedidoId() == unPedido.getPedidoId()){
+                p.setEstado(EstadoPedido.PROCESADO);
+            }
+        });
+    }
     
 }

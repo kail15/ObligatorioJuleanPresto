@@ -59,6 +59,10 @@ public class wsGestor implements VistaGestor {
                     UnidadProcesadoraDTO unidadPedido = gson.fromJson(message, UnidadProcesadoraDTO.class);
                     cargarPedidos(unidadPedido);
                     break;
+                case TIPO_PROCESAR_PEDIDO:
+                    PedidoDTO pedidoDto = gson.fromJson(message, PedidoDTO.class);
+                    procesarPedido(pedidoDto);
+                    break;
 
                 default:
                     break;
@@ -69,13 +73,18 @@ public class wsGestor implements VistaGestor {
     @Override
     public void obtenerPedidos(List<Pedido> pedidos) {
         List<PedidoDTO> pedidosDto = new ArrayList<>();
-        
+
+        /*pedidos.forEach((p) -> {
+            pedidosDto.add(new PedidoDTO(p.getProducto().getCodigo(), p.getProducto().getNombre(),
+                    p.getCantidad(), p.getDescripcion(), p.getMesa().getNumero(),
+                    p.getMozo().getUserId(), p.getMozo().getNombreCompleto()));
+        });*/
         pedidos.forEach((p) -> {
-        pedidosDto.add(new PedidoDTO(p.getProducto().getCodigo(),p.getProducto().getNombre() ,
-                p.getCantidad(), p.getDescripcion(), p.getMesa().getNumero(),
-                p.getMozo().getUserId(), p.getMozo().getNombreCompleto()));
-                });
-        
+            pedidosDto.add(new PedidoDTO(p.getProducto(), p.getNombreProducto(),
+                    p.getCantidad(), p.getDescripcion(), p.getMesa(), 
+                    p.getMozo(), p.getNombreMozo()));
+        });
+
         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_PEDIDOS, pedidosDto);
         String mensaje = MessageConverter.toMessage(msgTipos);
         WsUtils.enviarMensajePorSocket(session, mensaje);
@@ -124,8 +133,27 @@ public class wsGestor implements VistaGestor {
     }
 
     private void cargarPedidos(UnidadProcesadoraDTO unidadPedido) {
-       // UnidadProcesadora unidad = new UnidadProcesadora(unidadPedido.getId(), unidadPedido.getNombre());
+        // UnidadProcesadora unidad = new UnidadProcesadora(unidadPedido.getId(), unidadPedido.getNombre());
         this.controlador.cargarPedidos(unidadPedido);
+    }
+
+    private void procesarPedido(PedidoDTO pedidoDto) {
+        this.controlador.procesarPedido(pedidoDto);
+    }
+
+    @Override
+    public void obtenerPedidosTotales(List<Pedido> pedidos) {
+        List<PedidoDTO> pedidosDto = new ArrayList<>();
+
+        pedidos.forEach((p) -> {
+            pedidosDto.add(new PedidoDTO(p.getProducto(), p.getNombreProducto(),
+                    p.getCantidad(), p.getDescripcion(), p.getMesa(),
+                    p.getMozo(), p.getNombreMozo()));
+        });
+
+        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_UNIDADES, pedidosDto);
+        String mensaje = MessageConverter.toMessage(msgTipos);
+        WsUtils.enviarMensajePorSocket(session, mensaje);
     }
 
 }

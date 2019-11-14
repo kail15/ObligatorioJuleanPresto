@@ -22,6 +22,11 @@ public interface VistaMozo {
     public void aceptarMesaTransf(MesaTransferida mesa);
 
     public void obtenerMozosLogueados(List<Usuario> usuarios);
+    
+    public void mostrarError(String error);
+    
+    public void logoutMozo(Usuario usuario);
+
 
     // public void cargarUsuariosLogueados();
 }

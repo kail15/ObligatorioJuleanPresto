@@ -1,14 +1,17 @@
 package obligatorio.controladores;
 
 import java.util.List;
+import obligatorio.exceptions.MesaAbiertaException;
 import obligatorio.fachada.Fachada;
 import obligatorio.vista.web.utils.EventoMensaje;
 import obligatorio.modelo.Mesa;
 import obligatorio.modelo.MesaTransferida;
+import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.Usuario;
 import obligatorio.vista.web.dto.WsMessageDTO.TipoMensaje;
+import obligatorio.vista.web.utils.NotificarHelper;
 import observer.Observable;
 import observer.Observador;
 
@@ -58,6 +61,14 @@ public class ControladorMozo implements Observador {
         return Fachada.getInstancia().usuarioById(usuarioId);
     }
 
+    public void logout(Mozo mozo) {
+        try {
+            this.fachada.logout(mozo);
+        } catch (MesaAbiertaException ex) {
+            vista.mostrarError(ex.getMessage());
+        }
+    }
+
     @Override
     public void actualizar(Object evento, Observable origen) {
 
@@ -68,13 +79,23 @@ public class ControladorMozo implements Observador {
             } else if (mesaT.getTipoMensaje().equals(EventoMensaje.ACEPTAR_MESA)) {
                 vista.aceptarMesaTransf(mesaT);
             }
+        }
 
-        }       
+        if (evento instanceof NotificarHelper) {
+            NotificarHelper ret = (NotificarHelper) evento;
+            if (ret.getEvento().equals(EventoMensaje.LOGOUT)) {
+                List<Usuario> usuarios = this.fachada.getInstancia().obtenerUsuariosLogueados();
+                vista.obtenerMozosLogueados(usuarios);
+                Usuario usuarioLogout = (Usuario)((NotificarHelper) evento).getObjetoNotificar();
+                vista.logoutMozo(usuarioLogout);
+            }
+
+        }
+
         if (evento.equals(Fachada.EVENTOS.NUEVO_USUARIO_LOGUEADO)) {
             List<Usuario> usuarios = this.fachada.getInstancia().obtenerUsuariosLogueados();
             vista.obtenerMozosLogueados(usuarios);
-        }       
-
+        }
     }
 
 }

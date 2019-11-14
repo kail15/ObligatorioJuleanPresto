@@ -10,37 +10,62 @@ package obligatorio.modelo;
  * @author Usuario
  */
 public class Pedido {
-    private Producto producto;
+    private int pedidoId;
+    private static int ultPedidoId; 
+    private int producto;
+    private String nombreProducto;
     private int cantidad;
     private String descripcion;
-    private Mesa mesa;
-    private Usuario mozo;
+    private int mesaNumero;
+    private String mozo;
+    private String nombreMozo;
     private EstadoPedido estado;
     private Usuario gestor;
 
-    public Pedido(Producto producto, int cantidad, String descripcion, Mesa mesa, Usuario mozo, EstadoPedido estado) {
+    public Pedido(int producto, int cantidad, String descripcion, int mesaNumero, String mozo, String nombreMozo, EstadoPedido estado) {
         this.producto = producto;
         this.cantidad = cantidad;
         this.descripcion = descripcion;
-        this.mesa = mesa;
+        this.mesaNumero = mesaNumero;
         this.mozo = mozo;
+        this.nombreMozo = nombreMozo;
         this.estado = estado;
+        this.pedidoId = ultPedidoId;
+        ultPedidoId++;
     }
     
-    public Pedido(Producto producto, int cantidad, String descripcion, Mesa mesa, Usuario mozo) {
+    public Pedido(int producto, int cantidad, String descripcion, int mesaNumero, String mozo, String nombreMozo) {
         this.producto = producto;
         this.cantidad = cantidad;
         this.descripcion = descripcion;
-        this.mesa = mesa;
+        this.mesaNumero = mesaNumero;
         this.mozo = mozo;
         this.estado = EstadoPedido.EN_ESPERA;
+        this.pedidoId = ultPedidoId;
+        ultPedidoId++;
     }
 
-    public Producto getProducto() {
+    public int getPedidoId() {
+        return pedidoId;
+    }
+
+    public void setPedidoId(int pedidoId) {
+        this.pedidoId = pedidoId;
+    }
+
+    public int getProducto() {
         return producto;
     }
 
-    public void setProducto(Producto producto) {
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
+    }
+
+    public void setProducto(int producto) {
         this.producto = producto;
     }
 
@@ -60,19 +85,19 @@ public class Pedido {
         this.descripcion = descripcion;
     }
 
-    public Mesa getMesa() {
-        return mesa;
+    public int getMesa() {
+        return mesaNumero;
     }
 
-    public void setMesa(Mesa mesa) {
-        this.mesa = mesa;
+    public void setMesa(int mesa) {
+        this.mesaNumero = mesa;
     }
 
-    public Usuario getMozo() {
+    public String getMozo() {
         return mozo;
     }
 
-    public void setMozo(Mozo mozo) {
+    public void setMozo(String mozo) {
         this.mozo = mozo;
     }
 
@@ -87,6 +112,16 @@ public class Pedido {
     public void setGestor(Usuario gestor) {
         this.gestor = gestor;
     }
+
+    public String getNombreMozo() {
+        return nombreMozo;
+    }
+
+    public void setNombreMozo(String nombreMozo) {
+        this.nombreMozo = nombreMozo;
+    }
+    
+    
     
     
 }

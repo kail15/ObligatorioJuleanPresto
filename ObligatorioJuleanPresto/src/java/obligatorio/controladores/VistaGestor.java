@@ -20,4 +20,6 @@ public interface VistaGestor {
     public void obtenerPedidos(List<Pedido> pedidos);
     
     public void mostrarUnidades(List<UnidadProcesadora> unidades);
+
+    public void obtenerPedidosTotales(List<Pedido> pedidos);
 }

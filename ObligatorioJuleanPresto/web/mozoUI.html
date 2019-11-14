@@ -79,9 +79,9 @@ and open the template in the editor.
                     }
                 }
 
-                if (tipo === "TIPO_ACEPTAR_MESA") {   
+                if (tipo === "TIPO_ACEPTAR_MESA") {
                     console.log(valor.aceptaMesa);
-                    
+
                     if (valor.mozoOrigen === userId) {
                         var acepta = " a aceptado la mesa.";
                         if (!valor.aceptaMesa) {
@@ -91,6 +91,18 @@ and open the template in the editor.
                         alert(mensajeMesa);
                     }
                 }
+                if (tipo === "ERROR_LOGOUT") {
+                    alert(valor);
+                }
+                if (tipo === "TIPO_LOGOUT") {
+                    if (valor.userId === userId) {
+
+                        window.location.href = "login.html"
+
+                    }
+
+                }
+
             };
 
             function solicitudMesa(valor) {
@@ -341,8 +353,28 @@ and open the template in the editor.
                 webSocket.send(agregarJson);
             }
 
+            function logout() {
+
+                var jsonObject = {
+                    "userId": userId,
+                    "tipo": "TIPO_LOGOUT"
+                };
+
+                var agregarJson = JSON.stringify(jsonObject);
+                webSocket.send(agregarJson);
+
+            }
+
         </script>
-        <div><h2 id="titleName"></h2></div><br/>
+        <div>
+        </div>
+        <div id="divLogout">
+            <input type="button" value="cerrar sesion" id="btnMozosLog" onclick="logout()"  />
+            <h2 id="titleName"></h2>
+
+        </div>
+
+        <br/>
         <div id="mesasMozo"></div>
         <form id="formMesa" ></form>
         <form id="formProductos" style="display:none">
@@ -365,7 +397,8 @@ and open the template in the editor.
             <h3>Seleccionar mozo</h3><br/>
             <select id="selectMozosLog"></select><br/>
             <input type="button" value="confirmar" id="btnMozosLog" onclick="transferirMesa()"  />    
-        </form>       
+        </form>    
+
 
     </body>
 </html>
