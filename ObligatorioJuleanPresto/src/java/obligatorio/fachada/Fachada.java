@@ -3,7 +3,8 @@ package obligatorio.fachada;
 import java.util.List;
 import observer.Observable;
 import obligatorio.exceptions.CredencialesInvalidasException;
-import obligatorio.exceptions.MesaAbiertaException;
+import obligatorio.exceptions.MesaException;
+import obligatorio.exceptions.PedidoException;
 import obligatorio.exceptions.UsuarioInactivoException;
 import obligatorio.exceptions.UsuarioLogueadoException;
 import obligatorio.vista.web.utils.EstadoPedido;
@@ -51,29 +52,32 @@ public class Fachada extends Observable {
 
     public void confirmarUnidad(UnidadProcesadora unidad, String userId) {
         this.sistemaUsuarios.confirmarUnidad(unidad, userId);
-
     }
-
-    public void agregarPedido(Pedido pedido) {
-        this.sistemaPedidos.agregarPedido(pedido);
-        Fachada.getInstancia().notificar(EVENTOS.PEDIDOS_EN_ESPERA);
-
+    
+    ///envia el pedido desde el mozo al gestor
+    public void agregarPedido(Pedido pedido) throws PedidoException  {
+        Producto prod = productoById(pedido.getPedidoId());
+        pedido.setProducto(prod);        
+        this.sistemaPedidos.agregarPedido(pedido);   
+        prod.setStockDisponible(prod.getStockDisponible() - pedido.getCantidad());
+        NotificarHelper noti = new NotificarHelper(EventoMensaje.ENVIAR_PEDIDO, prod.getUnidadProcesadora());
+        Fachada.getInstancia().notificar(noti);
     }
 
     public void devolverPedidosEnEspera(UnidadProcesadoraDTO unidadPedido) {        
-        unidadPedido.setEvento(EventoMensaje.OBTENER_PEDIDOS);
-        notificar(unidadPedido);
+       NotificarHelper noti = new NotificarHelper(EventoMensaje.OBTENER_PEDIDOS, unidadPedido);
+        notificar(noti);
     }
 
     public List<Pedido> obtenerPedidosEnEspera(UnidadProcesadora unidad) {
         return this.sistemaPedidos.getPedidosEnEspera(unidad);
     }
 
-    private void agregarPedidoSistema(Pedido pedido) {
-         this.sistemaPedidos.agregarPedido(pedido);
+    private void agregarPedidoSistema(Pedido pedido){
+         this.sistemaPedidos.cargarPedido(pedido);
     }
 
-    public void logout(Mozo mozo) throws MesaAbiertaException {      
+    public void logout(Mozo mozo) throws MesaException {      
         boolean ret = this.sistemaUsuarios.logout(mozo); 
         NotificarHelper noti = new NotificarHelper(EventoMensaje.LOGOUT, mozo);
         noti.setEstado(ret);
@@ -82,15 +86,25 @@ public class Fachada extends Observable {
 
     public void procesarPedido(PedidoDTO p) {
         Pedido unPedido = new Pedido();
-        unPedido.setPedidoId(p.getPedidoId());         
+        unPedido.setPedidoId(p.getPedidoId());
+        Usuario gestor = usuarioById(p.getGestorId());
+        unPedido.setGestor(gestor);
         
         this.sistemaPedidos.procesarPedido(unPedido);
-        NotificarHelper helper = new NotificarHelper(EventoMensaje.PEDIDO_PROCESADO, null);
+        Producto prod = new Producto();
+        prod.setCodigo(p.getPedidoId());
+        UnidadProcesadora unidad = unidadProcByProd(prod);
+        
+        NotificarHelper helper = new NotificarHelper(EventoMensaje.PEDIDO_PROCESADO, unidad);
         notificar(helper);
     }
 
     public List<Pedido> getPedidos() {
         return this.sistemaPedidos.getPedidos();
+    }
+
+    public void cambiarEstadoMesa(Mesa mesa) throws MesaException{
+        this.sistemaPedidos.validarMesasConPedido(mesa);
     }
 
     public enum EVENTOS {
@@ -156,6 +170,14 @@ public class Fachada extends Observable {
     public Usuario usuarioById(String usuarioId) {
         return this.sistemaUsuarios.UsuarioById(usuarioId);
     }
+    
+    public UnidadProcesadora unidadProcByProd(Producto p){    
+       return this.sistemaProductos.obtenerUpByProducto(p);
+    }
+    
+    public Producto productoById(int id){
+    return this.sistemaProductos.obtenerProductoById(id);
+    }
 
     public List<UnidadProcesadora> obtenerUnidades() {
         return this.sistemaUnidades.getUnidades();
@@ -166,6 +188,8 @@ public class Fachada extends Observable {
         Usuario carlos = new Mozo("4", "user1", "pass", "carlos valdez");
         Usuario pedro = new Mozo("5", "user3", "pass", "pedro mendez");
         Usuario juan = new Gestor("2", "user2", "pass", "juan perez");
+        Usuario jose = new Gestor("6", "user", "pass", "jose perez");
+
         Mesa mesa1 = new Mesa(1);
         Mesa mesa2 = new Mesa(2);
         Mesa mesa3 = new Mesa(3);
@@ -187,9 +211,9 @@ public class Fachada extends Observable {
         Producto prod2 = new Producto(2, "cerveza", 120.0, 100, bar);
         
         //pedidos
-        Pedido ped1 = new Pedido(1, prod1, 2, "MCDONALd", mesa7, carlos, EstadoPedido.EN_ESPERA);
-        Pedido ped2 = new Pedido(2,prod2, 5, "MCDONALd", mesa7, carlos, EstadoPedido.EN_ESPERA);
-        Pedido ped3 = new Pedido(3, prod3, 2, "MCDONALd", mesa7, carlos, EstadoPedido.PROCESADO);
+        Pedido ped1 = new Pedido(152, prod1, 2, "MCDONALd", mesa3, carlos, EstadoPedido.EN_ESPERA);
+        Pedido ped2 = new Pedido(153,prod2, 5, "MCDONALd", mesa3, carlos, EstadoPedido.EN_ESPERA);
+        Pedido ped3 = new Pedido(154, prod3, 2, "MCDONALd", mesa3, carlos, EstadoPedido.PROCESADO);
 
         carlos.agregarMesa(mesa1);
         carlos.agregarMesa(mesa2);
@@ -203,6 +227,7 @@ public class Fachada extends Observable {
         this.agregarUsuario(carlos);
         this.agregarUsuario(pedro);
         this.agregarUsuario(juan);
+        this.agregarUsuario(jose);
 
         this.agregarProducto(prod1);
         this.agregarProducto(prod2);

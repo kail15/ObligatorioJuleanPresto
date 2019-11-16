@@ -1,20 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package obligatorio.modelo;
 
 import obligatorio.vista.web.utils.EstadoPedido;
-import java.awt.List;
 import java.util.ArrayList;
+import obligatorio.exceptions.MesaException;
+import obligatorio.exceptions.PedidoException;
+import obligatorio.vista.web.dto.MesaDTO;
 
-/**
- *
- * @author Usuario
- */
 public class SistemaPedidos {
-    
+
     private ArrayList<Pedido> pedidos;
 
     public SistemaPedidos() {
@@ -27,38 +20,58 @@ public class SistemaPedidos {
 
     public void setPedidos(ArrayList<Pedido> pedidos) {
         this.pedidos = pedidos;
-    } 
-    
-    
-    public ArrayList<Pedido> getPedidosEnEspera(UnidadProcesadora unidad) {
-        
-        ArrayList<Pedido> pedidosEnEspera = new ArrayList();
-        
-         pedidos.forEach((p) ->{
-             Producto prod =  p.getProducto();
-             
-             
-             
-           if(p.getProducto().validarUnidadProcesadora(unidad) && p.getEstado().equals(EstadoPedido.EN_ESPERA)){
-              pedidosEnEspera.add(p);
-           }
-         });       
-         
-         return pedidosEnEspera;
     }
 
-    public void agregarPedido(Pedido pedido) {
-        if(pedido != null){
-            this.pedidos.add(pedido);            
+    public ArrayList<Pedido> getPedidosEnEspera(UnidadProcesadora unidad) {
+        ArrayList<Pedido> pedidosEnEspera = new ArrayList();
+        pedidos.forEach((p) -> {
+            Producto prod = p.getProducto();
+            if (p.getProducto().validarUnidadProcesadora(unidad) && p.getEstado().equals(EstadoPedido.EN_ESPERA)) {
+                pedidosEnEspera.add(p);
+            }
+        });
+        return pedidosEnEspera;
+    }
+
+    public void agregarPedido(Pedido pedido) throws PedidoException {
+        boolean hayStock = pedido.getProducto().validarProductoStock(pedido);
+
+        if (!hayStock) {
+            throw new PedidoException("sin stock");
+        } else if (pedido.getCantidad() < 1) {
+            throw new PedidoException("cantidad inválida");
+        } else {
+            this.pedidos.add(pedido);
         }
     }
 
     public void procesarPedido(Pedido unPedido) {
         pedidos.forEach((p) -> {
-            if(p.getPedidoId() == unPedido.getPedidoId()){
+            if (p.getPedidoId() == unPedido.getPedidoId()) {
                 p.setEstado(EstadoPedido.PROCESADO);
+                p.setGestor(unPedido.getGestor());
             }
         });
     }
-    
+
+    public boolean validarMesasConPedido(Mesa mesa) throws MesaException {
+
+        boolean cierra = false;
+        for (Pedido p : this.pedidos) {
+            if (p.getMesa().getNumero() == mesa.getNumero()) {
+                cierra = p.validarMesasConPedido(mesa);
+                break;
+            }
+        }
+        if (!cierra) {
+            return true;
+        } else {
+            throw new MesaException("La mesa tienen pedidos pendientes");
+        }
+    }
+
+    public void cargarPedido(Pedido p) {
+        this.pedidos.add(p);
+    }
+
 }

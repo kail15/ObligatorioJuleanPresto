@@ -1,7 +1,8 @@
 package obligatorio.controladores;
 
 import java.util.List;
-import obligatorio.exceptions.MesaAbiertaException;
+import obligatorio.exceptions.MesaException;
+import obligatorio.exceptions.PedidoException;
 import obligatorio.fachada.Fachada;
 import obligatorio.vista.web.utils.EventoMensaje;
 import obligatorio.modelo.Mesa;
@@ -10,6 +11,7 @@ import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.Usuario;
+import obligatorio.vista.web.dto.MesaDTO;
 import obligatorio.vista.web.dto.WsMessageDTO.TipoMensaje;
 import obligatorio.vista.web.utils.NotificarHelper;
 import observer.Observable;
@@ -39,10 +41,26 @@ public class ControladorMozo implements Observador {
         this.mozoLogueado = mozoLogueado;
     }
 
-    public List<Mesa> CambiarEstadoMesa(int id, boolean estado) {
-        List<Mesa> mesasMozo;
-        mesasMozo = this.mozoLogueado.CambiarEstadoMesa(id, estado);
-        return mesasMozo;
+    public List<Mesa> CambiarEstadoMesa(MesaDTO mesaDto) {
+        try {
+            List<Mesa> mesasMozo;
+            Mesa mesa = new Mesa(mesaDto.getNumero(), mesaDto.getEstado());
+            this.fachada.cambiarEstadoMesa(mesa);
+            mesasMozo = this.mozoLogueado.CambiarEstadoMesa(mesa.getNumero(), mesa.getEstado());
+
+            return mesasMozo;
+        } catch (MesaException ex) {
+            vista.mostrarError(ex.getMessage());
+        }
+        return null;
+    }
+
+    public void logout(Mozo mozo) {
+        try {
+            this.fachada.logout(mozo);
+        } catch (MesaException ex) {
+            vista.mostrarError(ex.getMessage());
+        }
     }
 
     public void transferirMesa(MesaTransferida mesa) {
@@ -54,19 +72,15 @@ public class ControladorMozo implements Observador {
     }
 
     public void agregarPedido(Pedido pedido) {
-        this.fachada.agregarPedido(pedido);
+        try {
+            this.fachada.agregarPedido(pedido);
+        } catch (PedidoException ex) {
+            vista.mostrarError(ex.getMessage());
+        }
     }
 
     public Usuario usuarioById(String usuarioId) {
         return Fachada.getInstancia().usuarioById(usuarioId);
-    }
-
-    public void logout(Mozo mozo) {
-        try {
-            this.fachada.logout(mozo);
-        } catch (MesaAbiertaException ex) {
-            vista.mostrarError(ex.getMessage());
-        }
     }
 
     @Override
@@ -86,10 +100,9 @@ public class ControladorMozo implements Observador {
             if (ret.getEvento().equals(EventoMensaje.LOGOUT)) {
                 List<Usuario> usuarios = this.fachada.getInstancia().obtenerUsuariosLogueados();
                 vista.obtenerMozosLogueados(usuarios);
-                Usuario usuarioLogout = (Usuario)((NotificarHelper) evento).getObjetoNotificar();
+                Usuario usuarioLogout = (Usuario) ((NotificarHelper) evento).getObjetoNotificar();
                 vista.logoutMozo(usuarioLogout);
             }
-
         }
 
         if (evento.equals(Fachada.EVENTOS.NUEVO_USUARIO_LOGUEADO)) {
@@ -97,5 +110,4 @@ public class ControladorMozo implements Observador {
             vista.obtenerMozosLogueados(usuarios);
         }
     }
-
 }

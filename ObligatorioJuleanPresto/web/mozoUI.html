@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
+
 <html>
     <head>
         <title>Mozos</title>
@@ -20,6 +16,7 @@ and open the template in the editor.
             }
 
             .squareGreen {
+                border-width:1px;
                 margin-left: 30px;
                 margin-bottom: 10px;
                 padding: 8px;
@@ -30,6 +27,15 @@ and open the template in the editor.
 
             .marginForm{
                 margin-left: 30px;
+            }
+
+            #divServicios{
+                border-width:1px;
+                margin: 0 auto;               
+                height: 100px;
+                width: 150px;
+                background-color: #999999;
+
             }
 
         </style>
@@ -96,13 +102,9 @@ and open the template in the editor.
                 }
                 if (tipo === "TIPO_LOGOUT") {
                     if (valor.userId === userId) {
-
-                        window.location.href = "login.html"
-
+                        window.location.href = "login.html";
                     }
-
                 }
-
             };
 
             function solicitudMesa(valor) {
@@ -262,6 +264,15 @@ and open the template in the editor.
                 currentMesa.numero = value.numero;
                 currentMesa.estadoMesa = value.estado;
 
+                if (currentMesa.estadoMesa) {
+                    var esVisible = $("#divServicios").is(":visible");
+                    if (esVisible) {
+                        $("#divServicios").hide();
+                    } else {
+                        $("#divServicios").show();
+                        mostrarServicio(currentMesa.numero);
+                    }
+                }
 
                 $('.marginForm').each(function (i, obj) {
                     if (idForm !== obj.id) {
@@ -276,6 +287,15 @@ and open the template in the editor.
                 } else {
                     $("#" + idForm).css("display", "block");
                 }
+            }
+            
+            function mostrarServicio(servicio){
+                $("#divServicios").text("");
+                var ulServicio = '<ul>';
+                var li = '<li>'+servicio+'</li>';
+                ulServicio += li+ '</ul>';               
+                
+                $("#divServicios").append(ulServicio);
             }
 
             function abrirCuadroProd(id) {
@@ -329,7 +349,6 @@ and open the template in the editor.
                     "tipo": "TIPO_AGREGAR_PEDIDO"
                 };
 
-
                 var agregarJson = JSON.stringify(jsonObject);
                 webSocket.send(agregarJson);
             }
@@ -366,11 +385,14 @@ and open the template in the editor.
             }
 
         </script>
-        <div>
-        </div>
+
         <div id="divLogout">
             <input type="button" value="cerrar sesion" id="btnMozosLog" onclick="logout()"  />
             <h2 id="titleName"></h2>
+
+        </div>
+        <div id="divServicios" style="display:none">
+            <h3>Datos del servicio</h3>
 
         </div>
 
@@ -397,7 +419,8 @@ and open the template in the editor.
             <h3>Seleccionar mozo</h3><br/>
             <select id="selectMozosLog"></select><br/>
             <input type="button" value="confirmar" id="btnMozosLog" onclick="transferirMesa()"  />    
-        </form>    
+        </form>
+
 
 
     </body>

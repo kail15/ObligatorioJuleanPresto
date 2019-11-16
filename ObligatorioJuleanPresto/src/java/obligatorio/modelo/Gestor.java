@@ -16,6 +16,8 @@ public class Gestor extends Usuario {
     public Gestor(String userId, String nombreUsuario, String password, String nombreCompleto) {
         super(userId, nombreUsuario, password, nombreCompleto);
     }
+    
+    public Gestor(){}
 
     @Override
     public UnidadProcesadora getUnidadProcesadora() {

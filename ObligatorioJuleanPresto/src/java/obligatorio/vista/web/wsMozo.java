@@ -96,8 +96,8 @@ public class wsMozo implements VistaMozo {
     @Override
     public void CambiarEstadoMesa(int mesaNumero, boolean estado) {
         List<Mesa> mesasMozo;
-        mesasMozo = this.controlador.CambiarEstadoMesa(mesaNumero, estado);
-        this.mozo.setMesas(mesasMozo);
+        MesaDTO mesa = new MesaDTO(mesaNumero, estado);
+        mesasMozo = this.controlador.CambiarEstadoMesa(mesa);
         MozoDTO mozoDto = adaptarMozo(this.mozo);
         WsMessageDTO msg = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CAMBIAR_ESTADO_MESA, mozoDto);
         String mensaje = MessageConverter.toMessage(msg);
@@ -124,18 +124,7 @@ public class wsMozo implements VistaMozo {
         WsMessageDTO msg = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_ACEPTAR_MESA, mesaDto);
         String mensaje = MessageConverter.toMessage(msg);
         WsUtils.enviarMensajePorSocket(session, mensaje);
-    }
-
-    private void enviarMesaTransf(MesaTransferidaDTO mesa) {
-        MesaTransferida mesaTransf = new MesaTransferida(mesa.getNumero(), mesa.getMozoOrigen(),
-                mesa.getMozoDestino(), mesa.getMozoOrigenNombre(), mesa.getMozoDestinoNombre(), mesa.isEstadoMesa());
-        this.controlador.transferirMesa(mesaTransf);
-    }
-
-    private void enviarPedido(PedidoDTO pedidoDto) {
-
-        //  this.controlador.agregarPedido(prod);
-    }
+    }    
 
     private void confirmarMesaTransf(MesaTransferidaDTO mesa) {
         MesaTransferida mesaTransf = new MesaTransferida(mesa.getNumero(), mesa.getMozoOrigen(),
@@ -167,14 +156,34 @@ public class wsMozo implements VistaMozo {
         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_MOZOS_LOGUEADOS, mozosLog);
         String mensaje = MessageConverter.toMessage(msgTipos);
         WsUtils.enviarMensajePorSocket(session, mensaje);
-    }
-    
-    private void logout(MozoDTO mozoDto){
-       Mozo mozoLogout = new Mozo();
-       mozoLogout.setUserId(mozoDto.getUserId());
-       this.controlador.logout(mozoLogout);
+    }    
+
+    @Override
+    public void mostrarError(String error) {
+
+        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.ERROR_LOGOUT, error);
+        String mensaje = MessageConverter.toMessage(msgTipos);
+        WsUtils.enviarMensajePorSocket(session, mensaje);
     }
 
+    @Override
+    public void logoutMozo(Usuario usuario) {
+        MozoDTO mozoDto = new MozoDTO();
+        mozoDto.setUserId(usuario.getUserId());
+        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_LOGOUT, mozoDto);
+        String mensaje = MessageConverter.toMessage(msgTipos);
+        WsUtils.enviarMensajePorSocket(session, mensaje);
+
+    }
+    
+    private Pedido adaptarPedido(PedidoDTO p) {
+        Producto prod = new Producto();
+        Mesa mesa = new Mesa(p.getMesa());      
+        prod.setCodigo(p.getProducto());
+        Pedido pedido = new Pedido(prod, p.getCantidad(), p.getDescripcion(), mesa, this.mozo);
+        return pedido;
+    }
+    
     private MozoDTO adaptarMozo(Usuario mozo) {
         MozoDTO mozoDto = new MozoDTO(mozo.getNombreUsuario(), mozo.getPassword(), mozo.getNombreCompleto(), mozo.getUserId());
         List<MesaDTO> mesasDto = new ArrayList<>();
@@ -206,32 +215,22 @@ public class wsMozo implements VistaMozo {
         mesaDto.setMozoDestinoNombre(mesa.getMozoDestinoNombre());
         mesaDto.setAceptaMesa(mesa.isAceptaMesa());
         return mesaDto;
+    } 
+    
+     private void logout(MozoDTO mozoDto) {
+        Mozo mozoLogout = new Mozo();
+        mozoLogout.setUserId(mozoDto.getUserId());
+        this.controlador.logout(mozoLogout);
+    }   
+     
+     private void enviarMesaTransf(MesaTransferidaDTO mesa) {
+        MesaTransferida mesaTransf = new MesaTransferida(mesa.getNumero(), mesa.getMozoOrigen(),
+                mesa.getMozoDestino(), mesa.getMozoOrigenNombre(), mesa.getMozoDestinoNombre(), mesa.isEstadoMesa());
+        this.controlador.transferirMesa(mesaTransf);
     }
 
-    private Pedido adaptarPedido(PedidoDTO pedidoDto) {
-        // Producto producto, int cantidad, String descripcion, Mesa mesa, Mozo mozo, EstadoPedido estado
-        // int codigo, String nombre, double precioUnitario, int stockDisponible, UnidadProcesadora unidadProcesadora
-        /*Producto prod =  new Producto
-        return new Pedido();*/
-        return null;
+    private void enviarPedido(PedidoDTO pedidoDto) {
+        Pedido pedido =  adaptarPedido(pedidoDto);
+        this.controlador.agregarPedido(pedido);
     }
-
-    @Override
-    public void mostrarError(String error) {
-        
-        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.ERROR_LOGOUT, error);
-        String mensaje = MessageConverter.toMessage(msgTipos);
-        WsUtils.enviarMensajePorSocket(session, mensaje); 
-    }
-
-    @Override
-    public void logoutMozo(Usuario usuario) {
-        MozoDTO mozoDto = new MozoDTO();
-        mozoDto.setUserId(usuario.getUserId());
-        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_LOGOUT, mozoDto);
-        String mensaje = MessageConverter.toMessage(msgTipos);
-        WsUtils.enviarMensajePorSocket(session, mensaje); 
-        
-    }
-
 }

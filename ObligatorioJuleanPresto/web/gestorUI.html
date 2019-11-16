@@ -41,18 +41,12 @@ and open the template in the editor.
                 if (tipo === "TIPO_CARGAR_PEDIDOS") {
                     cargarPedidos(valor);
                 }
-
-
-
             };
-
 
             function mostarGestor(valor) {
                 $("#divUnidades").hide();
                 $("#nombreUnidad").html("Bienvenido " + valor.nombreCompleto);
             }
-
-
 
             function cargarUnidades(valor) {
                 $("#selectUnidades").text("");
@@ -60,7 +54,6 @@ and open the template in the editor.
                     $("#selectUnidades").append('<option value=' + value.id + '>' + value.nombre + '</option>');
                 });
             }
-
 
             function confirmarUnidad() {
                 var idUnidad = parseInt($("#selectUnidades").val());
@@ -72,11 +65,8 @@ and open the template in the editor.
                     "nombre": nombreUnidad,
                     "tipo": "TIPO_CONFIRMAR_UNIDAD"
                 };
-
-
                 var agregarJson = JSON.stringify(jsonObject);
                 webSocket.send(agregarJson);
-
             }
 
             function enviarUP(valor) {
@@ -90,37 +80,48 @@ and open the template in the editor.
 
                 var agregarJson = JSON.stringify(jsonObject);
                 webSocket.send(agregarJson);
-                //$("#divPedidos").append("<>")
             }
 
             function cargarPedidos(valor) {
-                console.log(valor);
                 if (valor.length > 0) {
+                    $("#divProcesados").show();
                     $("#divEnEspera").show();
+                    $("#divPedidosEnEspera").text("");
+                    $("#divPedidosProcesados").text("");
                     $.each(valor, function (key, value) {
                         var ulPedido = '<ul>';
                         var liProd = '<li>' + value.nombreProducto + '</li>';
                         var liCant = '<li>' + value.cantidad + '</li>';
                         ulPedido += liProd + liCant + '</ul>';
-                        var btnPedido = '<input type="button" value="procesar" id="btnProcesar' + value.producto + '"/>';
-                        var idbtnproc = "btnProcesar" + value.producto.toString();
-                        console.log();
+                        if (value.estado === "EN_ESPERA") {
+                            var btnPedido = '<input type="button" value="procesar" id="btnProcesar' + value.producto + '"/>';
+                            var idbtnproc = "btnProcesar" + value.producto.toString();
+                            $("#divPedidosEnEspera").append(ulPedido);
+                            $("#divPedidosEnEspera").append(btnPedido);
+                            $("#divPedidosEnEspera").append('<hr>');
+                            $("#" + idbtnproc).click(function () {
+                                procesarPedido(value);
+                            });
+                        }
+                        if (value.gestorId !== null)
+                        {
+                            if (value.estado === "PROCESADO" && value.gestorId === userId) {
+                                var btnPedido = '<input type="button" value="finalizar" id="btnFinalizar' + value.producto + '"/>';
+                                var idbtnFinal = "btnFinalizar" + value.producto.toString();
 
-
-                        $("#divPedidosEnEspera").append(ulPedido);
-                        $("#divPedidosEnEspera").append(btnPedido);
-                        $("#divPedidosEnEspera").append('<hr>');
-                        $("#" + idbtnproc).click(function () {
-                            procesarPedido(value);
-                        });
-
-
+                                $("#divPedidosProcesados").append(ulPedido);
+                                $("#divPedidosProcesados").append(btnPedido);
+                                $("#divPedidosProcesados").append('<hr>');
+                                $("#" + idbtnFinal).click(function () {
+                                    finalizarPedido(value);
+                                });
+                            }
+                        }
                     });
-                    $("#divProcesados").show();
+
                 } else {
                     $("#divSinPedidos").show();
                 }
-
             }
 
             function procesarPedido(pedido) {
@@ -129,13 +130,32 @@ and open the template in the editor.
                     "pedidoId": pedido.pedidoId,
                     "producto": pedido.producto,
                     "nombreProducto": pedido.nombreProducto,
-                    "mozoId":pedido.mozoId,
-                    "mozoNombre":pedido.mozoNombre,
-                    "mesa":pedido.mesa,
-                    "descripcion":pedido.descripcion,
-                    "cantidad":pedido.cantidad,
-                    "gestorId":userId,
+                    "mozoId": pedido.mozoId,
+                    "mozoNombre": pedido.mozoNombre,
+                    "mesa": pedido.mesa,
+                    "descripcion": pedido.descripcion,
+                    "cantidad": pedido.cantidad,
+                    "gestorId": userId,
                     "tipo": "TIPO_PROCESAR_PEDIDO"
+                };
+
+                var agregarJson = JSON.stringify(jsonObject);
+                webSocket.send(agregarJson);
+            }
+
+            function finalizarPedido(pedido) {
+
+                var jsonObject = {
+                    "pedidoId": pedido.pedidoId,
+                    "producto": pedido.producto,
+                    "nombreProducto": pedido.nombreProducto,
+                    "mozoId": pedido.mozoId,
+                    "mozoNombre": pedido.mozoNombre,
+                    "mesa": pedido.mesa,
+                    "descripcion": pedido.descripcion,
+                    "cantidad": pedido.cantidad,
+                    "gestorId": userId,
+                    "tipo": "TIPO_FINALIZAR_PEDIDO"
                 };
 
                 var agregarJson = JSON.stringify(jsonObject);

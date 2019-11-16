@@ -3,9 +3,10 @@ package obligatorio.modelo;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import obligatorio.exceptions.CredencialesInvalidasException;
-import obligatorio.exceptions.MesaAbiertaException;
+import obligatorio.exceptions.MesaException;
 import obligatorio.exceptions.UsuarioLogueadoException;
 import obligatorio.fachada.Fachada;
+import obligatorio.vista.web.dto.MesaDTO;
 
 //OJP
 public class SistemaUsuarios {
@@ -109,7 +110,7 @@ public class SistemaUsuarios {
         });
     }
 
-    public boolean logout(Mozo mozo) throws MesaAbiertaException {
+    public boolean logout(Mozo mozo) throws MesaException {
         Usuario usuarioMozo = UsuarioById(mozo.getUserId());
         boolean mesaAbierta = false;
         for (Mesa m : usuarioMozo.obtenerMesas()) {
@@ -122,7 +123,9 @@ public class SistemaUsuarios {
             this.usuariosLogueados.removeIf(m -> (m.getUserId().equals(mozo.getUserId())));
             return true;
         } else {
-            throw new MesaAbiertaException("Aun tienes mesas abiertas");
+            throw new MesaException("Aun tienes mesas abiertas");
         }
     }
+
+    
 }

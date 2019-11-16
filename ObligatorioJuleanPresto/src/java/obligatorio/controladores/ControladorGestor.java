@@ -34,18 +34,23 @@ public class ControladorGestor implements Observador {
     @Override
     public void actualizar(Object evento, Observable origen) {
 
-        if (evento instanceof UnidadProcesadoraDTO) {
-            UnidadProcesadoraDTO unidad = (UnidadProcesadoraDTO) evento;
-            UnidadProcesadora unidadModel = new UnidadProcesadora(unidad.getId(), unidad.getNombre());
-            List<Pedido> pedidos = this.fachada.obtenerPedidosEnEspera(unidadModel);
-            vista.obtenerPedidos(pedidos);
-        }
-        
-        if(evento instanceof NotificarHelper){
-            NotificarHelper helper = (NotificarHelper)evento;
-            if(helper.getEvento().equals(EventoMensaje.PEDIDO_PROCESADO)){
+
+        if (evento instanceof NotificarHelper) {
+            NotificarHelper helper = (NotificarHelper) evento;
+            if (helper.getEvento().equals(EventoMensaje.PEDIDO_PROCESADO)) {
                 List<Pedido> pedidos = this.fachada.getPedidos();
                 vista.obtenerPedidosTotales(pedidos);
+            }
+            if (helper.getEvento().equals(EventoMensaje.OBTENER_PEDIDOS)) {
+                UnidadProcesadoraDTO unidad = (UnidadProcesadoraDTO) helper.getObjetoNotificar();
+                UnidadProcesadora unidadModel = new UnidadProcesadora(unidad.getId(), unidad.getNombre());
+                List<Pedido> pedidos = this.fachada.obtenerPedidosEnEspera(unidadModel);
+                vista.obtenerPedidos(pedidos);
+            }
+            if(helper.getEvento().equals(EventoMensaje.ENVIAR_PEDIDO)){
+                UnidadProcesadora unidad = (UnidadProcesadora) helper.getObjetoNotificar();
+                List<Pedido> pedidos = this.fachada.obtenerPedidosEnEspera(unidad);
+                vista.obtenerPedidos(pedidos);           
             }
         }
 

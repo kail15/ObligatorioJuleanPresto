@@ -48,7 +48,6 @@ public abstract class Usuario {
         return userId;
     }
 
-    ////
     public boolean validarLogin(String n, String p) {
         return n.equals(nombreUsuario) && p.equals(password);
     }

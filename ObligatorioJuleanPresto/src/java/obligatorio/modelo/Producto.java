@@ -24,6 +24,8 @@ public class Producto {
         this.stockDisponible = stockDisponible;
         this.unidadProcesadora = unidadProcesadora;
     }
+    
+     public Producto(){}
 
     public int getCodigo() {
         return codigo;
@@ -65,8 +67,14 @@ public class Producto {
         this.unidadProcesadora = unidadProcesadora;
     }
 
-    boolean validarUnidadProcesadora(UnidadProcesadora unidad) {
+    public boolean validarUnidadProcesadora(UnidadProcesadora unidad) {
         return unidad.getId() == this.unidadProcesadora.getId();
     }
-
+    
+    public boolean validarProductoStock(Pedido p){      
+      if (p.getCantidad() <= this.stockDisponible){
+         return true;
+      }
+      return false;    
+    }
 }

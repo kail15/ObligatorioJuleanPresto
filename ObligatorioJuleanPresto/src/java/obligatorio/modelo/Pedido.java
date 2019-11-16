@@ -1,18 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package obligatorio.modelo;
 
 import obligatorio.vista.web.utils.EstadoPedido;
 
-/**
- *
- * @author Usuario
- */
+
 public class Pedido {
     private int pedidoId;
+    private static int ultId;
     private Producto producto;
     private int cantidad;
     private String descripcion;
@@ -27,7 +21,7 @@ public class Pedido {
         this.descripcion = descripcion;
         this.mesa = mesa;
         this.mozo = mozo;
-        this.estado = estado;
+        this.estado = estado;        
         this.pedidoId = pedidoId;
     }
     
@@ -37,6 +31,8 @@ public class Pedido {
         this.descripcion = descripcion;
         this.mesa = mesa;
         this.mozo = mozo;
+        ultId++;
+        this.pedidoId = ultId;
         this.estado = EstadoPedido.EN_ESPERA;
     }
     
@@ -101,6 +97,16 @@ public class Pedido {
     public void setPedidoId(int pedidoId) {
         this.pedidoId = pedidoId;
     }
+
+    public Usuario getGestor() {
+        return gestor;
+    }    
     
     
+    public boolean validarMesasConPedido(Mesa mesa){
+       if (this.mesa.getNumero() == mesa.getNumero() && (this.estado.equals(EstadoPedido.EN_ESPERA) || this.estado.equals(EstadoPedido.PROCESADO))){
+                return true;
+       }
+        return false;
+    }   
 }

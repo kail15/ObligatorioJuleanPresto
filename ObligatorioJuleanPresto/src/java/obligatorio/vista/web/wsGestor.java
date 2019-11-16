@@ -22,6 +22,8 @@ import obligatorio.vista.web.dto.GestorDTO;
 import obligatorio.vista.web.dto.PedidoDTO;
 import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
 import obligatorio.vista.web.dto.WsMessageDTO;
+import obligatorio.vista.web.utils.EstadoPedido;
+import obligatorio.vista.web.utils.EventoMensaje;
 import obligatorio.vista.web.utils.MessageConverter;
 import obligatorio.vista.web.utils.WsSessionHandler;
 import obligatorio.vista.web.utils.WsUtils;
@@ -75,11 +77,12 @@ public class wsGestor implements VistaGestor {
         List<PedidoDTO> pedidosDto = new ArrayList<>();
 
         pedidos.forEach((p) -> {
-            pedidosDto.add(new PedidoDTO(p.getPedidoId(),p.getProducto().getCodigo(), p.getProducto().getNombre(),
+            PedidoDTO pedidoDto = new PedidoDTO(p.getPedidoId(), p.getProducto().getCodigo(), p.getProducto().getNombre(),
                     p.getCantidad(), p.getDescripcion(), p.getMesa().getNumero(),
-                    p.getMozo().getUserId(), p.getMozo().getNombreCompleto()));
+                    p.getMozo().getUserId(), p.getMozo().getNombreCompleto());
+            pedidoDto.setEstado(EstadoPedido.EN_ESPERA);
+            pedidosDto.add(pedidoDto);
         });
-        
 
         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_PEDIDOS, pedidosDto);
         String mensaje = MessageConverter.toMessage(msgTipos);
@@ -129,7 +132,6 @@ public class wsGestor implements VistaGestor {
     }
 
     private void cargarPedidos(UnidadProcesadoraDTO unidadPedido) {
-        // UnidadProcesadora unidad = new UnidadProcesadora(unidadPedido.getId(), unidadPedido.getNombre());
         this.controlador.cargarPedidos(unidadPedido);
     }
 
@@ -141,15 +143,20 @@ public class wsGestor implements VistaGestor {
     public void obtenerPedidosTotales(List<Pedido> pedidos) {
         List<PedidoDTO> pedidosDto = new ArrayList<>();
 
-        /*pedidos.forEach((p) -> {
-            pedidosDto.add(new PedidoDTO(p.getProducto(), p.getNombreProducto(),
-                    p.getCantidad(), p.getDescripcion(), p.getMesa(),
-                    p.getMozo(), p.getNombreMozo()));
-        });*/
-
-        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_UNIDADES, pedidosDto);
+        pedidos.forEach((p) -> {
+            PedidoDTO pedidoDto = new PedidoDTO(p.getPedidoId(), p.getProducto().getCodigo(), p.getProducto().getNombre(),
+                    p.getCantidad(), p.getDescripcion(), p.getMesa().getNumero(), p.getMozo().getUserId(),
+                    p.getMozo().getNombreCompleto());
+            pedidoDto.setEstado(p.getEstado());
+            if(p.getGestor() != null){
+            pedidoDto.setGestorId(p.getGestor().getUserId());
+            }
+            
+            pedidosDto.add(pedidoDto);
+        });
+        
+        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_PEDIDOS, pedidosDto);
         String mensaje = MessageConverter.toMessage(msgTipos);
         WsUtils.enviarMensajePorSocket(session, mensaje);
     }
-
 }
