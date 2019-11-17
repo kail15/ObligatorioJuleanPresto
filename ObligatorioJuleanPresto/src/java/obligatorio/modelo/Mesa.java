@@ -1,12 +1,12 @@
 
 package obligatorio.modelo;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class Mesa {
     private int numero;
     private boolean estado;
-    private List<Servicio> mesas = new ArrayList<>();
+    private Servicio servicio = new Servicio();
 
     public Mesa(int numero) {
         this.numero = numero;
@@ -36,11 +36,19 @@ public class Mesa {
         this.estado = estado;
     }
 
-    public List<Servicio> getMesas() {
-        return mesas;
+    public Servicio getServicio() {
+        return servicio;
     }
 
-    public void setMesas(List<Servicio> mesas) {
-        this.mesas = mesas;
-    }       
+    public void setServicio(Servicio servicio) {
+        this.servicio = servicio;
+    }   
+    
+    public void agregarPedidoAservicio(Pedido p){
+      this.servicio.agregarPedido(p);
+    }
+    
+    public List<Pedido> getPedidosServicio(){
+      return this.servicio.getPedidos();
+    }
 }

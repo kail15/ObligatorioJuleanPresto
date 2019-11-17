@@ -44,13 +44,13 @@ public class ControladorGestor implements Observador {
             if (helper.getEvento().equals(EventoMensaje.OBTENER_PEDIDOS)) {
                 UnidadProcesadoraDTO unidad = (UnidadProcesadoraDTO) helper.getObjetoNotificar();
                 UnidadProcesadora unidadModel = new UnidadProcesadora(unidad.getId(), unidad.getNombre());
-                List<Pedido> pedidos = this.fachada.obtenerPedidosEnEspera(unidadModel);
-                vista.obtenerPedidos(pedidos);
+                List<Pedido> pedidos = this.fachada.getPedidos();
+                vista.obtenerPedidosTotales(pedidos);
             }
             if(helper.getEvento().equals(EventoMensaje.ENVIAR_PEDIDO)){
                 UnidadProcesadora unidad = (UnidadProcesadora) helper.getObjetoNotificar();
-                List<Pedido> pedidos = this.fachada.obtenerPedidosEnEspera(unidad);
-                vista.obtenerPedidos(pedidos);           
+                List<Pedido> pedidos = this.fachada.getPedidos();
+                vista.obtenerPedidosTotales(pedidos);           
             }
         }
 
@@ -60,8 +60,8 @@ public class ControladorGestor implements Observador {
         this.fachada.devolverPedidosEnEspera(unidadPedido);
     }
 
-    public void procesarPedido(PedidoDTO pedidoDto) {
-        this.fachada.procesarPedido(pedidoDto);
+    public void cambiarEstadoPedido(PedidoDTO pedidoDto) {
+        this.fachada.cambiarEstadoPedido(pedidoDto);
     }
 
 }

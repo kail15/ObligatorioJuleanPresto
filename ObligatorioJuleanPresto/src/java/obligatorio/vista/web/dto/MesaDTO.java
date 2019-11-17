@@ -1,18 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package obligatorio.vista.web.dto;
 
-/**
- *
- * @author Usuario
- */
+
 public class MesaDTO {
     
     private int numero;
     private boolean estado;
+    private ServicioDTO servicio = new ServicioDTO();
 
     public MesaDTO(int numero, boolean estado) {
         this.numero = numero;
@@ -34,4 +28,24 @@ public class MesaDTO {
     public void setEstado(boolean estado) {
         this.estado = estado;
     }   
+
+    public ServicioDTO getServicio() {
+        return servicio;
+    }
+
+    public void setServicio(ServicioDTO servicio) {
+        this.servicio = servicio;
+    }   
+    
+    public void agregarPedidoAservicio(PedidoDTO p){
+      this.servicio.agregarPedido(p);
+    }
+    
+    public double calcularPrecioTotal() {
+       return this.servicio.calcularPrecioTotal();    
+    }
+    
+    public void setPrecioServicio(double total){
+      this.servicio.setPrecioServicio(total);
+    }
 }

@@ -1,32 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package obligatorio.modelo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Usuario
- */
+
 public class Servicio {
-    private List<Item> items;
+    private List<Pedido> pedidos = new ArrayList<>();
     private Cliente cliente;
 
-    public Servicio(List<Item> items, Cliente cliente) {
-        this.items = new ArrayList<>();
-        this.cliente = cliente;
+    public Servicio() {
     }
 
-    public List<Item> getItems() {
-        return items;
+    public List<Pedido> getPedidos() {
+        return pedidos;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 
     public Cliente getCliente() {
@@ -35,9 +26,9 @@ public class Servicio {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
-    }
+    } 
     
-    
-    
-    
+    public void agregarPedido(Pedido p){
+      this.pedidos.add(p);
+    }    
 }

@@ -12,7 +12,6 @@ import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.Usuario;
 import obligatorio.vista.web.dto.MesaDTO;
-import obligatorio.vista.web.dto.WsMessageDTO.TipoMensaje;
 import obligatorio.vista.web.utils.NotificarHelper;
 import observer.Observable;
 import observer.Observador;
@@ -103,10 +102,18 @@ public class ControladorMozo implements Observador {
                 Usuario usuarioLogout = (Usuario) ((NotificarHelper) evento).getObjetoNotificar();
                 vista.logoutMozo(usuarioLogout);
             }
+            if(ret.getEvento().equals(EventoMensaje.CAMBIO_ESTADO_PEDIDO)){
+                vista.obtenerMozo(null);
+            }
+            if(ret.getEvento().equals(EventoMensaje.OBTENER_PEDIDOS)){
+                List<Producto> productos = this.fachada.obtenerProductos();
+                vista.obtenerProductos(productos);
+                vista.obtenerMozo(null);
+            }
         }
 
         if (evento.equals(Fachada.EVENTOS.NUEVO_USUARIO_LOGUEADO)) {
-            List<Usuario> usuarios = this.fachada.getInstancia().obtenerUsuariosLogueados();
+            List<Usuario> usuarios = Fachada.getInstancia().obtenerUsuariosLogueados();
             vista.obtenerMozosLogueados(usuarios);
         }
     }

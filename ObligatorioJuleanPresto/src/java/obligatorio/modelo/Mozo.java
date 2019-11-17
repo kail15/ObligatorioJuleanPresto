@@ -55,4 +55,16 @@ public class Mozo extends Usuario {
     public boolean validarMesasLogout(Mesa mesa){
         return this.mesas.stream().noneMatch((m) -> (m.getEstado() && m.getNumero() == mesa.getNumero()));        
     }   
+    
+    @Override
+    public Mesa obtenerMesaByNumero(int numero) {
+        Mesa mesa = null;
+      for(Mesa m : this.mesas){
+         if(m.getNumero() == numero ){
+            mesa = m;
+            break;
+         }
+      }
+      return mesa;
+    }
 }

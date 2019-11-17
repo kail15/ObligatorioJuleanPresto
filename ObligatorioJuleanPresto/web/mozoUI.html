@@ -35,7 +35,6 @@
                 height: 100px;
                 width: 150px;
                 background-color: #999999;
-
             }
 
         </style>
@@ -45,11 +44,15 @@
         <script>
             var userId = sessionStorage.getItem("userId");
             var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wsMozo/" + userId);
-            var selectProductos = [];
+            var selectProductos = [];            
+
             var currentMesa = {
                 "numero": 0,
-                "estadoMesa": false
+                "estadoMesa": false,
             };
+
+            var mesas = [];
+
             var nombreMozo;
             //Capturo Evento onBeforeUnload
             window.onbeforeunload = function () {
@@ -65,6 +68,7 @@
                 var tipo = jsonObject.tipo;
                 var valor = jsonObject.valor;
                 if (tipo === "TIPO_MOSTRAR_MOZO") {
+                    console.log(valor);
                     mostrarMozo(valor);
                 }
                 if (tipo === "TIPO_CAMBIAR_ESTADO_MESA") {
@@ -86,8 +90,6 @@
                 }
 
                 if (tipo === "TIPO_ACEPTAR_MESA") {
-                    console.log(valor.aceptaMesa);
-
                     if (valor.mozoOrigen === userId) {
                         var acepta = " a aceptado la mesa.";
                         if (!valor.aceptaMesa) {
@@ -134,15 +136,55 @@
                     webSocket.send(agregarJson);
 
                 }, 2000);
-
             }
 
-
-
             function mostrarMozo(valor) {
+                mesas = [];
                 nombreMozo = valor.nombreCompleto;
                 $('#mesasMozo').text("");
                 $.each(valor.mesas, function (key, value) {
+
+                    var servicioObj = {
+                        "costoServicio": value.servicio.costoServicio,
+                        "items": []
+                    };
+
+                    var mesaObj = {
+                        "numero": value.numero,
+                        "estado": value.estado,
+                        "servicio": servicioObj
+                    };
+
+                    if (value.servicio.pedidos.length > 0) {
+
+                        $.each(value.servicio.pedidos, function (key, ped) {
+
+                            var estadoPed = "";
+
+                            if (ped.estado === "EN_ESPERA") {
+                                estadoPed = "En espera";
+                            } else if (ped.estado === "PROCESADO") {
+                                estadoPed = "Procesando";
+                            } else if (ped.estado === "FINALIZADO") {
+                                estadoPed = "Finalizado";
+                            }
+
+                            var itemObj = {
+                                "nombreProducto": ped.nombreProducto,
+                                "cantidad": ped.cantidad,
+                                "precioProducto": ped.precioProducto,
+                                "total": ped.cantidad * ped.precioProduct,
+                                "estado": estadoPed,
+                                "gestorNombre": ped.gestorNombre
+                            };
+
+                            servicioObj.items.push(itemObj);
+
+                        });
+                    }
+                    
+                    mesas.push(mesaObj);
+
                     if (value.estado) {
                         $('#mesasMozo').append('<div class="squareGreen" id=' + value.numero + '> Mesa: ' + value.numero + '</div>');
                     } else {
@@ -218,8 +260,10 @@
             }
 
             function cargarProductos(valor) {
+                $("#infoProd").empty();
+                $("#selectProductos").empty();
+                $("#selectProductos").append('<option value=' + null + '> Seleccione un producto </option>');
                 $.each(valor, function (key, value) {
-                    // $("#selectProductos").append('<option> Seleccione un producto </option>');
                     $("#selectProductos").append('<option value=' + value.codigo + '>' + value.nombre + '</option>');
 
                     var prod = {
@@ -236,11 +280,14 @@
 
             function cargarInfoProd() {
                 var infoProd = obtenerInfoProd($("#selectProductos").val());
+                var idSelect = $("#selectProductos").val();
                 $("#infoProd").empty();
-                $("#infoProd").append("<li>" + infoProd.nombre + "</li>");
-                $("#infoProd").append("<li>" + "$ " + infoProd.precio + "</li>");
-                $("#infoProd").append("<li>" + infoProd.stock + "</li>");
-                $("#infoProd").append("<li>" + infoProd.unidadNombre + "</li>");
+                if (idSelect !== 'null') {
+                    $("#infoProd").append("<li>" + '<b>Producto:</b> ' + infoProd.nombre + "</li>");
+                    $("#infoProd").append("<li>" + '<b>Precio:</b> ' + "$ " + infoProd.precio + "</li>");
+                    $("#infoProd").append("<li>" + '<b>Stock:</b> ' + infoProd.stock + "</li>");
+                    $("#infoProd").append("<li>" + '<b>Unidad:</b> ' + infoProd.unidadNombre + "</li>");
+                }
             }
 
             function obtenerInfoProd(valor) {
@@ -261,6 +308,11 @@
             }
 
             function abrirCuadro(idForm, value) {
+                
+             //   console.log(mesas);
+                
+                $("#formProductos").hide();
+                $("#formMozosLog").hide();
                 currentMesa.numero = value.numero;
                 currentMesa.estadoMesa = value.estado;
 
@@ -288,14 +340,26 @@
                     $("#" + idForm).css("display", "block");
                 }
             }
-            
-            function mostrarServicio(servicio){
-                $("#divServicios").text("");
-                var ulServicio = '<ul>';
-                var li = '<li>'+servicio+'</li>';
-                ulServicio += li+ '</ul>';               
+
+            function mostrarServicio(idMesa) {
                 
-                $("#divServicios").append(ulServicio);
+                var mesaPedido;
+                
+                $.each(mesas, function(key, m){
+                    if(m.numero === idMesa){                        
+                        mesaPedido = m;
+                    }      
+                });         
+                
+                //console.log(mesaPedido);
+                
+                
+                /*$("#divServicios").text("");
+                var ulServicio = '<ul>';
+                var li = '<li>' + servicio + '</li>';
+                ulServicio += li + '</ul>';
+
+                $("#divServicios").append(ulServicio);*/
             }
 
             function abrirCuadroProd(id) {
@@ -336,21 +400,31 @@
 
             function agregarPedido() {
                 var idProd = $("#selectProductos").val();
-                var cantidad = parseInt($("#cantidadProd").val());
-                var descripcion = $("#descProd").val();
-                var mesa = parseInt(currentMesa.numero);
+                if (idProd !== 'null') {
+                    var cantidad = parseInt($("#cantidadProd").val());
+                    var descripcion = $("#descProd").val();
+                    var mesa = parseInt(currentMesa.numero);
 
-                var jsonObject = {
-                    "producto": idProd,
-                    "cantidad": cantidad,
-                    "descripcion": descripcion,
-                    "mesa": mesa,
-                    "mozoId": userId,
-                    "tipo": "TIPO_AGREGAR_PEDIDO"
-                };
+                    var jsonObject = {
+                        "producto": idProd,
+                        "cantidad": cantidad,
+                        "descripcion": descripcion,
+                        "mesa": mesa,
+                        "mozoId": userId,
+                        "tipo": "TIPO_AGREGAR_PEDIDO"
+                    };
 
-                var agregarJson = JSON.stringify(jsonObject);
-                webSocket.send(agregarJson);
+                    var agregarJson = JSON.stringify(jsonObject);
+                    webSocket.send(agregarJson);
+
+                    $("#formProductos").hide();
+                    $("#cantidadProd").val("");
+                    $("#descProd").val("");
+                    alert("El producto fue enviado");
+
+                } else {
+                    alert("Debes seleccionar un producto de la lista");
+                }
             }
 
             function transferirMesa() {

@@ -63,7 +63,11 @@ public class wsGestor implements VistaGestor {
                     break;
                 case TIPO_PROCESAR_PEDIDO:
                     PedidoDTO pedidoDto = gson.fromJson(message, PedidoDTO.class);
-                    procesarPedido(pedidoDto);
+                    cambiarEstadoPedido(pedidoDto);
+                    break;
+                    case TIPO_PEDIDO_LISTO:
+                    PedidoDTO pedidoDtofin = gson.fromJson(message, PedidoDTO.class);
+                    cambiarEstadoPedido(pedidoDtofin);
                     break;
 
                 default:
@@ -72,6 +76,7 @@ public class wsGestor implements VistaGestor {
         }
     }
 
+    ///SE PUEDE PRECINDIR DE ESTE METODO
     @Override
     public void obtenerPedidos(List<Pedido> pedidos) {
         List<PedidoDTO> pedidosDto = new ArrayList<>();
@@ -81,6 +86,7 @@ public class wsGestor implements VistaGestor {
                     p.getCantidad(), p.getDescripcion(), p.getMesa().getNumero(),
                     p.getMozo().getUserId(), p.getMozo().getNombreCompleto());
             pedidoDto.setEstado(EstadoPedido.EN_ESPERA);
+            pedidoDto.setUnidad(p.getProducto().getUnidadProcesadora().getId());
             pedidosDto.add(pedidoDto);
         });
 
@@ -113,6 +119,27 @@ public class wsGestor implements VistaGestor {
         WsUtils.enviarMensajePorSocket(session, mensaje);
 
     }
+    
+    @Override
+    public void obtenerPedidosTotales(List<Pedido> pedidos) {
+        List<PedidoDTO> pedidosDto = new ArrayList<>();
+
+        pedidos.forEach((p) -> {
+            PedidoDTO pedidoDto = new PedidoDTO(p.getPedidoId(), p.getProducto().getCodigo(), p.getProducto().getNombre(),
+                    p.getCantidad(), p.getDescripcion(), p.getMesa().getNumero(), p.getMozo().getUserId(),
+                    p.getMozo().getNombreCompleto());
+            pedidoDto.setEstado(p.getEstado());
+            pedidoDto.setUnidad(p.getProducto().getUnidadProcesadora().getId());
+            if(p.getGestor() != null){
+            pedidoDto.setGestorId(p.getGestor().getUserId());
+            }            
+            pedidosDto.add(pedidoDto);
+        });
+        
+        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_PEDIDOS, pedidosDto);
+        String mensaje = MessageConverter.toMessage(msgTipos);
+        WsUtils.enviarMensajePorSocket(session, mensaje);
+    }
 
     private void confirmarUnidad(UnidadProcesadoraDTO unidadDto) {
         UnidadProcesadora unidad = new UnidadProcesadora(unidadDto.getId(), unidadDto.getNombre());
@@ -135,28 +162,8 @@ public class wsGestor implements VistaGestor {
         this.controlador.cargarPedidos(unidadPedido);
     }
 
-    private void procesarPedido(PedidoDTO pedidoDto) {
-        this.controlador.procesarPedido(pedidoDto);
-    }
-
-    @Override
-    public void obtenerPedidosTotales(List<Pedido> pedidos) {
-        List<PedidoDTO> pedidosDto = new ArrayList<>();
-
-        pedidos.forEach((p) -> {
-            PedidoDTO pedidoDto = new PedidoDTO(p.getPedidoId(), p.getProducto().getCodigo(), p.getProducto().getNombre(),
-                    p.getCantidad(), p.getDescripcion(), p.getMesa().getNumero(), p.getMozo().getUserId(),
-                    p.getMozo().getNombreCompleto());
-            pedidoDto.setEstado(p.getEstado());
-            if(p.getGestor() != null){
-            pedidoDto.setGestorId(p.getGestor().getUserId());
-            }
-            
-            pedidosDto.add(pedidoDto);
-        });
-        
-        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_PEDIDOS, pedidosDto);
-        String mensaje = MessageConverter.toMessage(msgTipos);
-        WsUtils.enviarMensajePorSocket(session, mensaje);
-    }
+    private void cambiarEstadoPedido(PedidoDTO pedidoDto) {
+        this.controlador.cambiarEstadoPedido(pedidoDto);
+    } 
+   
 }

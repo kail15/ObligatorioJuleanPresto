@@ -2,6 +2,7 @@ package obligatorio.modelo;
 
 import obligatorio.vista.web.utils.EstadoPedido;
 import java.util.ArrayList;
+import java.util.List;
 import obligatorio.exceptions.MesaException;
 import obligatorio.exceptions.PedidoException;
 import obligatorio.vista.web.dto.MesaDTO;
@@ -32,6 +33,18 @@ public class SistemaPedidos {
         });
         return pedidosEnEspera;
     }
+    
+    public List<Pedido> getPedidosByUnidad(UnidadProcesadora unidad) {
+        
+        ArrayList<Pedido> pedidosEnEspera = new ArrayList();
+        pedidos.forEach((p) -> {
+            Producto prod = p.getProducto();
+            if (p.getProducto().validarUnidadProcesadora(unidad)) {
+                pedidosEnEspera.add(p);
+            }
+        });
+        return pedidosEnEspera;
+    }
 
     public void agregarPedido(Pedido pedido) throws PedidoException {
         boolean hayStock = pedido.getProducto().validarProductoStock(pedido);
@@ -45,10 +58,10 @@ public class SistemaPedidos {
         }
     }
 
-    public void procesarPedido(Pedido unPedido) {
+    public void cambiarEstadoPedido(Pedido unPedido) {
         pedidos.forEach((p) -> {
             if (p.getPedidoId() == unPedido.getPedidoId()) {
-                p.setEstado(EstadoPedido.PROCESADO);
+                p.setEstado(unPedido.getEstado());
                 p.setGestor(unPedido.getGestor());
             }
         });
@@ -72,6 +85,6 @@ public class SistemaPedidos {
 
     public void cargarPedido(Pedido p) {
         this.pedidos.add(p);
-    }
+    }    
 
 }

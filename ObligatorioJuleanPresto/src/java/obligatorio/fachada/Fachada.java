@@ -56,12 +56,17 @@ public class Fachada extends Observable {
     
     ///envia el pedido desde el mozo al gestor
     public void agregarPedido(Pedido pedido) throws PedidoException  {
-        Producto prod = productoById(pedido.getPedidoId());
+        Producto prod = productoById(pedido.getProducto().getCodigo());
         pedido.setProducto(prod);        
         this.sistemaPedidos.agregarPedido(pedido);   
         prod.setStockDisponible(prod.getStockDisponible() - pedido.getCantidad());
+        Usuario mozo = usuarioById(pedido.getMozo().getUserId());
+        Mesa mesa = mozo.obtenerMesaByNumero(pedido.getMesa().getNumero());
+        mesa.agregarPedidoAservicio(pedido);
         NotificarHelper noti = new NotificarHelper(EventoMensaje.ENVIAR_PEDIDO, prod.getUnidadProcesadora());
         Fachada.getInstancia().notificar(noti);
+        NotificarHelper notiMozo = new NotificarHelper(EventoMensaje.OBTENER_PEDIDOS, null);
+        Fachada.getInstancia().notificar(notiMozo);        
     }
 
     public void devolverPedidosEnEspera(UnidadProcesadoraDTO unidadPedido) {        
@@ -71,6 +76,10 @@ public class Fachada extends Observable {
 
     public List<Pedido> obtenerPedidosEnEspera(UnidadProcesadora unidad) {
         return this.sistemaPedidos.getPedidosEnEspera(unidad);
+    }
+    
+    public List<Pedido> obtenerPedidosByUnidad(UnidadProcesadora unidad){
+      return this.sistemaPedidos.getPedidosByUnidad(unidad);
     }
 
     private void agregarPedidoSistema(Pedido pedido){
@@ -84,19 +93,21 @@ public class Fachada extends Observable {
         notificar(noti);        
     }
 
-    public void procesarPedido(PedidoDTO p) {
+    public void cambiarEstadoPedido(PedidoDTO p) {
         Pedido unPedido = new Pedido();
         unPedido.setPedidoId(p.getPedidoId());
+        unPedido.setEstado(p.getEstado());
         Usuario gestor = usuarioById(p.getGestorId());
         unPedido.setGestor(gestor);
         
-        this.sistemaPedidos.procesarPedido(unPedido);
+        this.sistemaPedidos.cambiarEstadoPedido(unPedido);
         Producto prod = new Producto();
         prod.setCodigo(p.getPedidoId());
-        UnidadProcesadora unidad = unidadProcByProd(prod);
-        
+        UnidadProcesadora unidad = unidadProcByProd(prod);        
         NotificarHelper helper = new NotificarHelper(EventoMensaje.PEDIDO_PROCESADO, unidad);
         notificar(helper);
+        NotificarHelper helperMozo = new NotificarHelper(EventoMensaje.CAMBIO_ESTADO_PEDIDO, null);
+        notificar(helperMozo);
     }
 
     public List<Pedido> getPedidos() {
@@ -236,8 +247,8 @@ public class Fachada extends Observable {
         this.agregarUnidad(bar);
         this.agregarUnidad(cocina);
         
-        this.agregarPedidoSistema(ped1);
-        this.agregarPedidoSistema(ped2);
-        this.agregarPedidoSistema(ped3);
+       // this.agregarPedidoSistema(ped1);
+       // this.agregarPedidoSistema(ped2);
+       // this.agregarPedidoSistema(ped3);
     }
 }

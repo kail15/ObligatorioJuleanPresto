@@ -15,6 +15,7 @@ and open the template in the editor.
         <script>
             var userId = sessionStorage.getItem("userId");
             var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wsGestor/" + userId);
+            var curretnUnidad;
 
             window.onbeforeunload = function () {
                 //Cierro la conexion manualmente 
@@ -44,6 +45,7 @@ and open the template in the editor.
             };
 
             function mostarGestor(valor) {
+                curretnUnidad = valor.unidad;
                 $("#divUnidades").hide();
                 $("#nombreUnidad").html("Bienvenido " + valor.nombreCompleto);
             }
@@ -71,7 +73,6 @@ and open the template in the editor.
 
             function enviarUP(valor) {
                 var unidad = valor.unidad;
-
                 var jsonObject = {
                     "id": unidad.id,
                     "nombre": unidad.nombre,
@@ -83,43 +84,52 @@ and open the template in the editor.
             }
 
             function cargarPedidos(valor) {
+                console.log(valor);
                 if (valor.length > 0) {
                     $("#divProcesados").show();
                     $("#divEnEspera").show();
+                    $("#divSinPedidos").hide();
                     $("#divPedidosEnEspera").text("");
                     $("#divPedidosProcesados").text("");
-                    $.each(valor, function (key, value) {
-                        var ulPedido = '<ul>';
-                        var liProd = '<li>' + value.nombreProducto + '</li>';
-                        var liCant = '<li>' + value.cantidad + '</li>';
-                        ulPedido += liProd + liCant + '</ul>';
-                        if (value.estado === "EN_ESPERA") {
-                            var btnPedido = '<input type="button" value="procesar" id="btnProcesar' + value.producto + '"/>';
-                            var idbtnproc = "btnProcesar" + value.producto.toString();
-                            $("#divPedidosEnEspera").append(ulPedido);
-                            $("#divPedidosEnEspera").append(btnPedido);
-                            $("#divPedidosEnEspera").append('<hr>');
-                            $("#" + idbtnproc).click(function () {
-                                procesarPedido(value);
-                            });
-                        }
-                        if (value.gestorId !== null)
-                        {
-                            if (value.estado === "PROCESADO" && value.gestorId === userId) {
-                                var btnPedido = '<input type="button" value="finalizar" id="btnFinalizar' + value.producto + '"/>';
-                                var idbtnFinal = "btnFinalizar" + value.producto.toString();
-
-                                $("#divPedidosProcesados").append(ulPedido);
-                                $("#divPedidosProcesados").append(btnPedido);
-                                $("#divPedidosProcesados").append('<hr>');
-                                $("#" + idbtnFinal).click(function () {
-                                    finalizarPedido(value);
+                    $.each(valor, function (key, value) {                        
+                        if (value.unidad === curretnUnidad.id) {
+                            var ulPedido = '<ul>';
+                            var liProd = '<li>' + '<b>Producto:</b> ' + value.nombreProducto + '</li>';
+                            var liCant = '<li>' + '<b>Cantidad:</b> ' + value.cantidad + '</li>';
+                            var liDesc = '<li>' + '<b>Descripcion:</b> ' + value.descripcion + '</li>';
+                            var liMesa = '<li>' + '<b>Mesa:</b> ' + value.mesa + '</li>';
+                            var liMozo = '<li>' + '<b>Mozo:</b> ' + value.mozoNombre + '</li>';
+                            ulPedido += liProd + liCant + liDesc + liMesa + liMozo + '</ul>';
+                            if (value.estado === "EN_ESPERA") {
+                                var btnPedido = '<input type="button" value="procesar" id="btnProcesar' + value.producto + '"/>';
+                                var idbtnproc = "btnProcesar" + value.producto.toString();
+                                $("#divPedidosEnEspera").append(ulPedido);
+                                $("#divPedidosEnEspera").append(btnPedido);
+                                $("#divPedidosEnEspera").append('<hr>');
+                                $("#" + idbtnproc).click(function () {
+                                    procesarPedido(value);
                                 });
+                            }
+                            if (value.gestorId !== null)
+                            {
+                                if (value.estado === "PROCESADO" && value.gestorId === userId) {
+                                    var btnPedido = '<input type="button" value="finalizar" id="btnFinalizar' + value.producto + '"/>';
+                                    var idbtnFinal = "btnFinalizar" + value.producto.toString();
+
+                                    $("#divPedidosProcesados").append(ulPedido);
+                                    $("#divPedidosProcesados").append(btnPedido);
+                                    $("#divPedidosProcesados").append('<hr>');
+                                    $("#" + idbtnFinal).click(function () {
+                                        finalizarPedido(value);
+                                    });
+                                }
                             }
                         }
                     });
 
                 } else {
+                    $("#divProcesados").hide();
+                    $("#divEnEspera").hide();
                     $("#divSinPedidos").show();
                 }
             }
@@ -136,6 +146,7 @@ and open the template in the editor.
                     "descripcion": pedido.descripcion,
                     "cantidad": pedido.cantidad,
                     "gestorId": userId,
+                    "estado": "PROCESADO",
                     "tipo": "TIPO_PROCESAR_PEDIDO"
                 };
 
@@ -155,7 +166,8 @@ and open the template in the editor.
                     "descripcion": pedido.descripcion,
                     "cantidad": pedido.cantidad,
                     "gestorId": userId,
-                    "tipo": "TIPO_FINALIZAR_PEDIDO"
+                    "estado": "FINALIZADO",
+                    "tipo": "TIPO_PEDIDO_LISTO"
                 };
 
                 var agregarJson = JSON.stringify(jsonObject);

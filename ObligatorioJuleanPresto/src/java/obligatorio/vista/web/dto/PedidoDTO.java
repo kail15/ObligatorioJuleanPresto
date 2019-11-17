@@ -13,7 +13,10 @@ public class PedidoDTO {
     private String mozoId;
     private String mozoNombre;
     private String gestorId;
+    private String gestorNombre;
     private EstadoPedido estado;
+    private int unidad;
+    private double precioProducto;
 
     public PedidoDTO(int producto, String nombreProducto, int cantidad, String descripcion, int mesa, String mozoId, String mozoNombre) {
         this.producto = producto;
@@ -47,6 +50,8 @@ public class PedidoDTO {
         this.gestorId = gestorId;
         this.pedidoId = pedidoId;
     }
+    
+    public PedidoDTO(){}
 
     public int getProducto() {
         return producto;
@@ -127,5 +132,29 @@ public class PedidoDTO {
     public void setEstado(EstadoPedido estado) {
         this.estado = estado;
     }    
+
+    public int getUnidad() {
+        return unidad;
+    }
+
+    public void setUnidad(int unidad) {
+        this.unidad = unidad;
+    }   
+
+    public String getGestorNombre() {
+        return gestorNombre;
+    }
+
+    public void setGestorNombre(String gestorNombre) {
+        this.gestorNombre = gestorNombre;
+    }  
+
+    public double getPrecioProducto() {
+        return precioProducto;
+    }
+
+    public void setPrecioProducto(double precioUnitario) {
+        this.precioProducto = precioUnitario;
+    }   
 
 }
