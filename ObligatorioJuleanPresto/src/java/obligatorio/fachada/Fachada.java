@@ -15,6 +15,9 @@ import obligatorio.modelo.MesaTransferida;
 import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Producto;
+import obligatorio.modelo.Servicio;
+import obligatorio.modelo.SistemaCliente;
+import obligatorio.modelo.SistemaMesa;
 import obligatorio.modelo.SistemaPedidos;
 import obligatorio.modelo.SistemaProductos;
 import obligatorio.modelo.SistemaUnidadProcesadora;
@@ -32,6 +35,8 @@ public class Fachada extends Observable {
     private SistemaUnidadProcesadora sistemaUnidades;
     private SistemaProductos sistemaProductos;
     private SistemaPedidos sistemaPedidos;
+    private SistemaCliente sistemaCliente;
+    private SistemaMesa sistemaMesa;
 
     private static Fachada instancia;
 
@@ -39,8 +44,17 @@ public class Fachada extends Observable {
         sistemaUsuarios = new SistemaUsuarios();
         sistemaProductos = new SistemaProductos();
         sistemaUnidades = new SistemaUnidadProcesadora();
-        sistemaPedidos = new SistemaPedidos();
+        sistemaPedidos = new SistemaPedidos();       
         cargar();
+        
+        //Carga desde la BD
+        //sistemaUnidades.cargarDatos();
+        //sistemaMesa.cargarDatos();
+        //sistemaUsuarios.cargarDatos();
+        //sistemaCliente.cargarDatos();
+        
+        
+        
     }
 
     public static Fachada getInstancia() {

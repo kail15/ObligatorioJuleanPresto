@@ -7,32 +7,31 @@ package obligatorio.modelo;
 
 import java.util.ArrayList;
 import persistencia.BaseDatos;
-import persistencia.MapeadorUnidadProcesadora;
+import persistencia.MapeadorCliente;
 import persistencia.Persistencia;
 
 /**
  *
  * @author Usuario
  */
-public class SistemaUnidadProcesadora {
-    
-    private ArrayList<UnidadProcesadora> unidades;
-    
-    public SistemaUnidadProcesadora(){
-      this.unidades = new ArrayList();
-    }
-    
-    public void agregarUnidad(UnidadProcesadora u){
-       this.unidades.add(u);
+public class SistemaCliente {
+    private ArrayList<Cliente> clientes;
+
+    public SistemaCliente() {
+        this.clientes = new ArrayList<>();
     }
 
-    public ArrayList<UnidadProcesadora> getUnidades() {
-        return unidades;
-    }    
+    public ArrayList<Cliente> getClientes() {
+        return clientes;
+    }
+
+    public void setClientes(ArrayList<Cliente> clientes) {
+        this.clientes = clientes;
+    }
 
     public void cargarDatos() {
         this.conectarBD();
-        this.cargarUnidades();
+        this.cargarClientes();
     }
 
     private void conectarBD() {
@@ -41,7 +40,10 @@ public class SistemaUnidadProcesadora {
         bd.conectarse("com.mysql.jdbc.Driver", url, "root", "root");
     }
 
-    private void cargarUnidades() {
-        unidades.addAll(Persistencia.getInstancia().obtenerTodos(new MapeadorUnidadProcesadora()));
+    private void cargarClientes() {
+        clientes.addAll(Persistencia.getInstancia().obtenerTodos(new MapeadorCliente()));
     }
+    
+    
+    
 }

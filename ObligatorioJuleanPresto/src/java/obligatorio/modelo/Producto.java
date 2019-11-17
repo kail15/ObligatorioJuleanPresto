@@ -11,6 +11,7 @@ package obligatorio.modelo;
  */
 public class Producto {
 
+    private int oid;
     private int codigo;
     private String nombre;
     private double precioUnitario;
@@ -24,8 +25,17 @@ public class Producto {
         this.stockDisponible = stockDisponible;
         this.unidadProcesadora = unidadProcesadora;
     }
-    
-     public Producto(){}
+
+    public Producto() {
+    }
+
+    public int getOid() {
+        return oid;
+    }
+
+    public void setOid(int oid) {
+        this.oid = oid;
+    }
 
     public int getCodigo() {
         return codigo;
@@ -68,13 +78,13 @@ public class Producto {
     }
 
     public boolean validarUnidadProcesadora(UnidadProcesadora unidad) {
-        return unidad.getId() == this.unidadProcesadora.getId();
+        return unidad.getOid() == this.unidadProcesadora.getOid();
     }
-    
-    public boolean validarProductoStock(Pedido p){      
-      if (p.getCantidad() <= this.stockDisponible){
-         return true;
-      }
-      return false;    
+
+    public boolean validarProductoStock(Pedido p) {
+        if (p.getCantidad() <= this.stockDisponible) {
+            return true;
+        }
+        return false;
     }
 }

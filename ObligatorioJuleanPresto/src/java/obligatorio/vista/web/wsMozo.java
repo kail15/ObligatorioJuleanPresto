@@ -231,7 +231,7 @@ public class wsMozo implements VistaMozo {
     }
 
     private UnidadProcesadoraDTO adaptarUP(UnidadProcesadora u) {
-        return new UnidadProcesadoraDTO(u.getId(), u.getNombre());
+        return new UnidadProcesadoraDTO(u.getOid(), u.getNombre());
     }
 
     private MesaTransferidaDTO adatparMesaTrasf(MesaTransferida mesa) {

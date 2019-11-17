@@ -10,22 +10,25 @@ package obligatorio.modelo;
  * @author Usuario
  */
 public class Cliente {
-    private int id;
+    private int oid;
     private String nombre;
     private String email;
 
     public Cliente(int id, String nombre, String email) {
-        this.id = id;
+        this.oid = id;
         this.nombre = nombre;
         this.email = email;
     }
 
-    public int getId() {
-        return id;
+    public Cliente() {
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public int getOid() {
+        return oid;
+    }
+
+    public void setOid(int oid) {
+        this.oid = oid;
     }
 
     public String getNombre() {

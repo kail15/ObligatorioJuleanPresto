@@ -86,7 +86,7 @@ public class wsGestor implements VistaGestor {
                     p.getCantidad(), p.getDescripcion(), p.getMesa().getNumero(),
                     p.getMozo().getUserId(), p.getMozo().getNombreCompleto());
             pedidoDto.setEstado(EstadoPedido.EN_ESPERA);
-            pedidoDto.setUnidad(p.getProducto().getUnidadProcesadora().getId());
+            pedidoDto.setUnidad(p.getProducto().getUnidadProcesadora().getOid());
             pedidosDto.add(pedidoDto);
         });
 
@@ -98,7 +98,7 @@ public class wsGestor implements VistaGestor {
     @Override
     public void cargarUnidad() {
         UnidadProcesadora unidad = this.gestor.getUnidadProcesadora();
-        UnidadProcesadoraDTO unidadDTO = new UnidadProcesadoraDTO(unidad.getId(), unidad.getNombre());
+        UnidadProcesadoraDTO unidadDTO = new UnidadProcesadoraDTO(unidad.getOid(), unidad.getNombre());
         GestorDTO gestorDto = new GestorDTO(this.gestor.getNombreCompleto(), this.gestor.getUserId(), unidadDTO);
 
         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_MOSTRAR_GESTOR, gestorDto);
@@ -111,7 +111,7 @@ public class wsGestor implements VistaGestor {
         List<UnidadProcesadoraDTO> unidadesDto = new ArrayList<>();
 
         unidades.forEach((u) -> {
-            unidadesDto.add(new UnidadProcesadoraDTO(u.getId(), u.getNombre()));
+            unidadesDto.add(new UnidadProcesadoraDTO(u.getOid(), u.getNombre()));
         });
 
         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_CARGAR_UNIDADES, unidadesDto);
@@ -129,7 +129,7 @@ public class wsGestor implements VistaGestor {
                     p.getCantidad(), p.getDescripcion(), p.getMesa().getNumero(), p.getMozo().getUserId(),
                     p.getMozo().getNombreCompleto());
             pedidoDto.setEstado(p.getEstado());
-            pedidoDto.setUnidad(p.getProducto().getUnidadProcesadora().getId());
+            pedidoDto.setUnidad(p.getProducto().getUnidadProcesadora().getOid());
             if(p.getGestor() != null){
             pedidoDto.setGestorId(p.getGestor().getUserId());
             }            
@@ -153,7 +153,7 @@ public class wsGestor implements VistaGestor {
             return unidadRet;
         } else {
             UnidadProcesadora unidadModel = (UnidadProcesadora) unidad;
-            UnidadProcesadora unidadModelRet = new UnidadProcesadora(unidadModel.getId(), unidadModel.getNombre());
+            UnidadProcesadora unidadModelRet = new UnidadProcesadora(unidadModel.getOid(), unidadModel.getNombre());
             return unidadModelRet;
         }
     }

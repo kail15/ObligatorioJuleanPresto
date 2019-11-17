@@ -7,6 +7,9 @@ import obligatorio.exceptions.MesaException;
 import obligatorio.exceptions.UsuarioLogueadoException;
 import obligatorio.fachada.Fachada;
 import obligatorio.vista.web.dto.MesaDTO;
+import persistencia.BaseDatos;
+import persistencia.MapeadorUsuario;
+import persistencia.Persistencia;
 
 //OJP
 public class SistemaUsuarios {
@@ -125,6 +128,22 @@ public class SistemaUsuarios {
         } else {
             throw new MesaException("Aun tienes mesas abiertas");
         }
+    }
+
+    public void cargarDatos() {
+        this.conectarBD();
+        this.cargarUsuarios();
+    }
+
+    private void conectarBD() {
+        String url = "jdbc:mysql://localhost/obligatoriojuleanpresto";
+        BaseDatos bd = BaseDatos.getInstancia();
+        bd.conectarse("com.mysql.jdbc.Driver", url, "root", "root");
+    }
+
+    private void cargarUsuarios() {
+        usuarios.addAll(Persistencia.getInstancia().obtenerTodos(new MapeadorUsuario()));
+
     }
 
     

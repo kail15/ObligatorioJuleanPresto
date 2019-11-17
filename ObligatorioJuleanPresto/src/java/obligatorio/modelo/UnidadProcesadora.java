@@ -10,12 +10,16 @@ package obligatorio.modelo;
  * @author Usuario
  */
 public class UnidadProcesadora {
-    private int id;
+    private int oid;
     private String nombre;
 
-    public UnidadProcesadora(int id ,String nombre) {
+    public UnidadProcesadora(int oid ,String nombre) {
         this.nombre = nombre;
-        this.id = id;
+        this.oid = oid;
+    }
+
+    public UnidadProcesadora() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public String getNombre() {
@@ -26,12 +30,12 @@ public class UnidadProcesadora {
         this.nombre = nombre;
     }
 
-    public int getId() {
-        return id;
+    public int getOid() {
+        return oid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setOid(int oid) {
+        this.oid = oid;
     } 
     
 }

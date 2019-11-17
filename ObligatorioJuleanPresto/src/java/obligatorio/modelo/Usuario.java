@@ -4,6 +4,7 @@ import java.util.List;
 
 public abstract class Usuario {
 
+    private int oid;
     private String nombreUsuario;
     private String password;
     private String nombreCompleto;
@@ -18,6 +19,14 @@ public abstract class Usuario {
 
     public Usuario() {
 
+    }
+
+    public int getOid() {
+        return oid;
+    }
+
+    public void setOid(int oid) {
+        this.oid = oid;
     }
 
     public String getNombreUsuario() {
