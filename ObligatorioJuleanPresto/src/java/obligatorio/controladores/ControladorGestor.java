@@ -53,7 +53,6 @@ public class ControladorGestor implements Observador {
                 vista.obtenerPedidosTotales(pedidos);           
             }
         }
-
     }
 
     public void cargarPedidos(UnidadProcesadoraDTO unidadPedido) {

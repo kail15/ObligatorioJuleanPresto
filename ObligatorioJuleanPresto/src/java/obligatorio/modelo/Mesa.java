@@ -51,4 +51,24 @@ public class Mesa {
     public List<Pedido> getPedidosServicio(){
       return this.servicio.getPedidos();
     }
+    
+    public void limpiarServicio(){
+       this.servicio.limpiarServicio();
+    }
+    
+    public void setClienteServicio(Cliente cliente){
+      this.servicio.setCliente(cliente);
+    }
+    
+    public Cliente getClienteServicio(){
+      return this.servicio.getCliente();
+    }
+    
+    public void setPrecioServicio(double precio){
+       this.servicio.setPrecioTotal(precio);
+    }
+    
+    public double getPrecioServicio(){
+      return this.servicio.calcularPrecioTotal();
+    }
 }

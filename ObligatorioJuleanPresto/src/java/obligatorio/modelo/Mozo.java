@@ -1,4 +1,3 @@
-
 package obligatorio.modelo;
 
 import java.util.ArrayList;
@@ -50,21 +49,31 @@ public class Mozo extends Usuario {
     public void elimiarMesa(Mesa mesa) {
         this.mesas.removeIf(m -> (m.getNumero() == mesa.getNumero()));
     }
-    
+
     @Override
-    public boolean validarMesasLogout(Mesa mesa){
-        return this.mesas.stream().noneMatch((m) -> (m.getEstado() && m.getNumero() == mesa.getNumero()));        
-    }   
-    
+    public boolean validarMesasLogout(Mesa mesa) {
+        return this.mesas.stream().noneMatch((m) -> (m.getEstado() && m.getNumero() == mesa.getNumero()));
+    }
+
     @Override
     public Mesa obtenerMesaByNumero(int numero) {
         Mesa mesa = null;
-      for(Mesa m : this.mesas){
-         if(m.getNumero() == numero ){
-            mesa = m;
-            break;
-         }
-      }
-      return mesa;
+        for (Mesa m : this.mesas) {
+            if (m.getNumero() == numero) {
+                mesa = m;
+                break;
+            }
+        }
+        return mesa;
+    }
+
+    @Override
+    public void limpiarServicioMesa(Mesa mesa) {
+        for (Mesa m : this.mesas) {
+            if (m.getNumero() == mesa.getNumero()) {
+                m.limpiarServicio();
+                break;
+            }
+        }
     }
 }

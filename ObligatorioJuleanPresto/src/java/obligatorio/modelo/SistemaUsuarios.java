@@ -127,5 +127,12 @@ public class SistemaUsuarios {
         }
     }
 
-    
+    public void confirmarServicio(Usuario mozo, Mesa mesaServ) {        
+        for(Usuario usu : this.usuariosLogueados){
+           if(usu.getUserId().equals(mozo.getUserId())){
+              usu.limpiarServicioMesa(mesaServ);
+              break;
+           }
+        }
+    }    
 }

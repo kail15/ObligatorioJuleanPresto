@@ -12,10 +12,12 @@ import obligatorio.controladores.VistaMozo;
 import obligatorio.modelo.Mesa;
 import java.util.List;
 import javax.websocket.server.PathParam;
+import obligatorio.modelo.Cliente;
 import obligatorio.modelo.MesaTransferida;
 import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Producto;
+import obligatorio.modelo.Servicio;
 import obligatorio.modelo.UnidadProcesadora;
 import obligatorio.modelo.Usuario;
 import obligatorio.vista.web.dto.MesaDTO;
@@ -23,6 +25,7 @@ import obligatorio.vista.web.dto.MesaTransferidaDTO;
 import obligatorio.vista.web.dto.MozoDTO;
 import obligatorio.vista.web.dto.PedidoDTO;
 import obligatorio.vista.web.dto.ProductoDTO;
+import obligatorio.vista.web.dto.ServicioDTO;
 import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
 import obligatorio.vista.web.dto.WsMessageDTO;
 import obligatorio.vista.web.utils.MessageConverter;
@@ -73,6 +76,10 @@ public class wsMozo implements VistaMozo {
                 case TIPO_LOGOUT:
                     MozoDTO mozoDto = gson.fromJson(message, MozoDTO.class);
                     logout(mozoDto);
+                    break;
+                case TIPO_CONFIRMAR_SERVICIO:
+                    MesaDTO mesaPedidoDto = gson.fromJson(message, MesaDTO.class);
+                    confirmarServicio(mesaPedidoDto);
                     break;
                 default:
                     break;
@@ -172,6 +179,18 @@ public class wsMozo implements VistaMozo {
         WsUtils.enviarMensajePorSocket(session, mensaje);
 
     }
+    
+    @Override
+    public void devolverServicio(ServicioDTO servicio) {  
+        
+        obtenerMozo(null);      
+        
+        
+        WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_DEVOLVER_SERVICIO, servicio);
+        String mensaje = MessageConverter.toMessage(msgTipos);
+        WsUtils.enviarMensajePorSocket(session, mensaje);
+        
+    }
 
     private Pedido adaptarPedido(PedidoDTO p) {
         Producto prod = new Producto();
@@ -258,4 +277,14 @@ public class wsMozo implements VistaMozo {
         Pedido pedido = adaptarPedido(pedidoDto);
         this.controlador.agregarPedido(pedido);
     }
+
+    private void confirmarServicio(MesaDTO mesaPedidoDto) {
+        Mesa mesaServ = new Mesa();
+        
+        Cliente cli = new Cliente();
+        cli.setId(mesaPedidoDto.getClienteId());
+        mesaServ.setClienteServicio(cli);
+        mesaServ.setNumero(mesaPedidoDto.getNumero());        
+        this.controlador.confirmarServicio(this.mozo,mesaServ);
+    }    
 }

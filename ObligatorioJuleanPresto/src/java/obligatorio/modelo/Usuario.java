@@ -93,5 +93,9 @@ public abstract class Usuario {
     public Mesa obtenerMesaByNumero(int numero) {
         return null;
     }
+    
+    public void limpiarServicioMesa(Mesa mesa){
+    
+    }
 
 }

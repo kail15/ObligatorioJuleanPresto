@@ -100,8 +100,11 @@ public class Pedido {
 
     public Usuario getGestor() {
         return gestor;
-    }    
+    } 
     
+    public double getPrecioProducto(){
+      return this.producto.getPrecioUnitario();
+    }    
     
     public boolean validarMesasConPedido(Mesa mesa){
        if (this.mesa.getNumero() == mesa.getNumero() && (this.estado.equals(EstadoPedido.EN_ESPERA) || this.estado.equals(EstadoPedido.PROCESADO))){

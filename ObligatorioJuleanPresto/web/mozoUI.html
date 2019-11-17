@@ -33,8 +33,7 @@
                 border-width:1px;
                 margin: 0 auto;               
                 height: 100px;
-                width: 150px;
-                background-color: #999999;
+                width: 300px;
             }
 
         </style>
@@ -44,7 +43,7 @@
         <script>
             var userId = sessionStorage.getItem("userId");
             var webSocket = new WebSocket("ws://localhost:8080/ObligatorioJuleanPresto/wsMozo/" + userId);
-            var selectProductos = [];            
+            var selectProductos = [];
 
             var currentMesa = {
                 "numero": 0,
@@ -68,7 +67,7 @@
                 var tipo = jsonObject.tipo;
                 var valor = jsonObject.valor;
                 if (tipo === "TIPO_MOSTRAR_MOZO") {
-                    console.log(valor);
+                    // console.log(valor);
                     mostrarMozo(valor);
                 }
                 if (tipo === "TIPO_CAMBIAR_ESTADO_MESA") {
@@ -107,7 +106,19 @@
                         window.location.href = "login.html";
                     }
                 }
+                if(tipo === "TIPO_DEVOLVER_SERVICIO"){
+                    
+                    pedidoTerminado(valor);
+                }
+                
             };
+            
+            function pedidoTerminado(servicio){
+                
+                var mensajeServicio = "<b>Cliente:</b> " + servicio.nombreCliente + '/n' + "<b>Monto original</b>" + servicio.totalApagar;
+                
+                alert(mensajeServicio);
+            }
 
             function solicitudMesa(valor) {
                 setTimeout(function () {
@@ -139,6 +150,7 @@
             }
 
             function mostrarMozo(valor) {
+                $("#divServicios").hide();
                 mesas = [];
                 nombreMozo = valor.nombreCompleto;
                 $('#mesasMozo').text("");
@@ -159,6 +171,7 @@
 
                         $.each(value.servicio.pedidos, function (key, ped) {
 
+
                             var estadoPed = "";
 
                             if (ped.estado === "EN_ESPERA") {
@@ -173,7 +186,7 @@
                                 "nombreProducto": ped.nombreProducto,
                                 "cantidad": ped.cantidad,
                                 "precioProducto": ped.precioProducto,
-                                "total": ped.cantidad * ped.precioProduct,
+                                "total": ped.cantidad * ped.precioProducto,
                                 "estado": estadoPed,
                                 "gestorNombre": ped.gestorNombre
                             };
@@ -182,7 +195,7 @@
 
                         });
                     }
-                    
+
                     mesas.push(mesaObj);
 
                     if (value.estado) {
@@ -308,9 +321,7 @@
             }
 
             function abrirCuadro(idForm, value) {
-                
-             //   console.log(mesas);
-                
+
                 $("#formProductos").hide();
                 $("#formMozosLog").hide();
                 currentMesa.numero = value.numero;
@@ -341,26 +352,82 @@
                 }
             }
 
+            //Abre cuadro de servicios
             function mostrarServicio(idMesa) {
-                
-                var mesaPedido;
-                
-                $.each(mesas, function(key, m){
-                    if(m.numero === idMesa){                        
-                        mesaPedido = m;
-                    }      
-                });         
-                
-                //console.log(mesaPedido);
-                
-                
-                /*$("#divServicios").text("");
-                var ulServicio = '<ul>';
-                var li = '<li>' + servicio + '</li>';
-                ulServicio += li + '</ul>';
+                $("#divServicios").text("");
+                $("#divServicios").append('<h3>Datos del servicio de la mesa: ' + idMesa + '</h3>');
 
-                $("#divServicios").append(ulServicio);*/
+                var mesaPedido;
+                $.each(mesas, function (key, m) {
+                    if (m.numero === idMesa) {
+                        mesaPedido = m;
+                    }
+                });
+
+                var items = mesaPedido.servicio.items;
+
+                if (items.length > 0) {
+                    $("#divServicios").append('<b>Productos</b>');
+
+                    var totalServicio = mesaPedido.servicio.costoServicio;
+
+                    $.each(items, function (key, item) {
+
+                        var gestor = "Aún no fué tomado.";
+
+                        if (item.gestorNombre !== "") {
+                            gestor = item.gestorNombre;
+                        }
+
+                        var ulServicio = '<ul>';
+                        var liProd = '<li>' + '<b>Producto:</b> ' + item.nombreProducto + '</li>';
+                        var liCant = '<li>' + '<b>Cantidad:</b> ' + item.cantidad + '</li>';
+                        var liPrec = '<li>' + '<b>Precio:</b> ' + '$' + item.precioProducto + '</li>';
+                        var liTot = '<li>' + '<b>Total:</b> ' + '$' + item.total + '</li>';
+                        var liEstado = '<li>' + '<b>Estado:</b> ' + item.estado + '</li>';
+                        var liGestor = '<li>' + '<b>Gestor:</b> ' + gestor + '</li>';
+
+                        ulServicio += liProd + liCant + liPrec + liTot + liEstado + liGestor + '</ul>';
+
+                        $("#divServicios").append(ulServicio);
+                        $("#divServicios").append('<hr>');
+                    });
+
+                    $("#divServicios").append('<div>' + 'Total: $' + totalServicio + '</div>');
+                    $("#divServicios").append('<br/>');
+                    $("#divServicios").append('<input type="button" value="confirmar" id="btnConfirmarPedido" onclick="confirmarPedido(' + idMesa + ')"/>');
+                    $("#divServicios").append('<input type="number" id="txtIdCliente" placeholder="ingresar cliente"/>');
+
+                } else {
+
+                    $("#divServicios").append('<div> <b>Sin pedidos actualmente.</b> </div>');
+                }
             }
+
+            function confirmarPedido(idMesa) {
+                var idCli = $("#txtIdCliente").val();
+                if(idCli > 0){
+                   if(idCli === ""){
+                    idCli = 0;                    
+                }
+                
+                var mesaJson = {
+                 "numero": idMesa,
+                 "clienteId" : idCli,
+                 "tipo": "TIPO_CONFIRMAR_SERVICIO"
+                 };
+                 
+                 var agregarJson = JSON.stringify(mesaJson);
+                 webSocket.send(agregarJson); 
+                    
+                }else{
+                    alert("El numero de cliente debe ser vacio o mayor a 0");
+                    $("#txtIdCliente").val("");
+                }
+                
+                
+            }
+
 
             function abrirCuadroProd(id) {
 

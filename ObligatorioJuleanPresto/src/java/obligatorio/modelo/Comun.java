@@ -1,14 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package obligatorio.modelo;
 
-/**
- *
- * @author Usuario
- */
-public class Comun implements BeneficioCliente{
+public class Comun implements BeneficioCliente {
+
+    public Comun() {
+    }   
     
+
+    @Override
+    public double calcularDescuento(Servicio servicio) {
+        double precioTotal = servicio.getPrecioTotal();
+        double precioAux = precioTotal;
+        double descuento = 0;
+
+        // 5 es el id del cafe
+        for (Pedido p : servicio.getPedidos()) {
+            if (p.getProducto().getCodigo() == 5) {
+                precioAux -= p.getProducto().getPrecioUnitario();
+            }
+        }
+        
+        descuento = precioTotal - precioAux;
+        return descuento;
+    }
+
 }

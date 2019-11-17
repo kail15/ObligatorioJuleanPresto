@@ -6,6 +6,7 @@ public class MesaDTO {
     
     private int numero;
     private boolean estado;
+    private int clienteId;
     private ServicioDTO servicio = new ServicioDTO();
 
     public MesaDTO(int numero, boolean estado) {
@@ -48,4 +49,14 @@ public class MesaDTO {
     public void setPrecioServicio(double total){
       this.servicio.setPrecioServicio(total);
     }
+
+    public int getClienteId() {
+        return clienteId;
+    }
+
+    public void setClienteId(int clienteId) {
+        this.clienteId = clienteId;
+    }
+    
+    
 }

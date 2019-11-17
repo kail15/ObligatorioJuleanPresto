@@ -8,5 +8,6 @@ public enum EventoMensaje {
     LOGOUT,
     PEDIDO_PROCESADO,
     ENVIAR_PEDIDO,
-    CAMBIO_ESTADO_PEDIDO    
+    CAMBIO_ESTADO_PEDIDO,
+    LIMPIAR_SERVICIO    
 }

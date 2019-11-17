@@ -1,23 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package obligatorio.modelo;
 
-/**
- *
- * @author Usuario
- */
+
 public class Cliente {
     private int id;
     private String nombre;
     private String email;
+    private int beneficio;
 
-    public Cliente(int id, String nombre, String email) {
+    public Cliente(int id, String nombre, int beneficio) {
         this.id = id;
         this.nombre = nombre;
-        this.email = email;
+        this.beneficio = beneficio;
+    }
+    
+    public Cliente(){
     }
 
     public int getId() {
@@ -43,6 +40,13 @@ public class Cliente {
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
+    public int getBeneficio() {
+        return beneficio;
+    }
+
+    public void setBeneficio(int beneficio) {
+        this.beneficio = beneficio;
+    }  
     
 }

@@ -10,8 +10,11 @@ import obligatorio.modelo.MesaTransferida;
 import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Producto;
+import obligatorio.modelo.Servicio;
 import obligatorio.modelo.Usuario;
 import obligatorio.vista.web.dto.MesaDTO;
+import obligatorio.vista.web.dto.ServicioDTO;
+import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
 import obligatorio.vista.web.utils.NotificarHelper;
 import observer.Observable;
 import observer.Observador;
@@ -82,6 +85,10 @@ public class ControladorMozo implements Observador {
         return Fachada.getInstancia().usuarioById(usuarioId);
     }
 
+    public void confirmarServicio(Usuario mozo, Mesa mesaServ) {
+        this.fachada.confirmarServicio(mozo, mesaServ);
+    }
+
     @Override
     public void actualizar(Object evento, Observable origen) {
 
@@ -102,13 +109,17 @@ public class ControladorMozo implements Observador {
                 Usuario usuarioLogout = (Usuario) ((NotificarHelper) evento).getObjetoNotificar();
                 vista.logoutMozo(usuarioLogout);
             }
-            if(ret.getEvento().equals(EventoMensaje.CAMBIO_ESTADO_PEDIDO)){
+            if (ret.getEvento().equals(EventoMensaje.CAMBIO_ESTADO_PEDIDO)) {
                 vista.obtenerMozo(null);
             }
-            if(ret.getEvento().equals(EventoMensaje.OBTENER_PEDIDOS)){
+            if (ret.getEvento().equals(EventoMensaje.OBTENER_PEDIDOS)) {
                 List<Producto> productos = this.fachada.obtenerProductos();
                 vista.obtenerProductos(productos);
                 vista.obtenerMozo(null);
+            }
+            if (ret.getEvento().equals(EventoMensaje.LIMPIAR_SERVICIO)) {
+                ServicioDTO servicio = (ServicioDTO) ret.getObjetoNotificar();
+                vista.devolverServicio(servicio);
             }
         }
 
