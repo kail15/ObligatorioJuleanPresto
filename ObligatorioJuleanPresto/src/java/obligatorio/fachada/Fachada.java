@@ -1,6 +1,7 @@
 package obligatorio.fachada;
 
 import java.util.List;
+import obligatorio.exceptions.ClienteException;
 import observer.Observable;
 import obligatorio.exceptions.CredencialesInvalidasException;
 import obligatorio.exceptions.MesaException;
@@ -129,7 +130,7 @@ public class Fachada extends Observable {
         this.sistemaPedidos.validarMesasConPedido(mesa);
     }
 
-    public void confirmarServicio(Usuario mozo, Mesa mesaServ) {
+    public void confirmarServicio(Usuario mozo, Mesa mesaServ) throws ClienteException {
 
         Usuario currentMozo = usuarioById(mozo.getUserId());
         Mesa currentMesa = currentMozo.obtenerMesaByNumero(mesaServ.getNumero());

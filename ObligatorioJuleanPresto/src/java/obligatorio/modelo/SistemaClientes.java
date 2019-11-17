@@ -1,6 +1,7 @@
 package obligatorio.modelo;
 
 import java.util.ArrayList;
+import obligatorio.exceptions.ClienteException;
 
 public class SistemaClientes {
 
@@ -9,12 +10,12 @@ public class SistemaClientes {
     public SistemaClientes() {
         this.clientes = new ArrayList();
     }
-    
-    public void agregarCliente(Cliente cliente){
-      this.clientes.add(cliente);
+
+    public void agregarCliente(Cliente cliente) {
+        this.clientes.add(cliente);
     }
 
-    public Cliente clienteById(int id) {
+    public Cliente clienteById(int id) throws ClienteException {
         Cliente cliente = null;
 
         for (Cliente cli : this.clientes) {
@@ -23,7 +24,12 @@ public class SistemaClientes {
                 break;
             }
         }
-        return cliente;
+        if (cliente != null) {
+            return cliente;
+        }else{
+           throw new ClienteException("No se encontro el cliente");
+        }
+
     }
 
 }

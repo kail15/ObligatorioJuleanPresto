@@ -1,6 +1,7 @@
 package obligatorio.controladores;
 
 import java.util.List;
+import obligatorio.exceptions.ClienteException;
 import obligatorio.exceptions.MesaException;
 import obligatorio.exceptions.PedidoException;
 import obligatorio.fachada.Fachada;
@@ -86,7 +87,11 @@ public class ControladorMozo implements Observador {
     }
 
     public void confirmarServicio(Usuario mozo, Mesa mesaServ) {
-        this.fachada.confirmarServicio(mozo, mesaServ);
+        try {
+            this.fachada.confirmarServicio(mozo, mesaServ);
+        }catch (ClienteException ex) {
+            vista.mostrarError(ex.getMessage());
+        }    
     }
 
     @Override
