@@ -23,7 +23,6 @@ import obligatorio.vista.web.dto.PedidoDTO;
 import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
 import obligatorio.vista.web.dto.WsMessageDTO;
 import obligatorio.vista.web.utils.EstadoPedido;
-import obligatorio.vista.web.utils.EventoMensaje;
 import obligatorio.vista.web.utils.MessageConverter;
 import obligatorio.vista.web.utils.WsSessionHandler;
 import obligatorio.vista.web.utils.WsUtils;
