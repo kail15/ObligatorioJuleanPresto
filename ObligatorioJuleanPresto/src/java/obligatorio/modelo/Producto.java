@@ -87,4 +87,8 @@ public class Producto {
         }
         return false;
     }
+
+    public void setUPId(){
+     this.unidadProcesadora.setOid(oid);
+    }
 }

@@ -11,14 +11,10 @@ import java.util.ArrayList;
 import obligatorio.fachada.Fachada;
 import obligatorio.modelo.Mesa;
 
-/**
- *
- * @author Usuario
- */
+
 public class MapeadorMesa implements Mapeador {
 
     private Mesa mesa;
-    private Fachada fachada = Fachada.getInstancia();
 
     public MapeadorMesa() {
     }
@@ -69,14 +65,17 @@ public class MapeadorMesa implements Mapeador {
 
     @Override
     public void leerCompuesto(ResultSet rs) throws SQLException {
+        String mozoId = rs.getString("mozo_oid");
+        
         mesa.setOid(Integer.parseInt(rs.getString("oid")));
         mesa.setNumero(Integer.parseInt(rs.getString("numero")));
         mesa.setEstado(convertirEstado(rs.getInt("estado")));
+        mesa.setMozoId(mozoId);
     }
 
     @Override
     public void leerComponente(ResultSet rs) throws SQLException {
-        fachada.asignarMesa(rs.getInt("mozo_oid"),this.mesa);
+       // fachada.asignarMesa(rs.getInt("mozo_oid"),this.mesa);
     }
 
     public boolean convertirEstado(int estado) {

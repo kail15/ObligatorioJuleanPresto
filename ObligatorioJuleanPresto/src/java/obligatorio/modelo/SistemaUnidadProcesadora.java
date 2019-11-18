@@ -28,7 +28,18 @@ public class SistemaUnidadProcesadora {
 
     public ArrayList<UnidadProcesadora> getUnidades() {
         return unidades;
-    }    
+    }  
+    
+    public UnidadProcesadora getUnidadById(int id){
+      UnidadProcesadora unidad = null;
+      for(UnidadProcesadora u : this.unidades){
+        if(u.getOid() == id){
+           unidad = u;
+           break;
+        }
+      } 
+        return unidad;
+    }
 
     public void cargarDatos() {
         this.conectarBD();

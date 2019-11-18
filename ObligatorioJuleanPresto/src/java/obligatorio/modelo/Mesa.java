@@ -7,6 +7,7 @@ public class Mesa {
     private int oid;
     private int numero;
     private boolean estado;
+    private String mozoId;
     private Servicio servicio = new Servicio();
 
     public Mesa(int numero) {
@@ -80,4 +81,13 @@ public class Mesa {
     public double getPrecioServicio(){
       return this.servicio.calcularPrecioTotal();
     }
+
+    public String getMozoId() {
+        return mozoId;
+    }
+
+    public void setMozoId(String mozoId) {
+        this.mozoId = mozoId;
+    }   
+    
 }

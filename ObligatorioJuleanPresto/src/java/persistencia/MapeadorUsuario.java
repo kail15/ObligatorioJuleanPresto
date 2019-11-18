@@ -75,11 +75,17 @@ public class MapeadorUsuario implements Mapeador {
 
     @Override
     public void leerCompuesto(ResultSet rs) throws SQLException {
-        usuario.setOid(rs.getInt("oid"));
-        usuario.setUserId(rs.getString("oid"));
-        usuario.setNombreUsuario(rs.getString("nombreUsuario"));
-        usuario.setPassword(rs.getString("password"));
-        usuario.setNombreCompleto("nombreCompleto");
+        //int oId = rs.getInt("oid");
+        String userId = rs.getString("oid");
+        String userName = rs.getString("nombreUsuario");
+        String userPassword = rs.getString("password");
+        String nombreCompleto = rs.getString("nombreCompleto");
+        
+        // usuario.setOid(roId);
+        usuario.setUserId(userId);
+        usuario.setNombreUsuario(userName);
+        usuario.setPassword(userPassword);
+        usuario.setNombreCompleto(nombreCompleto);
     }
 
     @Override

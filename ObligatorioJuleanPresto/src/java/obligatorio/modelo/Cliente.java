@@ -3,19 +3,19 @@ package obligatorio.modelo;
 
 
 public class Cliente {
-    private int id;
+    private int oid;
     private String nombre;
     private String email;
     private int beneficio;
 
     public Cliente(int oid, String nombre, int beneficio) {
-        this.id = oid;
+        this.oid = oid;
         this.nombre = nombre;
         this.beneficio = beneficio;
     }
 
     public Cliente(int oid, String nombre, String email, int beneficio) {
-        this.id = oid;
+        this.oid = oid;
         this.nombre = nombre;
         this.email = email;
         this.beneficio = beneficio;
@@ -25,11 +25,11 @@ public class Cliente {
     }
 
     public int getId() {
-        return id;
+        return oid;
     }
 
     public void setId(int oid) {
-        this.id = oid;
+        this.oid = oid;
     }
 
     public String getNombre() {

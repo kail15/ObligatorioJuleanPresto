@@ -74,7 +74,7 @@ public class SistemaProductos {
     }
 
     private void cargarProductos() {
-        productos = Persistencia.getInstancia().obtenerTodos(new MapeadorProducto());
+        productos = Persistencia.getInstancia().obtenerTodos(new MapeadorProducto());        
     }
 
     

@@ -67,10 +67,21 @@ public class MapeadorProducto implements Mapeador{
 
     @Override
     public void leerCompuesto(ResultSet rs) throws SQLException {
-        producto.setCodigo(Integer.parseInt(rs.getString("codigo")));
-        producto.setNombre(rs.getString("nombre"));
-        producto.setPrecioUnitario(Integer.parseInt(rs.getString("precioUnitario")));
-        producto.setStockDisponible(Integer.parseInt(rs.getString("stock")));
+        
+        int codigoProd = Integer.parseInt(rs.getString("codigo"));
+        String nombreProd = rs.getString("nombre");        
+        double precioUni = Double.parseDouble(rs.getString("precioUnitario"));
+        int stockProd = Integer.parseInt(rs.getString("stock"));
+        int unidadId = Integer.parseInt(rs.getString("unidad_oid")); 
+        
+        UnidadProcesadora unidad = new UnidadProcesadora();
+        unidad.setOid(unidadId);
+        
+        producto.setCodigo(codigoProd);
+        producto.setNombre(nombreProd);
+        producto.setPrecioUnitario(precioUni);
+        producto.setStockDisponible(stockProd);
+        producto.setUnidadProcesadora(unidad);
     }
 
     @Override

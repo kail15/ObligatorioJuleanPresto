@@ -31,14 +31,13 @@ import obligatorio.modelo.SistemaUnidadProcesadora;
 import obligatorio.modelo.SistemaUsuarios;
 import obligatorio.modelo.UnidadProcesadora;
 import obligatorio.modelo.Usuario;
-import obligatorio.servlet.ServletPersistencia;
 import obligatorio.vista.web.dto.PedidoDTO;
 import obligatorio.vista.web.dto.ServicioDTO;
 import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
 import obligatorio.vista.web.utils.NotificarHelper;
 
 //OJP
-public class Fachada extends Observable {
+public final class Fachada extends Observable {
 
     private SistemaUsuarios sistemaUsuarios;
     private SistemaUnidadProcesadora sistemaUnidades;
@@ -57,19 +56,25 @@ public class Fachada extends Observable {
         sistemaClientes = new SistemaClientes();
         sistemaMesa = new SistemaMesa();
         cargar();
-        //cargarServlet();
+        
         
         //carga desde la BD
         //sistemaUsuarios.cargarDatos();
-        //sistemaClientes.cargarDatos();
-        //sistemaUnidades.cargarDatos();
-        sistemaMesa.cargarDatos();
-       // sistemaProductos.cargarDatos();
+         sistemaClientes.cargarDatos(); 
+        sistemaUnidades.cargarDatos(); 
+         sistemaMesa.cargarDatos(); 
+        sistemaProductos.cargarDatos();  
         
+       normalizarUnidadProducto();
+       
     }
     
-    public void cargarServlet(){
-      ServletPersistencia servlet = new ServletPersistencia();
+    public void normalizarUnidadProducto(){
+        List<Producto> productos = obtenerProductos();
+        for(Producto p : productos){
+           UnidadProcesadora unidad = obtenerUnidadById(p.getUnidadProcesadora().getOid());
+           p.setUnidadProcesadora(unidad);            
+        }
     }
 
     public static Fachada getInstancia() {
@@ -276,6 +281,10 @@ public class Fachada extends Observable {
     public List<UnidadProcesadora> obtenerUnidades() {
         return this.sistemaUnidades.getUnidades();
     }
+    
+    public UnidadProcesadora obtenerUnidadById(int id){
+      return this.sistemaUnidades.getUnidadById(id);
+    }
 
     public void agregarCliente(Cliente cliente) {
         this.sistemaClientes.agregarCliente(cliente);
@@ -334,11 +343,11 @@ public class Fachada extends Observable {
         this.agregarUsuario(juan);
         this.agregarUsuario(jose);
 
-        this.agregarProducto(prod1);
+       /* this.agregarProducto(prod1);
         this.agregarProducto(prod2);
         this.agregarProducto(prod3);
         this.agregarProducto(prod5);
-        this.agregarProducto(prod6);
+        this.agregarProducto(prod6);*/
 
         this.agregarUnidad(bar);
         this.agregarUnidad(cocina);
