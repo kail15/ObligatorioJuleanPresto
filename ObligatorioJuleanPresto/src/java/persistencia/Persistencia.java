@@ -1,18 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package persistencia;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-/**
- *
- * @author alumnoFI
- */
+
 public class Persistencia {
      private BaseDatos base = BaseDatos.getInstancia();
     private static Persistencia instancia = new Persistencia();
@@ -25,10 +18,10 @@ public class Persistencia {
     
     public int proximoOid(){
         try {
-            String sql = "SELECT ultimo from oid";
+            String sql = "SELECT ultimo from id";
             ResultSet rs = base.consultar(sql);
             if(!rs.next()){
-                System.out.println("NO ESTA INICIALIZADO EL OID");
+                System.out.println("NO ESTA INICIALIZADO EL ID");
                 return -1;
             }
             int ultimo = rs.getInt("ultimo");
@@ -36,7 +29,7 @@ public class Persistencia {
             base.modificar(sql);
             return ultimo;
         } catch (SQLException ex) {
-            System.out.println("Error al generar proximo oid:" + ex.getMessage());
+            System.out.println("Error al generar proximo id:" + ex.getMessage());
             return -1;
         }
     }

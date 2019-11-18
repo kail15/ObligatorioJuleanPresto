@@ -27,12 +27,12 @@ public class MapeadorCliente implements Mapeador {
 
     @Override
     public int getOid() {
-        return cliente.getOid();
+        return cliente.getId();
     }
 
     @Override
     public void setOid(int oid) {
-        cliente.setOid(oid);
+        cliente.setId(oid);
     }
 
     @Override

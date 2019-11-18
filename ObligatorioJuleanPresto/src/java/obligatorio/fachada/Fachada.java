@@ -31,6 +31,7 @@ import obligatorio.modelo.SistemaUnidadProcesadora;
 import obligatorio.modelo.SistemaUsuarios;
 import obligatorio.modelo.UnidadProcesadora;
 import obligatorio.modelo.Usuario;
+import obligatorio.servlet.ServletPersistencia;
 import obligatorio.vista.web.dto.PedidoDTO;
 import obligatorio.vista.web.dto.ServicioDTO;
 import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
@@ -55,15 +56,20 @@ public class Fachada extends Observable {
         sistemaPedidos = new SistemaPedidos();
         sistemaClientes = new SistemaClientes();
         sistemaMesa = new SistemaMesa();
-        //cargar();
+        cargar();
+        cargarServlet();
         
         //carga desde la BD
-        sistemaUsuarios.cargarDatos();
-        sistemaClientes.cargarDatos();
-        sistemaUnidades.cargarDatos();
-        sistemaMesa.cargarDatos();
-        sistemaProductos.cargarDatos();
+        //sistemaUsuarios.cargarDatos();
+        //sistemaClientes.cargarDatos();
+        //sistemaUnidades.cargarDatos();
+        //sistemaMesa.cargarDatos();
+       // sistemaProductos.cargarDatos();
         
+    }
+    
+    public void cargarServlet(){
+      ServletPersistencia servlet = new ServletPersistencia();
     }
 
     public static Fachada getInstancia() {
@@ -146,7 +152,7 @@ public class Fachada extends Observable {
         Usuario currentMozo = usuarioById(mozo.getUserId());
         Mesa currentMesa = currentMozo.obtenerMesaByNumero(mesaServ.getNumero());
         currentMesa.setPrecioServicio(currentMesa.getPrecioServicio());
-        Cliente cliente = this.sistemaClientes.clienteById(mesaServ.getClienteServicio().getOid());
+        Cliente cliente = this.sistemaClientes.clienteById(mesaServ.getClienteServicio().getId());
         BeneficioCliente beneficioCli = null;
         ClienteRestaurant cliRest = null;
         String beneficioNombre = "";
@@ -314,14 +320,14 @@ public class Fachada extends Observable {
         Pedido ped2 = new Pedido(153, prod2, 5, "MCDONALd", mesa3, carlos, EstadoPedido.EN_ESPERA);
         Pedido ped3 = new Pedido(154, prod3, 2, "MCDONALd", mesa3, carlos, EstadoPedido.PROCESADO);
 
-        carlos.agregarMesa(mesa1);
+      /*  carlos.agregarMesa(mesa1);
         carlos.agregarMesa(mesa2);
         carlos.agregarMesa(mesa3);
         carlos.agregarMesa(mesa4);
 
         carlos.agregarMesa(mesa5);
         carlos.agregarMesa(mesa6);
-        pedro.agregarMesa(mesa7);
+        pedro.agregarMesa(mesa7);*/
 
         this.agregarUsuario(carlos);
         this.agregarUsuario(pedro);

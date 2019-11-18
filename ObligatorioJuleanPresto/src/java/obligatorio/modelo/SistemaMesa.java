@@ -43,6 +43,7 @@ public class SistemaMesa {
 
     private void cargarMesas() {
         mesas = Persistencia.getInstancia().obtenerTodos(new MapeadorMesa());
+        int test = 0;
     }
     
     

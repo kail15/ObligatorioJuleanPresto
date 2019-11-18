@@ -282,7 +282,7 @@ public class wsMozo implements VistaMozo {
         Mesa mesaServ = new Mesa();
         
         Cliente cli = new Cliente();
-        cli.setOid(mesaPedidoDto.getClienteId());
+        cli.setId(mesaPedidoDto.getClienteId());
         mesaServ.setClienteServicio(cli);
         mesaServ.setNumero(mesaPedidoDto.getNumero());        
         this.controlador.confirmarServicio(this.mozo,mesaServ);

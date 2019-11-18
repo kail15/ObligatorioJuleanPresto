@@ -22,7 +22,7 @@ public class SistemaClientes {
         Cliente cliente = null;
 
         for (Cliente cli : this.clientes) {
-            if (cli.getOid() == id) {
+            if (cli.getId()== id) {
                 cliente = cli;
                 break;
             }

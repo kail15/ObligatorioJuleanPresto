@@ -44,7 +44,7 @@ public class MapeadorServicio implements Mapeador {
         ArrayList<String> sqls = new ArrayList();
         sqls.add(
                 "insert into servicios values(" + servicio.getOid() + ","
-                + servicio.getCliente().getOid() + ")"
+                + servicio.getCliente().getId()+ ")"
         );
         return sqls;
     }
@@ -67,7 +67,7 @@ public class MapeadorServicio implements Mapeador {
     @Override
     public String getSqlSeleccionar() {
         return "SELECT * FROM servicios s,items i WHERE s.oid=i.servicio_oid AND s.cliente_oid = "
-                + servicio.getCliente().getOid();
+                + servicio.getCliente().getId();
     }
 
     @Override
