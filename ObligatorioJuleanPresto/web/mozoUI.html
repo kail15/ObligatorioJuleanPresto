@@ -101,15 +101,36 @@
                     case "TIPO_DEVOLVER_SERVICIO":
                         pedidoTerminado(valor);
                         break;
+                    case "TIPO_AVISAR_PEDIDO":
+                        avisarPedido(valor);
                     default:
                         break;
                 }
             };
 
+
+            function avisarPedido(pedido) {
+
+                var estadoPed = "";
+                if (pedido.estado === "EN_ESPERA") {
+                    estadoPed = "En espera";
+                } else if (pedido.estado === "PROCESADO") {
+                    estadoPed = "Procesando";
+                } else if (pedido.estado === "FINALIZADO") {
+                    estadoPed = "Finalizado";
+                }
+                
+                var mensjePedido = "Producto: " +pedido.nombreProducto + '\n' + "Gestor: " + pedido.mozoNombre + '\n' + "Estado: " + estadoPed;
+                
+                alert(mensjePedido);
+
+            }
+
             function pedidoTerminado(servicio) {
                 console.log(servicio);
                 if (servicio.mozoId === userId) {
-                    var mensajeServicio = "Cliente: " + servicio.nombreCliente + '\n' + "Monto original: " + servicio.totalApagar;
+                    var mensajeServicio = "Cliente: " + servicio.nombreCliente + '\n' + "Monto original: $" + servicio.totalApagar
+                            + '\n' + "Descuento : $" + servicio.descuentoServicio + '\n' + "TotalApagar a pagar: $" + servicio.costoServicio;
                     alert(mensajeServicio);
                 }
 

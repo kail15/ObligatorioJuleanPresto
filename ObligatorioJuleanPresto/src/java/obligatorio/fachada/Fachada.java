@@ -117,7 +117,8 @@ public class Fachada extends Observable {
         UnidadProcesadora unidad = unidadProcByProd(prod);
         NotificarHelper helper = new NotificarHelper(EventoMensaje.PEDIDO_PROCESADO, unidad);
         notificar(helper);
-        NotificarHelper helperMozo = new NotificarHelper(EventoMensaje.CAMBIO_ESTADO_PEDIDO, null);
+        notificar(helper);
+        NotificarHelper helperMozo = new NotificarHelper(EventoMensaje.CAMBIO_ESTADO_PEDIDO, p);
         notificar(helperMozo);
     }
 
@@ -130,7 +131,6 @@ public class Fachada extends Observable {
     }
 
     public void confirmarServicio(Usuario mozoParam, Mesa mesaServparam) throws ClienteException {
-        this.sistemaUsuarios.confirmarServicio(mozoParam, mesaServparam);
         Usuario mozo = mozoParam;
         Mesa mesaServ = mesaServparam;    
 
@@ -168,11 +168,11 @@ public class Fachada extends Observable {
         ServicioDTO servicioCli = new ServicioDTO();
         servicioCli.setTotalApagar(currentMesa.getPrecioServicio());
         servicioCli.setDescuentoServicio(descuento);
-        servicioCli.setCostoServicio(currentMesa.getPrecioServicio() - descuento);
 
         if (cliente != null) {
             servicioCli.setNombreCliente(cliente.getNombre());
         }        
+        this.sistemaUsuarios.confirmarServicio(mozoParam, mesaServparam);
 
         NotificarHelper helperMozo = new NotificarHelper(EventoMensaje.LIMPIAR_SERVICIO, servicioCli);
         notificar(helperMozo);

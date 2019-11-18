@@ -60,7 +60,7 @@ public class Producto {
     }
 
     public UnidadProcesadora getUnidadProcesadora() {
-        return unidadProcesadora;
+        return this.unidadProcesadora;
     }
 
     public void setUnidadProcesadora(UnidadProcesadora unidadProcesadora) {

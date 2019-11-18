@@ -11,11 +11,10 @@ import obligatorio.modelo.MesaTransferida;
 import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Producto;
-import obligatorio.modelo.Servicio;
 import obligatorio.modelo.Usuario;
 import obligatorio.vista.web.dto.MesaDTO;
+import obligatorio.vista.web.dto.PedidoDTO;
 import obligatorio.vista.web.dto.ServicioDTO;
-import obligatorio.vista.web.dto.UnidadProcesadoraDTO;
 import obligatorio.vista.web.utils.NotificarHelper;
 import observer.Observable;
 import observer.Observador;
@@ -116,7 +115,9 @@ public class ControladorMozo implements Observador {
             }
 
             if (ret.getEvento().equals(EventoMensaje.CAMBIO_ESTADO_PEDIDO)) {
-                vista.obtenerMozo(null);
+                PedidoDTO pedido = (PedidoDTO) ret.getObjetoNotificar();
+                //vista.obtenerMozo(null);
+                vista.avisarPedido(pedido);
             }
             if (ret.getEvento().equals(EventoMensaje.OBTENER_PEDIDOS)) {
                 List<Producto> productos = this.fachada.obtenerProductos();

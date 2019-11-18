@@ -15,7 +15,7 @@ public class Comun implements BeneficioCliente {
         // 5 es el id del cafe
         for (Pedido p : servicio.getPedidos()) {
             if (p.getProducto().getCodigo() == 5) {
-                precioAux -= p.getProducto().getPrecioUnitario();
+                precioAux -= p.getProducto().getPrecioUnitario() * p.getCantidad();
             }
         }
         
