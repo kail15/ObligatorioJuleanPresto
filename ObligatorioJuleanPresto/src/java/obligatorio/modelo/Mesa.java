@@ -4,6 +4,7 @@ package obligatorio.modelo;
 import java.util.List;
 
 public class Mesa {
+    private int oid;
     private int numero;
     private boolean estado;
     private Servicio servicio = new Servicio();
@@ -18,7 +19,15 @@ public class Mesa {
     } 
     
     public Mesa() {        
-    }    
+    }  
+
+    public int getOid() {
+        return oid;
+    }
+
+    public void setOid(int oid) {
+        this.oid = oid;
+    }
 
     public int getNumero() {
         return numero;

@@ -6,6 +6,7 @@ import java.util.List;
 
 
 public class Servicio {
+    private int oid;
     private List<Pedido> pedidos = new ArrayList<>();
     private Cliente cliente;
     private double precioTotal;
@@ -13,6 +14,14 @@ public class Servicio {
     private String beneficio;
 
     public Servicio() {
+    }
+
+    public int getOid() {
+        return oid;
+    }
+
+    public void setOid(int oid) {
+        this.oid = oid;
     }
 
     public List<Pedido> getPedidos() {

@@ -2,6 +2,9 @@ package obligatorio.modelo;
 
 import java.util.ArrayList;
 import java.util.List;
+import persistencia.BaseDatos;
+import persistencia.MapeadorProducto;
+import persistencia.Persistencia;
 
 public class SistemaProductos {
 
@@ -56,6 +59,22 @@ public class SistemaProductos {
 
     public Producto obtenerProductoById(int id) {
         return productoById(id);
+    }
+
+    public void cargarDatos() {
+        this.conectarBD();
+        this.cargarProductos(); 
+        System.out.println("DATOS CARGADOS");
+    }
+
+    private void conectarBD() {
+        String url = "jdbc:mysql://localhost:3306/obligatoriojuleanpresto";
+        BaseDatos bd = BaseDatos.getInstancia();
+        bd.conectarse("com.mysql.jdbc.Driver", url, "root", "root");
+    }
+
+    private void cargarProductos() {
+        productos = Persistencia.getInstancia().obtenerTodos(new MapeadorProducto());
     }
 
     

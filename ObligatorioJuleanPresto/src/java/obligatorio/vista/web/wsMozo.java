@@ -250,7 +250,7 @@ public class wsMozo implements VistaMozo {
     }
 
     private UnidadProcesadoraDTO adaptarUP(UnidadProcesadora u) {
-        return new UnidadProcesadoraDTO(u.getId(), u.getNombre());
+        return new UnidadProcesadoraDTO(u.getOid(), u.getNombre());
     }
 
     private MesaTransferidaDTO adatparMesaTrasf(MesaTransferida mesa) {
@@ -282,7 +282,7 @@ public class wsMozo implements VistaMozo {
         Mesa mesaServ = new Mesa();
         
         Cliente cli = new Cliente();
-        cli.setId(mesaPedidoDto.getClienteId());
+        cli.setOid(mesaPedidoDto.getClienteId());
         mesaServ.setClienteServicio(cli);
         mesaServ.setNumero(mesaPedidoDto.getNumero());        
         this.controlador.confirmarServicio(this.mozo,mesaServ);

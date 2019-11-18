@@ -7,6 +7,9 @@ import obligatorio.exceptions.MesaException;
 import obligatorio.exceptions.UsuarioLogueadoException;
 import obligatorio.fachada.Fachada;
 import obligatorio.vista.web.dto.MesaDTO;
+import persistencia.BaseDatos;
+import persistencia.MapeadorUsuario;
+import persistencia.Persistencia;
 
 //OJP
 public class SistemaUsuarios {
@@ -127,12 +130,35 @@ public class SistemaUsuarios {
         }
     }
 
-    public void confirmarServicio(Usuario mozo, Mesa mesaServ) {        
-        for(Usuario usu : this.usuariosLogueados){
-           if(usu.getUserId().equals(mozo.getUserId())){
-              usu.limpiarServicioMesa(mesaServ);
-              break;
-           }
+    public void confirmarServicio(Usuario mozo, Mesa mesaServ) {
+        for (Usuario usu : this.usuariosLogueados) {
+            if (usu.getUserId().equals(mozo.getUserId())) {
+                usu.limpiarServicioMesa(mesaServ);
+                break;
+            }
         }
-    }    
+    }
+
+    public void cargarDatos() {
+        this.conectarBD();
+        this.cargarUsuarios();
+        System.out.println("DATOS CARGADOS");
+    }
+
+    public void asignarMesa(int oidMozo, Mesa mesa) {
+        Usuario usuario = UsuarioById(Integer.toString(oidMozo));
+        if (usuario != null) {
+            usuario.obtenerMesas().add(mesa);
+        }
+    }
+
+    private void conectarBD() {
+        String url = "jdbc:mysql://localhost:3306/obligatoriojuleanpresto";
+        BaseDatos bd = BaseDatos.getInstancia();
+        bd.conectarse("com.mysql.jdbc.Driver", url, "root", "root");
+    }
+
+    private void cargarUsuarios() {
+        usuarios = Persistencia.getInstancia().obtenerTodos(new MapeadorUsuario());
+    }
 }

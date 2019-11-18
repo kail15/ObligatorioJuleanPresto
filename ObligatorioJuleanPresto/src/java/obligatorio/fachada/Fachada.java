@@ -24,6 +24,7 @@ import obligatorio.modelo.Preferencial;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.Servicio;
 import obligatorio.modelo.SistemaClientes;
+import obligatorio.modelo.SistemaMesa;
 import obligatorio.modelo.SistemaPedidos;
 import obligatorio.modelo.SistemaProductos;
 import obligatorio.modelo.SistemaUnidadProcesadora;
@@ -43,6 +44,7 @@ public class Fachada extends Observable {
     private SistemaProductos sistemaProductos;
     private SistemaPedidos sistemaPedidos;
     private SistemaClientes sistemaClientes;
+    private SistemaMesa sistemaMesa;
 
     private static Fachada instancia;
 
@@ -52,7 +54,16 @@ public class Fachada extends Observable {
         sistemaUnidades = new SistemaUnidadProcesadora();
         sistemaPedidos = new SistemaPedidos();
         sistemaClientes = new SistemaClientes();
-        cargar();
+        sistemaMesa = new SistemaMesa();
+        //cargar();
+        
+        //carga desde la BD
+        sistemaUsuarios.cargarDatos();
+        sistemaClientes.cargarDatos();
+        sistemaUnidades.cargarDatos();
+        sistemaMesa.cargarDatos();
+        sistemaProductos.cargarDatos();
+        
     }
 
     public static Fachada getInstancia() {
@@ -135,7 +146,7 @@ public class Fachada extends Observable {
         Usuario currentMozo = usuarioById(mozo.getUserId());
         Mesa currentMesa = currentMozo.obtenerMesaByNumero(mesaServ.getNumero());
         currentMesa.setPrecioServicio(currentMesa.getPrecioServicio());
-        Cliente cliente = this.sistemaClientes.clienteById(mesaServ.getClienteServicio().getId());
+        Cliente cliente = this.sistemaClientes.clienteById(mesaServ.getClienteServicio().getOid());
         BeneficioCliente beneficioCli = null;
         ClienteRestaurant cliRest = null;
         String beneficioNombre = "";
@@ -178,6 +189,8 @@ public class Fachada extends Observable {
         notificar(helperMozo);
     }
 
+    
+
     public enum EVENTOS {
         RECIBIR_PEDIDO,
         TRANSFERIR_MESA,
@@ -208,6 +221,10 @@ public class Fachada extends Observable {
         }
         mesa.setTipoMensaje(EventoMensaje.ACEPTAR_MESA);
         Fachada.getInstancia().notificar(mesa);
+    }
+    
+    public void asignarMesa(int oidMozo, Mesa mesa) {
+        sistemaUsuarios.asignarMesa(oidMozo, mesa);
     }
 
     public List<Producto> obtenerProductos() {
