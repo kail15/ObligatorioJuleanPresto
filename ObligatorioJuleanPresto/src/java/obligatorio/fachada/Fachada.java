@@ -57,13 +57,13 @@ public class Fachada extends Observable {
         sistemaClientes = new SistemaClientes();
         sistemaMesa = new SistemaMesa();
         cargar();
-        cargarServlet();
+        //cargarServlet();
         
         //carga desde la BD
         //sistemaUsuarios.cargarDatos();
         //sistemaClientes.cargarDatos();
         //sistemaUnidades.cargarDatos();
-        //sistemaMesa.cargarDatos();
+        sistemaMesa.cargarDatos();
        // sistemaProductos.cargarDatos();
         
     }

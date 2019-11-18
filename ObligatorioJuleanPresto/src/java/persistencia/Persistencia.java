@@ -14,6 +14,7 @@ public class Persistencia {
         return instancia;
     }
     private Persistencia() {
+        
     }
     
     public int proximoOid(){
