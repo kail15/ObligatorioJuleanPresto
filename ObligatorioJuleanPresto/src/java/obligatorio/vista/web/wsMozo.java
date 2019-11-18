@@ -164,6 +164,10 @@ public class wsMozo implements VistaMozo {
 
     @Override
     public void mostrarError(String error) {
+        
+        if(error.equals("No se encontro el cliente")){
+        obtenerMozo(null);
+        }
 
         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.ERROR_LOGOUT, error);
         String mensaje = MessageConverter.toMessage(msgTipos);
@@ -181,11 +185,10 @@ public class wsMozo implements VistaMozo {
     }
     
     @Override
-    public void devolverServicio(ServicioDTO servicio) {  
+    public void devolverServicio(ServicioDTO servicio) {          
+        obtenerMozo(null);     
         
-        obtenerMozo(null);      
-        
-        
+        servicio.setMozoId(this.mozo.getUserId());
         WsMessageDTO msgTipos = new WsMessageDTO(WsMessageDTO.TipoMensaje.TIPO_DEVOLVER_SERVICIO, servicio);
         String mensaje = MessageConverter.toMessage(msgTipos);
         WsUtils.enviarMensajePorSocket(session, mensaje);

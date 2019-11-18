@@ -89,31 +89,32 @@ public class ControladorMozo implements Observador {
     public void confirmarServicio(Usuario mozo, Mesa mesaServ) {
         try {
             this.fachada.confirmarServicio(mozo, mesaServ);
-        }catch (ClienteException ex) {
+        } catch (ClienteException ex) {
             vista.mostrarError(ex.getMessage());
-        }    
+        }
     }
 
     @Override
     public void actualizar(Object evento, Observable origen) {
 
-        if (evento instanceof MesaTransferida) {
-            MesaTransferida mesaT = (MesaTransferida) evento;
-            if (mesaT.getTipoMensaje().equals(EventoMensaje.TRANSFERIR_MESA)) {
-                vista.transferirMesa(mesaT);
-            } else if (mesaT.getTipoMensaje().equals(EventoMensaje.ACEPTAR_MESA)) {
-                vista.aceptarMesaTransf(mesaT);
-            }
-        }
-
         if (evento instanceof NotificarHelper) {
             NotificarHelper ret = (NotificarHelper) evento;
             if (ret.getEvento().equals(EventoMensaje.LOGOUT)) {
-                List<Usuario> usuarios = this.fachada.getInstancia().obtenerUsuariosLogueados();
+                List<Usuario> usuarios = this.fachada.obtenerUsuariosLogueados();
                 vista.obtenerMozosLogueados(usuarios);
                 Usuario usuarioLogout = (Usuario) ((NotificarHelper) evento).getObjetoNotificar();
                 vista.logoutMozo(usuarioLogout);
             }
+            if (ret.getEvento().equals(EventoMensaje.TRANSFERIR_MESA)) {
+                MesaTransferida mesaT = (MesaTransferida) ret.getObjetoNotificar();
+                vista.transferirMesa(mesaT);
+            }
+
+            if (ret.getEvento().equals(EventoMensaje.ACEPTAR_MESA)) {
+                MesaTransferida mesaT = (MesaTransferida) ret.getObjetoNotificar();
+                vista.aceptarMesaTransf(mesaT);
+            }
+
             if (ret.getEvento().equals(EventoMensaje.CAMBIO_ESTADO_PEDIDO)) {
                 vista.obtenerMozo(null);
             }
@@ -126,11 +127,11 @@ public class ControladorMozo implements Observador {
                 ServicioDTO servicio = (ServicioDTO) ret.getObjetoNotificar();
                 vista.devolverServicio(servicio);
             }
-        }
+            if (ret.getEvento().equals(EventoMensaje.NUEVO_USUARIO_LOGUEADO)) {
+                List<Usuario> usuarios = Fachada.getInstancia().obtenerUsuariosLogueados();
+                vista.obtenerMozosLogueados(usuarios);
+            }
 
-        if (evento.equals(Fachada.EVENTOS.NUEVO_USUARIO_LOGUEADO)) {
-            List<Usuario> usuarios = Fachada.getInstancia().obtenerUsuariosLogueados();
-            vista.obtenerMozosLogueados(usuarios);
         }
     }
 }
