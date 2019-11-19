@@ -80,12 +80,14 @@ public class MapeadorUsuario implements Mapeador {
         String userName = rs.getString("nombreUsuario");
         String userPassword = rs.getString("password");
         String nombreCompleto = rs.getString("nombreCompleto");
+        String tipoUsuario = rs.getString("tipoUsuario");
         
         // usuario.setOid(roId);
         usuario.setUserId(userId);
         usuario.setNombreUsuario(userName);
         usuario.setPassword(userPassword);
         usuario.setNombreCompleto(nombreCompleto);
+        usuario.setTipoUsuario(tipoUsuario);
     }
 
     @Override

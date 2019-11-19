@@ -2,6 +2,7 @@ package obligatorio.modelo;
 
 import java.util.ArrayList;
 import java.util.List;
+import obligatorio.fachada.Fachada;
 import persistencia.BaseDatos;
 import persistencia.MapeadorProducto;
 import persistencia.Persistencia;
@@ -74,8 +75,7 @@ public class SistemaProductos {
     }
 
     private void cargarProductos() {
-        productos = Persistencia.getInstancia().obtenerTodos(new MapeadorProducto());        
+        productos = Persistencia.getInstancia().obtenerTodos(new MapeadorProducto()); 
     }
-
     
 }

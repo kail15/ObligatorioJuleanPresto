@@ -59,23 +59,33 @@ public final class Fachada extends Observable {
         
         
         //carga desde la BD
-        //sistemaUsuarios.cargarDatos();
+        sistemaUsuarios.cargarDatos();
          sistemaClientes.cargarDatos(); 
         sistemaUnidades.cargarDatos(); 
          sistemaMesa.cargarDatos(); 
         sistemaProductos.cargarDatos();  
         
        normalizarUnidadProducto();
-       
+       normalizarMozoMesas();
     }
     
-    public void normalizarUnidadProducto(){
+    private void normalizarUnidadProducto(){
         List<Producto> productos = obtenerProductos();
         for(Producto p : productos){
            UnidadProcesadora unidad = obtenerUnidadById(p.getUnidadProcesadora().getOid());
            p.setUnidadProcesadora(unidad);            
         }
     }
+    
+    private void normalizarMozoMesas() {
+        List<Mesa> mesas = obtenerMesas();
+        for (Mesa m : mesas) {
+          Usuario mozo = usuarioById(m.getMozoId());
+          mozo.agregarMesa(m);
+        }
+    }
+    
+    //private void normalizarMesas
 
     public static Fachada getInstancia() {
         if (instancia == null) {
@@ -240,6 +250,10 @@ public final class Fachada extends Observable {
 
     public List<Producto> obtenerProductos() {
         return this.sistemaProductos.getProductos();
+    }
+    
+    public List<Mesa> obtenerMesas(){
+      return this.sistemaMesa.getMesas();
     }
 
     public void agregarUsuario(Usuario u) {

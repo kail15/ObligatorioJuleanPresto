@@ -1,6 +1,7 @@
 package obligatorio.modelo;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import obligatorio.exceptions.CredencialesInvalidasException;
 import obligatorio.exceptions.MesaException;
@@ -160,5 +161,23 @@ public class SistemaUsuarios {
 
     private void cargarUsuarios() {
         usuarios = Persistencia.getInstancia().obtenerTodos(new MapeadorUsuario());
+        normalizarUsuarios();
     }
+
+    private void normalizarUsuarios() {
+        ArrayList<Usuario> usuarios = new ArrayList();
+        for (Usuario u : this.usuarios) {
+            if (u.getTipoUsuario().equals("mozo")) {
+                Usuario mozo = new Mozo(u.getUserId(), u.getNombreUsuario(), u.getPassword(), u.getNombreCompleto());
+                usuarios.add(mozo);
+            }
+            if (u.getTipoUsuario().equals("gestor")) {
+                Usuario gestor = new Gestor(u.getUserId(), u.getNombreUsuario(), u.getPassword(), u.getNombreCompleto());
+                usuarios.add(gestor);
+            }
+        }
+        this.usuarios = usuarios;
+    }
+
+    
 }

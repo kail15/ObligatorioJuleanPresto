@@ -9,6 +9,7 @@ public abstract class Usuario {
     private String password;
     private String nombreCompleto;
     private String userId;
+    private String tipoUsuario;
 
     public Usuario(String userId, String nombreUsuario, String password, String nombreCompleto) {
         this.nombreUsuario = nombreUsuario;
@@ -106,5 +107,15 @@ public abstract class Usuario {
     public void limpiarServicioMesa(Mesa mesa){
     
     }
+
+    public String getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(String tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
+    }
+    
+    
 
 }
