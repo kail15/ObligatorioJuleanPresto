@@ -69,11 +69,14 @@ public class MapeadorCliente implements Mapeador {
     public void leerCompuesto(ResultSet rs) throws SQLException {
         
         String nombreCliente = rs.getString("nombre");
-        int beneficioCliente = Integer.parseInt(rs.getString("beneficio"));     
+        int beneficioCliente = Integer.parseInt(rs.getString("beneficio")); 
+        String email = rs.getString("email");
         
         cliente.setNombre(nombreCliente);
 
         cliente.setBeneficio(beneficioCliente);
+        
+        cliente.setEmail(email);
     }
 
     @Override

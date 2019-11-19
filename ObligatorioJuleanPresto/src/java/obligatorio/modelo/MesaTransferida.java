@@ -13,7 +13,7 @@ import obligatorio.vista.web.utils.EventoMensaje;
  */
 public class MesaTransferida {
 
-    private int numero;
+    private int numeroMesa;
     private String mozoOrigen;
     private String mozoDestino;
     private String mozoOrigenNombre;
@@ -25,7 +25,7 @@ public class MesaTransferida {
 
     public MesaTransferida(int numero, String mozoOrigen,
             String mozoDestino, String mozoOrigenNombre, String mozoDestinoNombre, boolean estadoMesa) {
-        this.numero = numero;
+        this.numeroMesa = numero;
         this.mozoOrigen = mozoOrigen;
         this.mozoDestino = mozoDestino;
         this.mozoOrigenNombre = mozoOrigenNombre;
@@ -34,11 +34,11 @@ public class MesaTransferida {
     }
 
     public int getNumero() {
-        return numero;
+        return numeroMesa;
     }
 
     public void setNumero(int numero) {
-        this.numero = numero;
+        this.numeroMesa = numero;
     }
 
     public String getMozoOrigen() {

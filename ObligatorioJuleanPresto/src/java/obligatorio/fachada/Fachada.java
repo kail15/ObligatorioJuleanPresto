@@ -55,37 +55,35 @@ public final class Fachada extends Observable {
         sistemaClientes = new SistemaClientes();
         sistemaMesa = new SistemaMesa();
         cargar();
-        
-        
+
         //carga desde la BD
         sistemaUsuarios.cargarDatos();
-         sistemaClientes.cargarDatos(); 
-        sistemaUnidades.cargarDatos(); 
-         sistemaMesa.cargarDatos(); 
-        sistemaProductos.cargarDatos();  
-        
-       normalizarUnidadProducto();
-       normalizarMozoMesas();
+        sistemaClientes.cargarDatos();
+        sistemaUnidades.cargarDatos();
+        sistemaMesa.cargarDatos();
+        sistemaProductos.cargarDatos();
+
+        normalizarUnidadProducto();
+        normalizarMozoMesas();
     }
-    
-    private void normalizarUnidadProducto(){
+
+    private void normalizarUnidadProducto() {
         List<Producto> productos = obtenerProductos();
-        for(Producto p : productos){
-           UnidadProcesadora unidad = obtenerUnidadById(p.getUnidadProcesadora().getOid());
-           p.setUnidadProcesadora(unidad);            
+        for (Producto p : productos) {
+            UnidadProcesadora unidad = obtenerUnidadById(p.getUnidadProcesadora().getOid());
+            p.setUnidadProcesadora(unidad);
         }
     }
-    
+
     private void normalizarMozoMesas() {
         List<Mesa> mesas = obtenerMesas();
         for (Mesa m : mesas) {
-          Usuario mozo = usuarioById(m.getMozoId());
-          mozo.agregarMesa(m);
+            Usuario mozo = usuarioById(m.getMozoId());
+            mozo.agregarMesa(m);
         }
     }
-    
-    //private void normalizarMesas
 
+    //private void normalizarMesas
     public static Fachada getInstancia() {
         if (instancia == null) {
             instancia = new Fachada();
@@ -164,7 +162,7 @@ public final class Fachada extends Observable {
 
     public void confirmarServicio(Usuario mozoParam, Mesa mesaServparam) throws ClienteException {
         Usuario mozo = mozoParam;
-        Mesa mesaServ = mesaServparam;    
+        Mesa mesaServ = mesaServparam;
 
         Usuario currentMozo = usuarioById(mozo.getUserId());
         Mesa currentMesa = currentMozo.obtenerMesaByNumero(mesaServ.getNumero());
@@ -203,21 +201,19 @@ public final class Fachada extends Observable {
 
         if (cliente != null) {
             servicioCli.setNombreCliente(cliente.getNombre());
-        }        
+        }
         this.sistemaUsuarios.confirmarServicio(mozoParam, mesaServparam);
 
         NotificarHelper helperMozo = new NotificarHelper(EventoMensaje.LIMPIAR_SERVICIO, servicioCli);
         notificar(helperMozo);
     }
 
-
-
     public Usuario login(String n, String p) throws CredencialesInvalidasException, UsuarioInactivoException, UsuarioLogueadoException {
 
         Usuario usuario = sistemaUsuarios.login(n, p);
         if (usuario != null) {
             agregarUsuarioLogueado(usuario);
-            NotificarHelper helper = new NotificarHelper(EventoMensaje.NUEVO_USUARIO_LOGUEADO, null);            
+            NotificarHelper helper = new NotificarHelper(EventoMensaje.NUEVO_USUARIO_LOGUEADO, null);
             Fachada.getInstancia().notificar(helper);
         }
         return usuario;
@@ -232,12 +228,12 @@ public final class Fachada extends Observable {
         if (mesa.isAceptaMesa()) {
             this.sistemaUsuarios.agregarMesa(mesa);
             this.sistemaUsuarios.elimiarMesa(mesa);
-            
+
         }
         NotificarHelper helper = new NotificarHelper(EventoMensaje.ACEPTAR_MESA, mesa);
         Fachada.getInstancia().notificar(helper);
     }
-    
+
     public void asignarMesa(int oidMozo, Mesa mesa) {
         sistemaUsuarios.asignarMesa(oidMozo, mesa);
     }
@@ -245,9 +241,9 @@ public final class Fachada extends Observable {
     public List<Producto> obtenerProductos() {
         return this.sistemaProductos.getProductos();
     }
-    
-    public List<Mesa> obtenerMesas(){
-      return this.sistemaMesa.getMesas();
+
+    public List<Mesa> obtenerMesas() {
+        return this.sistemaMesa.getMesas();
     }
 
     public void agregarUsuario(Usuario u) {
@@ -289,9 +285,9 @@ public final class Fachada extends Observable {
     public List<UnidadProcesadora> obtenerUnidades() {
         return this.sistemaUnidades.getUnidades();
     }
-    
-    public UnidadProcesadora obtenerUnidadById(int id){
-      return this.sistemaUnidades.getUnidadById(id);
+
+    public UnidadProcesadora obtenerUnidadById(int id) {
+        return this.sistemaUnidades.getUnidadById(id);
     }
 
     public void agregarCliente(Cliente cliente) {
@@ -337,7 +333,7 @@ public final class Fachada extends Observable {
         Pedido ped2 = new Pedido(153, prod2, 5, "MCDONALd", mesa3, carlos, EstadoPedido.EN_ESPERA);
         Pedido ped3 = new Pedido(154, prod3, 2, "MCDONALd", mesa3, carlos, EstadoPedido.PROCESADO);
 
-      /*  carlos.agregarMesa(mesa1);
+        /*  carlos.agregarMesa(mesa1);
         carlos.agregarMesa(mesa2);
         carlos.agregarMesa(mesa3);
         carlos.agregarMesa(mesa4);
@@ -345,18 +341,16 @@ public final class Fachada extends Observable {
         carlos.agregarMesa(mesa5);
         carlos.agregarMesa(mesa6);
         pedro.agregarMesa(mesa7);*/
-
         this.agregarUsuario(carlos);
         this.agregarUsuario(pedro);
         this.agregarUsuario(juan);
         this.agregarUsuario(jose);
 
-       /* this.agregarProducto(prod1);
+        /* this.agregarProducto(prod1);
         this.agregarProducto(prod2);
         this.agregarProducto(prod3);
         this.agregarProducto(prod5);
         this.agregarProducto(prod6);*/
-
         this.agregarUnidad(bar);
         this.agregarUnidad(cocina);
 

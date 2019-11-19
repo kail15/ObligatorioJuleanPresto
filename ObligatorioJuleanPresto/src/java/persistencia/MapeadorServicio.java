@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import obligatorio.fachada.Fachada;
-import obligatorio.modelo.Item;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.Servicio;
 
