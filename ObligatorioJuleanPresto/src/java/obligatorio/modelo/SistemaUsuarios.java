@@ -61,15 +61,17 @@ public class SistemaUsuarios {
         return usuarioLogueado;
     }
 
-    public void transferirMesa(MesaTransferida mesa) {
-        Fachada.getInstancia().notificar(Fachada.EVENTOS.TRANSFERIR_MESA);
-    }
-
     public void elimiarMesa(MesaTransferida mesa) {
-        this.usuariosLogueados.forEach((u) -> {
+        /* this.usuariosLogueados.forEach((u) -> {
             Mesa m = new Mesa(mesa.getNumero());
             u.elimiarMesa(m);
-        });
+        });*/
+
+        Usuario mozoOrigen = UsuarioById(mesa.getMozoOrigen());
+        Mesa m = new Mesa(mesa.getNumero());
+        mozoOrigen.elimiarMesa(m);
+
+        int test = 0;
 
         // CORREGIR
         /*this.usuarios.forEach((u) -> {            
@@ -81,18 +83,21 @@ public class SistemaUsuarios {
     public void agregarMesa(MesaTransferida mesa) {
         this.usuariosLogueados.forEach((Usuario u) -> {
             if (u.getUserId() == null ? mesa.getMozoDestino() == null : u.getUserId().equals(mesa.getMozoDestino())) {
-                Mesa m = new Mesa(mesa.getNumero(), mesa.isEstadoMesa());
+
+                Usuario usu = UsuarioById(mesa.getMozoOrigen());
+                Mesa m = usu.obtenerMesaByNumero(mesa.getNumero());
+                //Mesa m = new Mesa(mesa.getNumero(), mesa.isEstadoMesa());
                 u.agregarMesa(m);
             }
 
         });
 
-        this.usuarios.forEach((u) -> {
-            if (u.getUserId() == mesa.getMozoDestino()) {
-                Mesa m = new Mesa(mesa.getNumero());
-                u.agregarMesa(m);
-            }
-        });
+//        this.usuarios.forEach((u) -> {
+//            if (u.getUserId() == mesa.getMozoDestino()) {
+//                Mesa m = new Mesa(mesa.getNumero());
+//                u.agregarMesa(m);
+//            }
+//        });
     }
 
     public Usuario UsuarioById(String id) {
@@ -179,5 +184,4 @@ public class SistemaUsuarios {
         this.usuarios = usuarios;
     }
 
-    
 }

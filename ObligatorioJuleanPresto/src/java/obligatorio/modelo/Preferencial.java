@@ -17,12 +17,12 @@ public class Preferencial implements BeneficioCliente{
         // 6 es el id del agua
         for (Pedido p : servicio.getPedidos()) {
             if (p.getProducto().getCodigo() == 6) {
-                precioAux -= p.getProducto().getPrecioUnitario();
+                precioAux -= p.getProducto().getPrecioUnitario() * p.getCantidad();
             }
         }
         
-        if(precioTotal > 2000){
-            precioTotal = precioTotal * 0.095;
+        if(precioAux > 2000){
+            precioAux = precioAux * 0.95;
         }
         
         descuento = precioTotal - precioAux;        

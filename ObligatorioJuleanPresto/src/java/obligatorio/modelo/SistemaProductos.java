@@ -42,7 +42,7 @@ public class SistemaProductos {
         Producto prod = productoById(p.getCodigo());
         UnidadProcesadora unidad = null;
         if(prod != null){
-          unidad = p.getUnidadProcesadora();
+          unidad = prod.getUnidadProcesadora();
         }
         return unidad;
     }

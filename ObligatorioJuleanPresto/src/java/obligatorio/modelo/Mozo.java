@@ -48,6 +48,7 @@ public class Mozo extends Usuario {
     @Override
     public void elimiarMesa(Mesa mesa) {
         this.mesas.removeIf(m -> (m.getNumero() == mesa.getNumero()));
+        int test = 0;
     }
 
     @Override

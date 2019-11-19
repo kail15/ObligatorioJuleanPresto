@@ -22,7 +22,6 @@ import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Preferencial;
 import obligatorio.modelo.Producto;
-import obligatorio.modelo.Servicio;
 import obligatorio.modelo.SistemaClientes;
 import obligatorio.modelo.SistemaMesa;
 import obligatorio.modelo.SistemaPedidos;
@@ -150,7 +149,8 @@ public final class Fachada extends Observable {
         UnidadProcesadora unidad = unidadProcByProd(prod);
         NotificarHelper helper = new NotificarHelper(EventoMensaje.PEDIDO_PROCESADO, unidad);
         notificar(helper);
-        NotificarHelper helperMozo = new NotificarHelper(EventoMensaje.CAMBIO_ESTADO_PEDIDO, null);
+        notificar(helper);
+        NotificarHelper helperMozo = new NotificarHelper(EventoMensaje.CAMBIO_ESTADO_PEDIDO, p);
         notificar(helperMozo);
     }
 
@@ -162,7 +162,9 @@ public final class Fachada extends Observable {
         this.sistemaPedidos.validarMesasConPedido(mesa);
     }
 
-    public void confirmarServicio(Usuario mozo, Mesa mesaServ) throws ClienteException {
+    public void confirmarServicio(Usuario mozoParam, Mesa mesaServparam) throws ClienteException {
+        Usuario mozo = mozoParam;
+        Mesa mesaServ = mesaServparam;    
 
         Usuario currentMozo = usuarioById(mozo.getUserId());
         Mesa currentMesa = currentMozo.obtenerMesaByNumero(mesaServ.getNumero());
@@ -194,54 +196,46 @@ public final class Fachada extends Observable {
                 cliRest = new ClienteRestaurant(beneficioCli);
                 descuento = cliRest.getDescuento(currentMesa.getServicio());
             }
-
         }
-
         ServicioDTO servicioCli = new ServicioDTO();
         servicioCli.setTotalApagar(currentMesa.getPrecioServicio());
         servicioCli.setDescuentoServicio(descuento);
-        servicioCli.setCostoServicio(currentMesa.getPrecioServicio() - descuento);
 
         if (cliente != null) {
-            servicioCli.setNombreCliente(cliente.getNombre());        }
-        this.sistemaUsuarios.confirmarServicio(mozo, mesaServ);
+            servicioCli.setNombreCliente(cliente.getNombre());
+        }        
+        this.sistemaUsuarios.confirmarServicio(mozoParam, mesaServparam);
 
         NotificarHelper helperMozo = new NotificarHelper(EventoMensaje.LIMPIAR_SERVICIO, servicioCli);
         notificar(helperMozo);
     }
 
-    
 
-    public enum EVENTOS {
-        RECIBIR_PEDIDO,
-        TRANSFERIR_MESA,
-        NUEVO_USUARIO_LOGUEADO,
-        ACEPTAR_MESA,
-        PEDIDOS_EN_ESPERA;
-    };
 
     public Usuario login(String n, String p) throws CredencialesInvalidasException, UsuarioInactivoException, UsuarioLogueadoException {
 
         Usuario usuario = sistemaUsuarios.login(n, p);
         if (usuario != null) {
             agregarUsuarioLogueado(usuario);
-            Fachada.getInstancia().notificar(Fachada.EVENTOS.NUEVO_USUARIO_LOGUEADO);
+            NotificarHelper helper = new NotificarHelper(EventoMensaje.NUEVO_USUARIO_LOGUEADO, null);            
+            Fachada.getInstancia().notificar(helper);
         }
         return usuario;
     }
 
     public void transferirMesa(MesaTransferida mesa) {
-        mesa.setTipoMensaje(EventoMensaje.TRANSFERIR_MESA);
-        notificar(mesa);
+        NotificarHelper helper = new NotificarHelper(EventoMensaje.TRANSFERIR_MESA, mesa);
+        notificar(helper);
     }
 
     public void aceptarMesaTransf(MesaTransferida mesa) {
         if (mesa.isAceptaMesa()) {
-            this.sistemaUsuarios.elimiarMesa(mesa);
             this.sistemaUsuarios.agregarMesa(mesa);
+            this.sistemaUsuarios.elimiarMesa(mesa);
+            
         }
-        mesa.setTipoMensaje(EventoMensaje.ACEPTAR_MESA);
-        Fachada.getInstancia().notificar(mesa);
+        NotificarHelper helper = new NotificarHelper(EventoMensaje.ACEPTAR_MESA, mesa);
+        Fachada.getInstancia().notificar(helper);
     }
     
     public void asignarMesa(int oidMozo, Mesa mesa) {

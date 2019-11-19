@@ -34,7 +34,6 @@ public class ControladorGestor implements Observador {
     @Override
     public void actualizar(Object evento, Observable origen) {
 
-
         if (evento instanceof NotificarHelper) {
             NotificarHelper helper = (NotificarHelper) evento;
             if (helper.getEvento().equals(EventoMensaje.PEDIDO_PROCESADO)) {

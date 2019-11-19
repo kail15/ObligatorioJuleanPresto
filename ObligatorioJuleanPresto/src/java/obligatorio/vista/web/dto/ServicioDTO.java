@@ -11,6 +11,7 @@ public class ServicioDTO {
     private double totalApagar;
     private String beneficioNombre;
     private String nombreCliente;
+    private String mozoId;
 
     public ServicioDTO() {
     }
@@ -78,5 +79,14 @@ public class ServicioDTO {
     public void setNombreCliente(String nombreCliente) {
         this.nombreCliente = nombreCliente;
     }    
+
+    public String getMozoId() {
+        return mozoId;
+    }
+
+    public void setMozoId(String mozoId) {
+        this.mozoId = mozoId;
+    } 
+    
 
 }

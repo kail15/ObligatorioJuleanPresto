@@ -5,6 +5,7 @@ import obligatorio.modelo.MesaTransferida;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.Servicio;
 import obligatorio.modelo.Usuario;
+import obligatorio.vista.web.dto.PedidoDTO;
 import obligatorio.vista.web.dto.ServicioDTO;
 
 public interface VistaMozo {
@@ -26,4 +27,6 @@ public interface VistaMozo {
     public void logoutMozo(Usuario usuario);
 
     public void devolverServicio(ServicioDTO servicio);
+    
+    public void avisarPedido(PedidoDTO pedido);
 }

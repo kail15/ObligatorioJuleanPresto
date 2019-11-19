@@ -35,7 +35,8 @@ public class WsMessageDTO {
         ERROR_LOGOUT,
         TIPO_PROCESAR_PEDIDO,
         TIPO_CONFIRMAR_SERVICIO,
-        TIPO_DEVOLVER_SERVICIO
+        TIPO_DEVOLVER_SERVICIO,
+        TIPO_AVISAR_PEDIDO
         ;
     }; 
     
