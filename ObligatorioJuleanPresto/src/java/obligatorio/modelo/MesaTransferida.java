@@ -20,8 +20,6 @@ public class MesaTransferida {
     private String mozoDestinoNombre;
     private boolean aceptaMesa;
     private boolean estadoMesa;
-    ///de test
-    private EventoMensaje tipoMensaje;
 
     public MesaTransferida(int numero, String mozoOrigen,
             String mozoDestino, String mozoOrigenNombre, String mozoDestinoNombre, boolean estadoMesa) {
@@ -88,16 +86,6 @@ public class MesaTransferida {
     public void setEstadoMesa(boolean estadoMesa) {
         this.estadoMesa = estadoMesa;
     }
-    
-    ///de test
-    public EventoMensaje getTipoMensaje() {
-        return tipoMensaje;
-    }
-
-    public void setTipoMensaje(EventoMensaje tipoMensaje) {
-        this.tipoMensaje = tipoMensaje;
-    }
-    
    
 
 }
