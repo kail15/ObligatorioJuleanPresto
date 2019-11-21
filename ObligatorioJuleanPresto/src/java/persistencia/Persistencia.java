@@ -19,7 +19,7 @@ public class Persistencia {
     
     public int proximoOid(){
         try {
-            String sql = "SELECT ultimo from id";
+            String sql = "SELECT ultimo from oid";
             ResultSet rs = base.consultar(sql);
             if(!rs.next()){
                 System.out.println("NO ESTA INICIALIZADO EL ID");

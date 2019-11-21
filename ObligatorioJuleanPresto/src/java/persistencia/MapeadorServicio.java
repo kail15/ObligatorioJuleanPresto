@@ -13,10 +13,7 @@ import obligatorio.fachada.Fachada;
 import obligatorio.modelo.Producto;
 import obligatorio.modelo.Servicio;
 
-/**
- *
- * @author Usuario
- */
+
 public class MapeadorServicio implements Mapeador {
 
     private Servicio servicio;
@@ -42,11 +39,14 @@ public class MapeadorServicio implements Mapeador {
     public ArrayList<String> getSqlInsertar() {
         ArrayList<String> sqls = new ArrayList();
         sqls.add(
-                "insert into servicios values(" + servicio.getOid() + ","
-                + servicio.getCliente().getId()+ ")"
+                "insert into servicios (`oid`,`cliente_oid`,`mesa_oid`,`precioTotal`,`descuento`,`costoServicio` ) "
+                        + "values(" + servicio.getOid() + ","
+                + servicio.getCliente().getId()+","+ servicio.getMesa().getNumero() +"," + servicio.getPrecioTotal() 
+                + "," + servicio.getDescuento() +  "," + servicio.getCostoServicio()  +")"
         );
         return sqls;
     }
+    
 
     @Override
     public ArrayList<String> getSqlActualizar() {
@@ -54,7 +54,7 @@ public class MapeadorServicio implements Mapeador {
         sqls.add(
                 "delete from items where servicio_oid = " + servicio.getOid()
         );
-        generarItems(sqls);
+       // generarItems(sqls);
         return sqls;
     }
 
@@ -86,24 +86,8 @@ public class MapeadorServicio implements Mapeador {
 
     @Override
     public void leerComponente(ResultSet rs) throws SQLException {
-        /*Producto producto = Fachada.getInstancia().buscarProductoByOid(Integer.parseInt(rs.getString("producto_oid")));
-        servicio.getItems().add(new Item(
-                producto,
-                rs.getInt("cantidad"),
-                rs.getString("descripcion"),
-                Fachada.getInstancia().getEstadoItem(rs.getString("estado")))
-        );*/
+       
     }
 
-    private void generarItems(ArrayList<String> sqls) {
-        //terminar
-        /*List<Item> items = servicio.getItems();
-        for(Item i:items){
-            sqls.add(
-                    "insert into contactos values(" + agenda.getOid() + ",'" + 
-                            c.getNombre() + "','" + c.getTelefono() + "'," + c.getTipo().getOid() + ")"
-            );
-        }*/
-    }
 
 }

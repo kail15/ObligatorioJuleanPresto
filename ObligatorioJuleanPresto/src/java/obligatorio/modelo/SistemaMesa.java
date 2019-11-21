@@ -8,6 +8,7 @@ package obligatorio.modelo;
 import java.util.ArrayList;
 import persistencia.BaseDatos;
 import persistencia.MapeadorMesa;
+import persistencia.MapeadorServicio;
 import persistencia.Persistencia;
 
 /**
@@ -15,10 +16,13 @@ import persistencia.Persistencia;
  * @author Usuario
  */
 public class SistemaMesa {
+
     private ArrayList<Mesa> mesas;
+    private ArrayList<Servicio> servicios;
 
     public SistemaMesa() {
         mesas = new ArrayList<>();
+        servicios = new ArrayList<>();
     }
 
     public ArrayList<Mesa> getMesas() {
@@ -31,7 +35,7 @@ public class SistemaMesa {
 
     public void cargarDatos() {
         this.conectarBD();
-        this.cargarMesas(); 
+        this.cargarMesas();
         System.out.println("DATOS CARGADOS");
     }
 
@@ -44,8 +48,18 @@ public class SistemaMesa {
     private void cargarMesas() {
         mesas = Persistencia.getInstancia().obtenerTodos(new MapeadorMesa());
     }
+
+    public void guardarServicio(Servicio s) {
+        Persistencia.getInstancia().guardar(new MapeadorServicio(s));
+    }
+
+    public ArrayList<Servicio> getServicios() {
+        return servicios;
+    }
+
+    public void setServicios(ArrayList<Servicio> servicios) {
+        this.servicios = servicios;
+    } 
     
-    
-    
-    
+
 }

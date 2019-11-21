@@ -9,7 +9,9 @@ public class Servicio {
     private int oid;
     private List<Pedido> pedidos = new ArrayList<>();
     private Cliente cliente;
+    private Mesa mesa;
     private double precioTotal;
+    private double costoServicio;
     private double descuento;
     private String beneficio;
 
@@ -81,5 +83,22 @@ public class Servicio {
        
        return total;       
     }
+
+    public Mesa getMesa() {
+        return mesa;
+    }
+
+    public void setMesa(Mesa mesa) {
+        this.mesa = mesa;
+    }  
+
+    public double getCostoServicio() {
+        return costoServicio;
+    }
+
+    public void setCostoServicio(double costoServicio) {
+        this.costoServicio = costoServicio;
+    }
+    
     
 }

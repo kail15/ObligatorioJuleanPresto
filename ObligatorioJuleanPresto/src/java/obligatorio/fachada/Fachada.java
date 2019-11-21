@@ -22,6 +22,7 @@ import obligatorio.modelo.Mozo;
 import obligatorio.modelo.Pedido;
 import obligatorio.modelo.Preferencial;
 import obligatorio.modelo.Producto;
+import obligatorio.modelo.Servicio;
 import obligatorio.modelo.SistemaClientes;
 import obligatorio.modelo.SistemaMesa;
 import obligatorio.modelo.SistemaPedidos;
@@ -202,6 +203,19 @@ public final class Fachada extends Observable {
         if (cliente != null) {
             servicioCli.setNombreCliente(cliente.getNombre());
         }
+        
+        ///peristencia de servivio
+        double costoServicio = currentMesa.getPrecioServicio() - descuento;
+         Servicio servicioBase = new Servicio();
+         servicioBase.setMesa(mesaServ);
+         servicioBase.setDescuento(descuento);
+         servicioBase.setCliente(cliente);
+         servicioBase.setCostoServicio(costoServicio);
+         servicioBase.setPrecioTotal(currentMesa.getPrecioServicio());
+         guardarServicio(servicioBase);        
+        
+        ///fin persistencia de servicio
+        
         this.sistemaUsuarios.confirmarServicio(mozoParam, mesaServparam);
 
         NotificarHelper helperMozo = new NotificarHelper(EventoMensaje.LIMPIAR_SERVICIO, servicioCli);
@@ -236,6 +250,10 @@ public final class Fachada extends Observable {
 
     public void asignarMesa(int oidMozo, Mesa mesa) {
         sistemaUsuarios.asignarMesa(oidMozo, mesa);
+    }
+    
+    public void guardarServicio(Servicio s){
+      this.sistemaMesa.guardarServicio(s);
     }
 
     public List<Producto> obtenerProductos() {
