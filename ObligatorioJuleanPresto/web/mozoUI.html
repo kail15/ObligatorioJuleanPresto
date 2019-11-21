@@ -98,6 +98,11 @@
                     case "ERROR_LOGOUT":
                         alert(valor);
                         break;
+                    case "TIPO_LOGOUT":
+                        if (valor.userId === userId) {
+                            window.location.href = "login.html";
+                        }
+                        break;
                     case "TIPO_DEVOLVER_SERVICIO":
                         pedidoTerminado(valor);
                         break;
@@ -119,9 +124,9 @@
                 } else if (pedido.estado === "FINALIZADO") {
                     estadoPed = "Finalizado";
                 }
-                
-                var mensjePedido = "Producto: " +pedido.nombreProducto + '\n' + "Gestor: " + pedido.mozoNombre + '\n' + "Estado: " + estadoPed;
-                
+
+                var mensjePedido = "Producto: " + pedido.nombreProducto + '\n' + "Gestor: " + pedido.mozoNombre + '\n' + "Estado: " + estadoPed;
+
                 alert(mensjePedido);
 
             }
