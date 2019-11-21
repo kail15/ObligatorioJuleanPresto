@@ -8,7 +8,11 @@ package persistencia;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import obligatorio.modelo.BeneficioCliente;
 import obligatorio.modelo.Cliente;
+import obligatorio.modelo.Comun;
+import obligatorio.modelo.DeLaCasa;
+import obligatorio.modelo.Preferencial;
 
 /**
  *
@@ -67,16 +71,29 @@ public class MapeadorCliente implements Mapeador {
 
     @Override
     public void leerCompuesto(ResultSet rs) throws SQLException {
-        
+
         String nombreCliente = rs.getString("nombre");
-        int beneficioCliente = Integer.parseInt(rs.getString("beneficio")); 
+        int beneficioCliente = Integer.parseInt(rs.getString("beneficio"));
         String email = rs.getString("email");
-        
+        BeneficioCliente beneficioCli = null;
+
+        switch (beneficioCliente) {
+            case 1:
+                beneficioCli = new Comun();
+                break;
+            case 2:
+                beneficioCli = new DeLaCasa();
+                break;
+            case 3:
+                beneficioCli = new Preferencial();
+                break;
+        }
+
         cliente.setNombre(nombreCliente);
 
-        cliente.setBeneficio(beneficioCliente);
-        
         cliente.setEmail(email);
+        
+        cliente.setBeneficioCliente(beneficioCli);
     }
 
     @Override

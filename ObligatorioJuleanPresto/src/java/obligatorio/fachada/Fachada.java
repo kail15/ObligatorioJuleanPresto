@@ -8,9 +8,7 @@ import obligatorio.exceptions.MesaException;
 import obligatorio.exceptions.PedidoException;
 import obligatorio.exceptions.UsuarioInactivoException;
 import obligatorio.exceptions.UsuarioLogueadoException;
-import obligatorio.modelo.BeneficioCliente;
 import obligatorio.modelo.Cliente;
-import obligatorio.modelo.ClienteRestaurant;
 import obligatorio.modelo.Comun;
 import obligatorio.modelo.DeLaCasa;
 import obligatorio.vista.web.utils.EstadoPedido;
@@ -147,10 +145,12 @@ public final class Fachada extends Observable {
         prod.setCodigo(p.getPedidoId());
         UnidadProcesadora unidad = unidadProcByProd(prod);
         NotificarHelper helper = new NotificarHelper(EventoMensaje.PEDIDO_PROCESADO, unidad);
-        notificar(helper);
-        notificar(helper);
+        Fachada.getInstancia().notificar(helper);
+        //notificar(helper);
+        //notificar(helper);
         NotificarHelper helperMozo = new NotificarHelper(EventoMensaje.CAMBIO_ESTADO_PEDIDO, p);
-        notificar(helperMozo);
+        Fachada.getInstancia().notificar(helperMozo);
+        //notificar(helperMozo);
     }
 
     public List<Pedido> getPedidos() {
@@ -169,57 +169,49 @@ public final class Fachada extends Observable {
         Mesa currentMesa = currentMozo.obtenerMesaByNumero(mesaServ.getNumero());
         currentMesa.setPrecioServicio(currentMesa.getPrecioServicio());
         Cliente cliente = this.sistemaClientes.clienteById(mesaServ.getClienteServicio().getId());
-        BeneficioCliente beneficioCli = null;
-        ClienteRestaurant cliRest = null;
         String beneficioNombre = "";
         double descuento = 0;
 
         if (cliente != null) {
-            int benficio = cliente.getBeneficio();
-            switch (benficio) {
-                case 1:
-                    beneficioCli = new Comun();
-                    beneficioNombre = "Café invitación";
-                    break;
-                case 2:
-                    beneficioCli = new DeLaCasa();
-                    beneficioNombre = "Descuento de $500";
-                    break;
-                case 3:
-                    beneficioCli = new Preferencial();
-                    beneficioNombre = "Agua invitación y descuento";
-                    break;
-            }
+            descuento = cliente.getDescuento(currentMesa.getServicio());
 
-            if (beneficioCli != null) {
-                cliRest = new ClienteRestaurant(beneficioCli);
-                descuento = cliRest.getDescuento(currentMesa.getServicio());
+            if (cliente.getBeneficioCliente() instanceof DeLaCasa) {
+                beneficioNombre = "Descuento de $500";
+            } else if (cliente.getBeneficioCliente() instanceof Comun) {
+                beneficioNombre = "Café invitación";
+            } else if (cliente.getBeneficioCliente() instanceof Preferencial) {
+                beneficioNombre = "Agua invitación y descuento";
             }
         }
+
         ServicioDTO servicioCli = new ServicioDTO();
         servicioCli.setTotalApagar(currentMesa.getPrecioServicio());
         servicioCli.setDescuentoServicio(descuento);
 
         if (cliente != null) {
             servicioCli.setNombreCliente(cliente.getNombre());
+            servicioCli.setBeneficioNombre(beneficioNombre);
         }
-        
+
         ///peristencia de servivio
         double costoServicio = currentMesa.getPrecioServicio() - descuento;
-         Servicio servicioBase = new Servicio();
-         servicioBase.setMesa(mesaServ);
-         servicioBase.setDescuento(descuento);
-         servicioBase.setCliente(cliente);
-         servicioBase.setCostoServicio(costoServicio);
-         servicioBase.setPrecioTotal(currentMesa.getPrecioServicio());
-         guardarServicio(servicioBase);        
-        
+        Servicio servicioBase = new Servicio();
+        servicioBase.setMesa(mesaServ);
+        servicioBase.setDescuento(descuento);
+        servicioBase.setCliente(cliente);
+        servicioBase.setCostoServicio(costoServicio);
+        servicioBase.setPrecioTotal(currentMesa.getPrecioServicio());
+        guardarServicio(servicioBase);
+
         ///fin persistencia de servicio
-        
         this.sistemaUsuarios.confirmarServicio(mozoParam, mesaServparam);
 
         NotificarHelper helperMozo = new NotificarHelper(EventoMensaje.LIMPIAR_SERVICIO, servicioCli);
         notificar(helperMozo);
+        NotificarHelper helperGestor = new NotificarHelper(EventoMensaje.LIMPIAR_PEDIDOS, "");
+        notificar(helperGestor);
+        // notificar(helperGestor);
+
     }
 
     public Usuario login(String n, String p) throws CredencialesInvalidasException, UsuarioInactivoException, UsuarioLogueadoException {
@@ -251,9 +243,9 @@ public final class Fachada extends Observable {
     public void asignarMesa(int oidMozo, Mesa mesa) {
         sistemaUsuarios.asignarMesa(oidMozo, mesa);
     }
-    
-    public void guardarServicio(Servicio s){
-      this.sistemaMesa.guardarServicio(s);
+
+    public void guardarServicio(Servicio s) {
+        this.sistemaMesa.guardarServicio(s);
     }
 
     public List<Producto> obtenerProductos() {
@@ -319,9 +311,9 @@ public final class Fachada extends Observable {
         Usuario juan = new Gestor("2", "user2", "pass", "juan perez");
         Usuario jose = new Gestor("6", "user", "pass", "jose perez");
 
-        Cliente maria = new Cliente(1, "Maria", 1);
-        Cliente pablo = new Cliente(2, "Pablo", 2);
-        Cliente silvia = new Cliente(3, "Silvia", 3);
+//        Cliente maria = new Cliente(1, "Maria", 1);
+//        Cliente pablo = new Cliente(2, "Pablo", 2);
+//        Cliente silvia = new Cliente(3, "Silvia", 3);
 
         Mesa mesa1 = new Mesa(1);
         Mesa mesa2 = new Mesa(2);
@@ -372,9 +364,9 @@ public final class Fachada extends Observable {
         this.agregarUnidad(bar);
         this.agregarUnidad(cocina);
 
-        this.agregarCliente(silvia);
-        this.agregarCliente(pablo);
-        this.agregarCliente(maria);
+//        this.agregarCliente(silvia);
+//        this.agregarCliente(pablo);
+//        this.agregarCliente(maria);
 
         // this.agregarPedidoSistema(ped1);
         // this.agregarPedidoSistema(ped2);

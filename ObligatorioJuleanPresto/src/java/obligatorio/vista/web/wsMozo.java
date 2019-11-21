@@ -199,6 +199,7 @@ public class wsMozo implements VistaMozo {
         }
         
          servicio.setCostoServicio(costo);
+         servicio.setBeneficioNombre(servicio.getBeneficioNombre());
         
         
         

@@ -134,8 +134,8 @@
             function pedidoTerminado(servicio) {
                 console.log(servicio);
                 if (servicio.mozoId === userId) {
-                    var mensajeServicio = "Cliente: " + servicio.nombreCliente + '\n' + "Monto original: $" + servicio.totalApagar
-                            + '\n' + "Descuento : $" + servicio.descuentoServicio + '\n' + "TotalApagar a pagar: $" + servicio.costoServicio;
+                    var mensajeServicio = "Cliente: " + servicio.nombreCliente + '\n' + "Beneficio: " + servicio.beneficioNombre + '\n' +   "Monto original: $" + servicio.totalApagar
+                            + '\n' + "Descuento : $" + servicio.descuentoServicio + '\n' + "Total a pagar: $" + servicio.costoServicio;
                     alert(mensajeServicio);
                 }
 

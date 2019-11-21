@@ -51,6 +51,16 @@ public class ControladorGestor implements Observador {
                 List<Pedido> pedidos = this.fachada.getPedidos();
                 vista.obtenerPedidosTotales(pedidos);           
             }
+//            if(helper.getEvento().equals(EventoMensaje.ENVIAR_PEDIDO)){
+//                UnidadProcesadora unidad = (UnidadProcesadora) helper.getObjetoNotificar();
+//                List<Pedido> pedidos = this.fachada.getPedidos();
+//                vista.obtenerPedidosTotales(pedidos);           
+//            }
+            if (helper.getEvento().equals(EventoMensaje.LIMPIAR_PEDIDOS)) {
+                List<Pedido> pedidos = this.fachada.getPedidos();
+                vista.obtenerPedidosTotales(pedidos);
+            }
+            
         }
     }
 

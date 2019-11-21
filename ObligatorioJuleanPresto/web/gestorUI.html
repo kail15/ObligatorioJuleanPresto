@@ -91,7 +91,7 @@ and open the template in the editor.
                     $("#divSinPedidos").hide();
                     $("#divPedidosEnEspera").text("");
                     $("#divPedidosProcesados").text("");
-                    $.each(valor, function (key, value) {                        
+                    $.each(valor, function (key, value) {
                         if (value.unidad === curretnUnidad.id) {
                             var ulPedido = '<ul>';
                             var liProd = '<li>' + '<b>Producto:</b> ' + value.nombreProducto + '</li>';
@@ -109,8 +109,7 @@ and open the template in the editor.
                                 $("#" + idbtnproc).click(function () {
                                     procesarPedido(value);
                                 });
-                            }
-                            if (value.gestorId !== null)
+                            } else if (value.gestorId !== null)
                             {
                                 if (value.estado === "PROCESADO" && value.gestorId === userId) {
                                     var btnPedido = '<input type="button" value="finalizar" id="btnFinalizar' + value.producto + '"/>';
@@ -123,6 +122,12 @@ and open the template in the editor.
                                         finalizarPedido(value);
                                     });
                                 }
+                            } else {
+                                $("#divPedidosEnEspera").text("");
+                                $("#divPedidosProcesados").text("");
+                                $("#divProcesados").hide()();
+                                $("#divEnEspera").hide()();
+                                $("#divSinPedidos").show();
                             }
                         }
                     });

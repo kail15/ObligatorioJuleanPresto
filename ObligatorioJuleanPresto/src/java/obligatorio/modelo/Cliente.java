@@ -6,19 +6,18 @@ public class Cliente {
     private int oid;
     private String nombre;
     private String email;
-    private int beneficio;
+    private BeneficioCliente beneficioCliente;
 
-    public Cliente(int oid, String nombre, int beneficio) {
+
+    public Cliente(int oid, String nombre) {
         this.oid = oid;
         this.nombre = nombre;
-        this.beneficio = beneficio;
     }
 
-    public Cliente(int oid, String nombre, String email, int beneficio) {
+    public Cliente(int oid, String nombre, String email) {
         this.oid = oid;
         this.nombre = nombre;
         this.email = email;
-        this.beneficio = beneficio;
     }
     
     public Cliente(){
@@ -47,13 +46,24 @@ public class Cliente {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public int getBeneficio() {
-        return beneficio;
+ 
+    public int getOid() {
+        return oid;
     }
 
-    public void setBeneficio(int beneficio) {
-        this.beneficio = beneficio;
-    }  
+    public void setOid(int oid) {
+        this.oid = oid;
+    }
+
+    public BeneficioCliente getBeneficioCliente() {
+        return beneficioCliente;
+    }
+
+    public void setBeneficioCliente(BeneficioCliente beneficioCliente) {
+        this.beneficioCliente = beneficioCliente;
+    } 
     
+    public double getDescuento(Servicio servicio){
+       return this.beneficioCliente.calcularDescuento(servicio);
+    }    
 }
